@@ -16,17 +16,18 @@ const ANCHORS: Record<SectionId, { fx: number; fy: number; s: number }> = {
   work: { fx: 0.7, fy: -0.62, s: 0.55 },
   proof: { fx: 0.68, fy: 0.5, s: 0.62 },
   journey: { fx: -0.62, fy: -0.4, s: 0.75 },
-  contact: { fx: -0.52, fy: -0.1, s: 1.05 },
+  // journey's end: parked in the bottom-right, clear of the left-aligned CTA
+  contact: { fx: 0.74, fy: -0.45, s: 0.72 },
 }
 
-/** narrow / portrait screens: stay small and out of the text flow */
+/** narrow / portrait screens: stay small and corner-docked, never over the text */
 const COMPACT_ANCHORS: Record<SectionId, { fx: number; fy: number; s: number }> = {
-  hero: { fx: 0.4, fy: -0.52, s: 0.68 },
-  about: { fx: 0.6, fy: 0.66, s: 0.45 },
-  work: { fx: 0.66, fy: 0.7, s: 0.4 },
-  proof: { fx: 0.6, fy: 0.68, s: 0.42 },
-  journey: { fx: 0.62, fy: 0.66, s: 0.45 },
-  contact: { fx: 0.5, fy: 0.52, s: 0.62 },
+  hero: { fx: 0.44, fy: 0.52, s: 0.5 },
+  about: { fx: 0.66, fy: -0.66, s: 0.4 },
+  work: { fx: 0.66, fy: -0.66, s: 0.36 },
+  proof: { fx: 0.66, fy: -0.66, s: 0.4 },
+  journey: { fx: 0.66, fy: -0.66, s: 0.4 },
+  contact: { fx: 0.5, fy: 0.5, s: 0.5 },
 }
 
 const SLEEP_AFTER_MS = 30_000
@@ -216,15 +217,18 @@ export default function Mascot() {
     // ---- section anchor travel ----
     const section = useApp.getState().section
     const a = viewport.width < 4.6 ? COMPACT_ANCHORS[section] : ANCHORS[section]
+    // proportional sizing: full size on wide desktops, shrink on smaller laptops
+    const sizeMul = THREE.MathUtils.clamp(viewport.width / 7.3, 0.7, 1.08)
     const halfW = viewport.width / 2
     const halfH = viewport.height / 2
-    const tx = THREE.MathUtils.clamp(a.fx * halfW, -halfW + 1.1, halfW - 1.1)
-    const ty = a.fy * halfH
+    const margin = 0.95 * sizeMul
+    const tx = THREE.MathUtils.clamp(a.fx * halfW, -halfW + margin, halfW - margin)
+    const ty = THREE.MathUtils.clamp(a.fy * halfH, -halfH + margin, halfH - margin)
     root.current.position.x = lerp(root.current.position.x, tx, 2.6)
     root.current.position.y = lerp(root.current.position.y, ty + Math.sin(t * (s.sleeping ? 0.9 : 1.6)) * 0.07, 2.6)
 
     if (s.appeared && !s.flipping) {
-      const targetS = a.s
+      const targetS = a.s * sizeMul
       root.current.scale.x = lerp(root.current.scale.x, targetS, 2.2)
       root.current.scale.y = lerp(root.current.scale.y, targetS, 2.2)
       root.current.scale.z = lerp(root.current.scale.z, targetS, 2.2)
@@ -343,7 +347,7 @@ export default function Mascot() {
         <group ref={squash} onPointerDown={onBotDown}>
           {/* body */}
           <RoundedBox args={[1.15, 1.28, 0.95]} radius={0.3} smoothness={5} castShadow>
-            <meshStandardMaterial color="#232634" metalness={0.55} roughness={0.32} />
+            <meshStandardMaterial color="#ff8a1f" metalness={0.3} roughness={0.38} />
           </RoundedBox>
           {/* belly light */}
           <mesh position={[0, -0.32, 0.468]}>
@@ -362,31 +366,31 @@ export default function Mascot() {
           {/* antenna */}
           <mesh position={[0, 0.78, 0]}>
             <cylinderGeometry args={[0.022, 0.03, 0.28, 10]} />
-            <meshStandardMaterial color="#3a3f52" metalness={0.6} roughness={0.4} />
+            <meshStandardMaterial color="#c2590e" metalness={0.4} roughness={0.4} />
           </mesh>
           <mesh ref={antennaTip} position={[0, 0.95, 0]}>
             <sphereGeometry args={[0.075, 20, 20]} />
-            <meshStandardMaterial color="#ffb114" emissive="#ffb114" emissiveIntensity={1.8} roughness={0.3} />
+            <meshStandardMaterial color="#00e5ff" emissive="#00e5ff" emissiveIntensity={1.8} roughness={0.3} />
           </mesh>
           {/* ear pods */}
           <mesh position={[-0.62, 0.16, 0]}>
             <sphereGeometry args={[0.11, 18, 18]} />
-            <meshStandardMaterial color="#3a3f52" metalness={0.6} roughness={0.35} />
+            <meshStandardMaterial color="#c2590e" metalness={0.4} roughness={0.38} />
           </mesh>
           <mesh position={[0.62, 0.16, 0]}>
             <sphereGeometry args={[0.11, 18, 18]} />
-            <meshStandardMaterial color="#3a3f52" metalness={0.6} roughness={0.35} />
+            <meshStandardMaterial color="#c2590e" metalness={0.4} roughness={0.38} />
           </mesh>
         </group>
 
         {/* floating hands */}
         <mesh ref={handL} position={[-0.92, -0.08, 0.12]}>
           <sphereGeometry args={[0.15, 20, 20]} />
-          <meshStandardMaterial color="#2c3040" metalness={0.55} roughness={0.35} />
+          <meshStandardMaterial color="#e8720f" metalness={0.35} roughness={0.4} />
         </mesh>
         <mesh ref={handR} position={[0.92, -0.08, 0.12]}>
           <sphereGeometry args={[0.15, 20, 20]} />
-          <meshStandardMaterial color="#2c3040" metalness={0.55} roughness={0.35} />
+          <meshStandardMaterial color="#e8720f" metalness={0.35} roughness={0.4} />
         </mesh>
 
         {/* hover ring + thruster glow */}

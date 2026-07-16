@@ -118,3 +118,9 @@
 @media (prefers-reduced-motion: reduce) {
   .hero-cue-line { animation: none; }
 }
+
+@media (max-width: 560px) {
+  .hero-cue {
+    display: none;
+  }
+}
