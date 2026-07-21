@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useFrame, type ThreeEvent } from '@react-three/fiber'
+import { useFrame, useThree, type ThreeEvent } from '@react-three/fiber'
 import { Billboard, PerspectiveCamera, Text } from '@react-three/drei'
 import * as THREE from 'three'
 import {
@@ -32,40 +32,67 @@ const GROUP_COLORS: Record<string, string> = {
   project: '#f4f4f6',
 }
 
-const DIM = new THREE.Color('#232c3d')
+const DIM = new THREE.Color('#263044')
 
+/**
+ * Force layout, normalised to a [-1,1] box so it can be fitted to whatever
+ * size the panel happens to be (a fixed scale left most of the panel empty
+ * and clipped nodes off the top and bottom).
+ */
 function runLayout() {
   const nodes: SimNode[] = skillNodes.map((n) => ({ ...n }))
   const links: Array<SimulationLinkDatum<SimNode>> = skillEdges.map(([source, target]) => ({ source, target }))
   const sim = forceSimulation(nodes)
-    .force('charge', forceManyBody().strength(-130))
+    .force('charge', forceManyBody().strength(-150))
     .force(
       'link',
       forceLink<SimNode, SimulationLinkDatum<SimNode>>(links)
         .id((d) => d.id)
-        .distance(56)
-        .strength(0.55),
+        .distance(54)
+        .strength(0.5),
     )
     .force('center', forceCenter(0, 0))
-    .force('collide', forceCollide<SimNode>().radius((d) => 13 + d.weight * 3.2))
+    .force('collide', forceCollide<SimNode>().radius((d) => 15 + d.weight * 3.2))
     .stop()
-  for (let i = 0; i < 340; i++) sim.tick()
+  for (let i = 0; i < 400; i++) sim.tick()
 
-  const SCALE = 27
-  const homes = nodes.map(
-    (n, i) => new THREE.Vector3((n.x ?? 0) / SCALE, -(n.y ?? 0) / SCALE, Math.sin(i * 2.7) * 0.35),
+  let ex = 0
+  let ey = 0
+  for (const n of nodes) {
+    ex = Math.max(ex, Math.abs(n.x ?? 0))
+    ey = Math.max(ey, Math.abs(n.y ?? 0))
+  }
+  ex = ex || 1
+  ey = ey || 1
+
+  // unit-box positions; z gives the cloud real depth so it reads as 3D
+  const unit = nodes.map(
+    (n, i) => new THREE.Vector3((n.x ?? 0) / ex, -(n.y ?? 0) / ey, Math.sin(i * 1.9) * 0.55),
   )
+
   const index = new Map(nodes.map((n, i) => [n.id, i]))
   const edges = skillEdges.map(([a, b]) => [index.get(a)!, index.get(b)!] as [number, number])
-  return { nodes, homes, edges }
+  return { nodes, unit, edges }
 }
 
 export default function Constellation() {
-  const { nodes, homes, edges } = useMemo(runLayout, [])
+  const { nodes, unit, edges } = useMemo(runLayout, [])
+  const viewport = useThree((s) => s.viewport)
   const group = useRef<THREE.Group>(null!)
   const meshes = useRef<Array<THREE.Mesh | null>>([])
   const [hovered, setHovered] = useState(-1)
   const dragRef = useRef<{ i: number } | null>(null)
+
+  // fit the normalised layout to the panel, and size nodes/labels to match
+  const { homes, rScale } = useMemo(() => {
+    const hx = (viewport.width * 0.5) * 0.86
+    const hy = (viewport.height * 0.5) * 0.82
+    const hz = Math.min(hx, hy) * 0.45
+    return {
+      homes: unit.map((u) => new THREE.Vector3(u.x * hx, u.y * hy, u.z * hz)),
+      rScale: THREE.MathUtils.clamp(Math.min(hx, hy) / 2.6, 0.85, 2.1),
+    }
+  }, [unit, viewport.width, viewport.height])
 
   const lineGeo = useMemo(() => {
     const g = new THREE.BufferGeometry()
@@ -86,7 +113,7 @@ export default function Constellation() {
     colors.needsUpdate = true
   }, [hovered, edges, lineGeo, nodes])
 
-  // release drag anywhere
+  // snap a dragged node home wherever the pointer is released
   useEffect(() => {
     const up = () => {
       const d = dragRef.current
@@ -108,8 +135,15 @@ export default function Constellation() {
     return () => window.removeEventListener('pointerup', up)
   }, [homes])
 
-  useFrame((_, dt) => {
-    if (!dragRef.current) group.current.rotation.y += dt * 0.055
+  useFrame((state, dt) => {
+    const t = state.clock.elapsedTime
+    // gentle sway + pointer parallax — a full spin would turn the cloud edge-on
+    if (!dragRef.current) {
+      const swayY = Math.sin(t * 0.25) * 0.26 + state.pointer.x * 0.3
+      const swayX = -state.pointer.y * 0.16
+      group.current.rotation.y += (swayY - group.current.rotation.y) * Math.min(1, dt * 2.2)
+      group.current.rotation.x += (swayX - group.current.rotation.x) * Math.min(1, dt * 2.2)
+    }
 
     const pos = lineGeo.attributes.position as THREE.BufferAttribute
     edges.forEach(([a, b], k) => {
@@ -121,11 +155,10 @@ export default function Constellation() {
     })
     pos.needsUpdate = true
 
-    // hover glow
     meshes.current.forEach((m, i) => {
       if (!m) return
       const mat = m.material as THREE.MeshStandardMaterial
-      const target = i === hovered ? 1.9 : 0.75
+      const target = i === hovered ? 2.1 : 0.8
       mat.emissiveIntensity += (target - mat.emissiveIntensity) * Math.min(1, dt * 10)
     })
   })
@@ -142,23 +175,31 @@ export default function Constellation() {
   return (
     <>
       <PerspectiveCamera makeDefault fov={42} position={[0, 0, 8.6]} />
-      <ambientLight intensity={1.1} />
+      <ambientLight intensity={1.2} />
       <pointLight position={[4, 4, 6]} intensity={40} />
 
       <group ref={group}>
         {/* drag surface */}
         <mesh position={[0, 0, -0.6]} onPointerMove={onPlaneMove}>
-          <planeGeometry args={[40, 40]} />
+          <planeGeometry args={[80, 80]} />
           <meshBasicMaterial transparent opacity={0} depthWrite={false} />
         </mesh>
 
         <lineSegments geometry={lineGeo}>
-          <lineBasicMaterial vertexColors transparent opacity={0.55} blending={THREE.AdditiveBlending} depthWrite={false} />
+          <lineBasicMaterial
+            vertexColors
+            transparent
+            opacity={0.6}
+            blending={THREE.AdditiveBlending}
+            depthWrite={false}
+          />
         </lineSegments>
 
         {nodes.map((n, i) => {
           const color = GROUP_COLORS[n.group]
-          const r = n.group === 'project' ? 0.3 : 0.13 + n.weight * 0.035
+          const isProject = n.group === 'project'
+          const r = (isProject ? 0.26 : 0.11 + n.weight * 0.028) * rScale
+          const isHot = i === hovered
           return (
             <mesh
               key={n.id}
@@ -182,26 +223,24 @@ export default function Constellation() {
             >
               <sphereGeometry args={[r, 24, 24]} />
               <meshStandardMaterial
-                color={n.group === 'project' ? '#10101a' : color}
+                color={isProject ? '#12121c' : color}
                 emissive={color}
-                emissiveIntensity={0.75}
+                emissiveIntensity={0.8}
                 roughness={0.35}
                 metalness={0.2}
               />
-              {(n.group === 'project' || i === hovered) && (
-                <Billboard position={[0, r + 0.28, 0]}>
-                  <Text
-                    fontSize={n.group === 'project' ? 0.24 : 0.2}
-                    color={i === hovered ? '#ffffff' : '#c8d0e0'}
-                    outlineWidth={0.012}
-                    outlineColor="#07070b"
-                    anchorX="center"
-                    anchorY="bottom"
-                  >
-                    {n.label}
-                  </Text>
-                </Billboard>
-              )}
+              <Billboard position={[0, r + 0.16 * rScale, 0]}>
+                <Text
+                  fontSize={(isProject ? 0.26 : 0.185) * rScale}
+                  color={isHot ? '#ffffff' : isProject ? '#f4f4f6' : '#93a2bb'}
+                  outlineWidth={0.014 * rScale}
+                  outlineColor="#07070b"
+                  anchorX="center"
+                  anchorY="bottom"
+                >
+                  {n.label}
+                </Text>
+              </Billboard>
             </mesh>
           )
         })}
