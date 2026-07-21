@@ -13,6 +13,9 @@ interface AppState {
   setSection: (s: SectionId) => void
   botMood: BotMood
   setBotMood: (m: BotMood) => void
+  /** bot steps aside while an interactive 3D panel owns the screen */
+  botSuppressed: boolean
+  setBotSuppressed: (v: boolean) => void
   paletteOpen: boolean
   setPaletteOpen: (v: boolean) => void
   caseOpenId: string | null
@@ -36,8 +39,16 @@ export const useApp = create<AppState>((set) => ({
   setSection: (section) => set({ section }),
   botMood: 'idle',
   setBotMood: (botMood) => set({ botMood }),
+  botSuppressed: false,
+  setBotSuppressed: (botSuppressed) => set({ botSuppressed }),
+
   paletteOpen: false,
   setPaletteOpen: (paletteOpen) => set({ paletteOpen }),
   caseOpenId: null,
   setCaseOpenId: (caseOpenId) => set({ caseOpenId }),
 }))
+
+// dev-only handle for poking at state from the console; stripped from builds
+if (import.meta.env.DEV) {
+  ;(window as unknown as { __app?: typeof useApp }).__app = useApp
+}

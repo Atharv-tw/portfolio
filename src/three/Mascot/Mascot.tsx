@@ -256,10 +256,13 @@ export default function Mascot() {
     root.current.position.y = lerp(root.current.position.y, ty + Math.sin(t * (s.sleeping ? 0.9 : 1.6)) * 0.07, 2.6)
 
     if (s.appeared && !s.flipping) {
-      const targetS = a.s * sizeMul
-      root.current.scale.x = lerp(root.current.scale.x, targetS, 2.2)
-      root.current.scale.y = lerp(root.current.scale.y, targetS, 2.2)
-      root.current.scale.z = lerp(root.current.scale.z, targetS, 2.2)
+      // duck out of the way when an interactive 3D panel owns the screen —
+      // otherwise he covers it and his raycast steals the pointer
+      const targetS = useApp.getState().botSuppressed ? 0.0001 : a.s * sizeMul
+      root.current.scale.x = lerp(root.current.scale.x, targetS, 3.4)
+      root.current.scale.y = lerp(root.current.scale.y, targetS, 3.4)
+      root.current.scale.z = lerp(root.current.scale.z, targetS, 3.4)
+      root.current.visible = root.current.scale.x > 0.02
     }
 
     // ---- moods ----

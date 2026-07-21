@@ -52,22 +52,30 @@ function runLayout() {
         .strength(0.5),
     )
     .force('center', forceCenter(0, 0))
-    .force('collide', forceCollide<SimNode>().radius((d) => 15 + d.weight * 3.2))
+    // generous collision radius — labels need room or they collide
+    .force('collide', forceCollide<SimNode>().radius((d) => 30 + d.weight * 5))
     .stop()
   for (let i = 0; i < 400; i++) sim.tick()
 
-  let ex = 0
-  let ey = 0
+  // fit by bounding box (not max-abs) so an off-centre cloud still fills evenly
+  let minX = Infinity
+  let maxX = -Infinity
+  let minY = Infinity
+  let maxY = -Infinity
   for (const n of nodes) {
-    ex = Math.max(ex, Math.abs(n.x ?? 0))
-    ey = Math.max(ey, Math.abs(n.y ?? 0))
+    minX = Math.min(minX, n.x ?? 0)
+    maxX = Math.max(maxX, n.x ?? 0)
+    minY = Math.min(minY, n.y ?? 0)
+    maxY = Math.max(maxY, n.y ?? 0)
   }
-  ex = ex || 1
-  ey = ey || 1
+  const cx = (minX + maxX) / 2
+  const cy = (minY + maxY) / 2
+  const ex = (maxX - minX) / 2 || 1
+  const ey = (maxY - minY) / 2 || 1
 
   // unit-box positions; z gives the cloud real depth so it reads as 3D
   const unit = nodes.map(
-    (n, i) => new THREE.Vector3((n.x ?? 0) / ex, -(n.y ?? 0) / ey, Math.sin(i * 1.9) * 0.55),
+    (n, i) => new THREE.Vector3(((n.x ?? 0) - cx) / ex, -((n.y ?? 0) - cy) / ey, Math.sin(i * 1.9) * 0.55),
   )
 
   const index = new Map(nodes.map((n, i) => [n.id, i]))
@@ -90,7 +98,7 @@ export default function Constellation() {
     const hz = Math.min(hx, hy) * 0.45
     return {
       homes: unit.map((u) => new THREE.Vector3(u.x * hx, u.y * hy, u.z * hz)),
-      rScale: THREE.MathUtils.clamp(Math.min(hx, hy) / 2.6, 0.85, 2.1),
+      rScale: THREE.MathUtils.clamp(Math.min(hx, hy) / 2.7, 0.7, 1.25),
     }
   }, [unit, viewport.width, viewport.height])
 
@@ -198,7 +206,7 @@ export default function Constellation() {
         {nodes.map((n, i) => {
           const color = GROUP_COLORS[n.group]
           const isProject = n.group === 'project'
-          const r = (isProject ? 0.26 : 0.11 + n.weight * 0.028) * rScale
+          const r = (isProject ? 0.19 : 0.05 + n.weight * 0.015) * rScale
           const isHot = i === hovered
           return (
             <mesh
@@ -229,11 +237,11 @@ export default function Constellation() {
                 roughness={0.35}
                 metalness={0.2}
               />
-              <Billboard position={[0, r + 0.16 * rScale, 0]}>
+              <Billboard position={[0, r + 0.09 * rScale, 0]}>
                 <Text
-                  fontSize={(isProject ? 0.26 : 0.185) * rScale}
+                  fontSize={(isProject ? 0.185 : 0.115) * rScale}
                   color={isHot ? '#ffffff' : isProject ? '#f4f4f6' : '#93a2bb'}
-                  outlineWidth={0.014 * rScale}
+                  outlineWidth={0.012 * rScale}
                   outlineColor="#07070b"
                   anchorX="center"
                   anchorY="bottom"
