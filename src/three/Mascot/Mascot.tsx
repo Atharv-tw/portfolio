@@ -9,25 +9,50 @@ import { useApp } from '../../store'
 import type { SectionId } from '../../content/resume'
 import { createFace, makeGlowTexture, makeZTexture, type FaceMood } from './face'
 
-/** where the bot hangs out per section — fractions of the half-viewport */
-const ANCHORS: Record<SectionId, { fx: number; fy: number; s: number }> = {
-  hero: { fx: 0.56, fy: -0.02, s: 1 },
-  about: { fx: -0.66, fy: -0.18, s: 0.8 },
-  work: { fx: 0.7, fy: -0.62, s: 0.55 },
-  proof: { fx: 0.68, fy: 0.5, s: 0.62 },
-  journey: { fx: -0.62, fy: -0.4, s: 0.75 },
-  // journey's end: parked in the bottom-right, clear of the left-aligned CTA
-  contact: { fx: 0.74, fy: -0.45, s: 0.72 },
+type Anchor = { fx: number; fy: number; s: number }
+
+/**
+ * Where the bot parks per section, as fractions of the half-viewport
+ * (screen x = 0.5 + fx/2, screen y = 0.5 - fy/2).
+ * Each spot is measured against the real layout so he never sits on the copy.
+ */
+
+/** two-column layouts (>980px): tuck him into the gutters the grid leaves behind */
+const ANCHORS: Record<SectionId, Anchor> = {
+  hero: { fx: 0.58, fy: 0.06, s: 0.85 },
+  // the corridor between .about-copy (ends 0.45) and .about-side (starts 0.62)
+  about: { fx: 0.07, fy: -0.72, s: 0.42 },
+  work: { fx: 0.7, fy: -0.64, s: 0.4 },
+  proof: { fx: 0.7, fy: 0.5, s: 0.42 },
+  journey: { fx: 0.58, fy: -0.62, s: 0.4 },
+  contact: { fx: 0.74, fy: -0.62, s: 0.5 },
 }
 
-/** narrow / portrait screens: stay small and corner-docked, never over the text */
-const COMPACT_ANCHORS: Record<SectionId, { fx: number; fy: number; s: number }> = {
+/** single-column layouts (760–980px): copy is full-bleed, so hug the corners */
+const MEDIUM_ANCHORS: Record<SectionId, Anchor> = {
+  hero: { fx: 0.55, fy: 0.5, s: 0.5 },
+  about: { fx: 0.72, fy: -0.72, s: 0.34 },
+  work: { fx: 0.72, fy: -0.72, s: 0.32 },
+  proof: { fx: 0.72, fy: -0.72, s: 0.34 },
+  journey: { fx: 0.72, fy: -0.72, s: 0.34 },
+  contact: { fx: 0.6, fy: -0.66, s: 0.42 },
+}
+
+/** phones (≤760px): small and corner-docked, never over the text */
+const COMPACT_ANCHORS: Record<SectionId, Anchor> = {
   hero: { fx: 0.44, fy: 0.52, s: 0.5 },
-  about: { fx: 0.66, fy: -0.66, s: 0.4 },
-  work: { fx: 0.66, fy: -0.66, s: 0.36 },
-  proof: { fx: 0.66, fy: -0.66, s: 0.4 },
-  journey: { fx: 0.66, fy: -0.66, s: 0.4 },
-  contact: { fx: 0.5, fy: 0.5, s: 0.5 },
+  about: { fx: 0.66, fy: -0.68, s: 0.36 },
+  work: { fx: 0.66, fy: -0.68, s: 0.32 },
+  proof: { fx: 0.66, fy: -0.68, s: 0.36 },
+  journey: { fx: 0.66, fy: -0.68, s: 0.36 },
+  contact: { fx: 0.5, fy: 0.5, s: 0.46 },
+}
+
+/** picked by CSS pixel width so the bot follows the same breakpoints as the layout */
+function anchorsFor(cssWidth: number): Record<SectionId, Anchor> {
+  if (cssWidth <= 760) return COMPACT_ANCHORS
+  if (cssWidth <= 980) return MEDIUM_ANCHORS
+  return ANCHORS
 }
 
 const SLEEP_AFTER_MS = 30_000
@@ -47,6 +72,7 @@ export default function Mascot() {
 
   const entered = useApp((s) => s.entered)
   const viewport = useThree((s) => s.viewport)
+  const cssWidth = useThree((s) => s.size.width)
 
   const face = useMemo(() => createFace(), [])
   const glowTex = useMemo(() => makeGlowTexture('#00e5ff'), [])
@@ -216,12 +242,14 @@ export default function Mascot() {
 
     // ---- section anchor travel ----
     const section = useApp.getState().section
-    const a = viewport.width < 4.6 ? COMPACT_ANCHORS[section] : ANCHORS[section]
+    const a = anchorsFor(cssWidth)[section]
     // proportional sizing: full size on wide desktops, shrink on smaller laptops
-    const sizeMul = THREE.MathUtils.clamp(viewport.width / 7.3, 0.7, 1.08)
+    const sizeMul = THREE.MathUtils.clamp(viewport.width / 7.3, 0.85, 1.05)
     const halfW = viewport.width / 2
     const halfH = viewport.height / 2
-    const margin = 0.95 * sizeMul
+    // keep him fully on screen — margin tracks his actual size, so a small bot
+    // can tuck right into a corner instead of being held back by a fixed inset
+    const margin = Math.max(0.5, 1.25 * a.s * sizeMul)
     const tx = THREE.MathUtils.clamp(a.fx * halfW, -halfW + margin, halfW - margin)
     const ty = THREE.MathUtils.clamp(a.fy * halfH, -halfH + margin, halfH - margin)
     root.current.position.x = lerp(root.current.position.x, tx, 2.6)
