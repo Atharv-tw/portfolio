@@ -29,6 +29,8 @@ export interface Project {
   id: string
   index: string
   name: string
+  /** compact label for tight spots like the tech matrix columns */
+  short: string
   kind: string
   year: string
   accent: string
@@ -46,6 +48,7 @@ export const projects: Project[] = [
     id: 'onyx',
     index: '01',
     name: 'Onyx',
+    short: 'Onyx',
     kind: 'AI-powered DAST security platform',
     year: '2025',
     accent: '#ff4655',
@@ -64,6 +67,7 @@ export const projects: Project[] = [
     id: 'finstar',
     index: '02',
     name: 'Finstar',
+    short: 'Finstar',
     kind: 'Gamified finance education for teens',
     year: '2025',
     accent: '#ffb114',
@@ -82,6 +86,7 @@ export const projects: Project[] = [
     id: 'health-companion',
     index: '03',
     name: 'AI Health Companion',
+    short: 'Health AI',
     kind: 'Context-aware multi-agent health platform',
     year: '2025',
     accent: '#2ee6a8',
@@ -100,6 +105,7 @@ export const projects: Project[] = [
     id: 'codeswipe',
     index: '04',
     name: 'Codeswipe',
+    short: 'Codeswipe',
     kind: 'Swipe-based developer collaboration platform',
     year: '2025',
     accent: '#ff4d9d',
@@ -118,6 +124,7 @@ export const projects: Project[] = [
     id: 'healthvault',
     index: '05',
     name: 'HealthVault',
+    short: 'HealthVault',
     kind: 'Zero-knowledge encrypted health records',
     year: '2024',
     accent: '#00e5ff',
@@ -151,7 +158,7 @@ export const stats: StatItem[] = [
   { value: 100, suffix: '+', label: 'Pre-registrations', sub: 'Codeswipe, before launch' },
 ]
 
-/** Skills constellation — nodes + edges to the projects that use them */
+/** Skills + the projects that use them — drives the tech matrix in Proof */
 export interface SkillNode {
   id: string
   label: string

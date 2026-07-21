@@ -1,25 +1,24 @@
-import { lazy, Suspense, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { stats } from '../content/resume'
 import { useApp } from '../store'
 import CountUp from '../components/CountUp'
 import Heatmap from '../components/Heatmap'
 import RiseText from '../components/RiseText'
 import ScrambleText from '../components/ScrambleText'
+import TechMatrix from '../components/TechMatrix'
 import { usePrefersReducedMotion } from '../lib/hooks'
 import { ScrollTrigger } from '../lib/gsap'
 import './Dashboard.css'
 
-const ConstellationView = lazy(() => import('../three/ConstellationView'))
-
 export default function Dashboard() {
   const reduced = usePrefersReducedMotion()
-  const constellationRef = useRef<HTMLDivElement>(null)
+  const matrixRef = useRef<HTMLDivElement>(null)
 
-  // hand the screen over to the constellation while it is in view.
-  // ScrollTrigger rather than IntersectionObserver — it is what the rest of
+  // the matrix is dense — send the bot off screen while it holds the view.
+  // ScrollTrigger rather than IntersectionObserver: it is what the rest of
   // the site uses and it stays in step with the Lenis-driven scroll.
   useEffect(() => {
-    const el = constellationRef.current
+    const el = matrixRef.current
     if (!el || reduced) return
     const setBotSuppressed = useApp.getState().setBotSuppressed
     const st = ScrollTrigger.create({
@@ -58,17 +57,9 @@ export default function Dashboard() {
             <p className="mono-label">GitHub activity</p>
             <Heatmap />
           </div>
-          <div className="dash-panel is-constellation" data-cursor="drag">
-            <p className="mono-label">Skill constellation — grab a node</p>
-            <div className="constellation-host" ref={constellationRef}>
-              {reduced ? (
-                <div className="dash-panel-body mono-label">calm mode: interactive graph paused</div>
-              ) : (
-                <Suspense fallback={<div className="dash-panel-body mono-label">loading constellation…</div>}>
-                  <ConstellationView />
-                </Suspense>
-              )}
-            </div>
+          <div className="dash-panel" ref={matrixRef}>
+            <p className="mono-label">What powers what — hover a column, click to open</p>
+            <TechMatrix />
           </div>
         </div>
       </div>

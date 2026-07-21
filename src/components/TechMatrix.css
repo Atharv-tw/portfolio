@@ -1,0 +1,165 @@
+.matrix {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow-x: auto;
+}
+
+.matrix-table {
+  width: 100%;
+  min-width: 620px;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+/* ---------- headers ---------- */
+.matrix-corner {
+  text-align: left;
+  vertical-align: bottom;
+  padding: 0 0 0.8rem;
+  width: 30%;
+}
+
+.matrix-corner .mono-label {
+  font-size: 0.58rem;
+  color: var(--ink-faint);
+}
+
+.matrix-colhead {
+  --c: var(--accent);
+  padding: 0 0 0.8rem;
+  text-align: center;
+  vertical-align: bottom;
+}
+
+.matrix-colbtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  width: 100%;
+  padding: 0.5rem 0.35rem;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  transition: background 0.25s var(--ease-out), border-color 0.25s var(--ease-out);
+}
+
+.matrix-colname {
+  font-family: var(--font-display);
+  font-size: clamp(0.8rem, 1.1vw, 1rem);
+  font-weight: 680;
+  letter-spacing: -0.01em;
+  color: var(--ink-dim);
+  transition: color 0.25s var(--ease-out);
+  white-space: nowrap;
+}
+
+.matrix-colcount {
+  font-size: 0.54rem;
+  color: var(--ink-faint);
+}
+
+.matrix-colhead.is-hot .matrix-colbtn {
+  background: color-mix(in srgb, var(--c) 12%, transparent);
+  border-color: color-mix(in srgb, var(--c) 45%, transparent);
+}
+
+.matrix-colhead.is-hot .matrix-colname {
+  color: var(--c);
+}
+
+/* ---------- group + row headers ---------- */
+.matrix-grouprow th {
+  text-align: left;
+  padding: 1rem 0 0.4rem;
+  font-size: 0.55rem;
+  letter-spacing: 0.24em;
+  color: var(--ink-faint);
+  border-bottom: 1px solid var(--line);
+}
+
+.matrix-rowhead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.5rem 1rem 0.5rem 0;
+  font-size: 0.9rem;
+  font-weight: 460;
+  text-align: left;
+  color: var(--ink-dim);
+  transition: color 0.2s var(--ease-out);
+}
+
+.matrix-rowcount {
+  font-size: 0.55rem;
+  color: var(--ink-faint);
+}
+
+.matrix-row.is-hot .matrix-rowhead {
+  color: var(--ink);
+}
+
+.matrix-row:hover td,
+.matrix-row.is-hot td {
+  background: rgba(244, 244, 246, 0.028);
+}
+
+/* ---------- cells ---------- */
+.matrix-cell {
+  --c: var(--accent);
+  height: 34px;
+  text-align: center;
+  vertical-align: middle;
+  border-bottom: 1px solid rgba(244, 244, 246, 0.045);
+  transition: background 0.2s var(--ease-out);
+}
+
+.matrix-cell.in-col {
+  background: color-mix(in srgb, var(--c) 7%, transparent) !important;
+}
+
+.matrix-dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(244, 244, 246, 0.08);
+  transition: transform 0.28s var(--ease-bounce), background 0.28s var(--ease-out),
+    box-shadow 0.28s var(--ease-out);
+}
+
+.matrix-cell.is-on .matrix-dot {
+  width: 11px;
+  height: 11px;
+  background: var(--c);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--c) 60%, transparent);
+}
+
+.matrix-cell.is-lit .matrix-dot {
+  transform: scale(1.5);
+  box-shadow: 0 0 18px var(--c);
+}
+
+.matrix-foot {
+  font-size: 0.58rem;
+  color: var(--ink-faint);
+  padding-top: 0.2rem;
+}
+
+@media (max-width: 620px) {
+  .matrix-rowhead {
+    font-size: 0.8rem;
+  }
+  .matrix-cell {
+    height: 30px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .matrix-dot,
+  .matrix-colbtn,
+  .matrix-cell {
+    transition: none;
+  }
+}

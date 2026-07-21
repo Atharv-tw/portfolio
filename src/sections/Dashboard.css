@@ -48,19 +48,6 @@
   margin-top: 1.4rem;
 }
 
-.constellation-host {
-  position: relative;
-  flex: 1;
-  /* a force graph needs room to breathe — a wide letterbox squashes it */
-  aspect-ratio: 2.2 / 1;
-  min-height: 440px;
-  max-height: 600px;
-}
-
-.constellation-view {
-  position: absolute;
-  inset: 0;
-}
 
 .dash-panel {
   border: 1px solid var(--line);
@@ -83,11 +70,6 @@
 @media (max-width: 980px) {
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
-  }
-  .constellation-host {
-    aspect-ratio: 1.1 / 1;
-    min-height: 360px;
-    max-height: 520px;
   }
 }
 
