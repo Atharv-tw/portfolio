@@ -107,6 +107,24 @@ export function makeGlowTexture(color = '#00e5ff') {
   return t
 }
 
+/** conic rainbow — the signature bezel ring around the visor */
+export function makeRainbowTexture() {
+  const size = 256
+  const canvas = document.createElement('canvas')
+  canvas.width = size
+  canvas.height = size
+  const c = canvas.getContext('2d')!
+  const g = c.createConicGradient(0, size / 2, size / 2)
+  const stops = ['#ff3b3b', '#ffb114', '#2ee6a8', '#00e5ff', '#4d7dff', '#b74dff', '#ff3b9d', '#ff3b3b']
+  stops.forEach((col, i) => g.addColorStop(i / (stops.length - 1), col))
+  c.fillStyle = g
+  c.fillRect(0, 0, size, size)
+  const t = new THREE.CanvasTexture(canvas)
+  t.colorSpace = THREE.SRGBColorSpace
+  t.center.set(0.5, 0.5)
+  return t
+}
+
 /** "Z" texture for the sleep bubbles */
 export function makeZTexture() {
   const canvas = document.createElement('canvas')

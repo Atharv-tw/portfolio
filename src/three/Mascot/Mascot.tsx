@@ -7,7 +7,7 @@ import { sfx } from '../../audio/synth'
 import { scrollState } from '../../lib/scrollState'
 import { useApp } from '../../store'
 import type { SectionId } from '../../content/resume'
-import { createFace, makeGlowTexture, makeZTexture, type FaceMood } from './face'
+import { createFace, makeGlowTexture, makeRainbowTexture, makeZTexture, type FaceMood } from './face'
 
 type Anchor = { fx: number; fy: number; s: number }
 
@@ -62,6 +62,7 @@ export default function Mascot() {
   const root = useRef<THREE.Group>(null!)
   const squash = useRef<THREE.Group>(null!)
   const facePlane = useRef<THREE.Mesh>(null!)
+  const bezel = useRef<THREE.Mesh>(null!)
   const antennaTip = useRef<THREE.Mesh>(null!)
   const ring = useRef<THREE.Mesh>(null!)
   const thruster = useRef<THREE.Sprite>(null!)
@@ -77,6 +78,7 @@ export default function Mascot() {
   const face = useMemo(() => createFace(), [])
   const glowTex = useMemo(() => makeGlowTexture('#00e5ff'), [])
   const zTex = useMemo(() => makeZTexture(), [])
+  const rainbowTex = useMemo(() => makeRainbowTexture(), [])
 
   const burstGeo = useMemo(() => {
     const g = new THREE.BufferGeometry()
@@ -290,6 +292,16 @@ export default function Mascot() {
     squash.current.rotation.y = s.rotY
     squash.current.rotation.x = s.rotX
 
+    // ---- eye parallax: face drifts toward the cursor on top of the head turn ----
+    const eyeX = s.sleeping ? 0 : state.pointer.x * 0.055
+    const eyeY = s.sleeping ? 0.16 : 0.16 + state.pointer.y * 0.04
+    facePlane.current.position.x = lerp(facePlane.current.position.x, eyeX, 7)
+    facePlane.current.position.y = lerp(facePlane.current.position.y, eyeY, 7)
+
+    // ---- bezel: slowly cycle the rainbow ----
+    rainbowTex.rotation += dt * 0.4
+    ;(bezel.current.material as THREE.MeshBasicMaterial).opacity = s.sleeping ? 0.35 : 0.9
+
     // dizzy wobble / scroll lean
     const vel = THREE.MathUtils.clamp(scrollState.velocity * 0.010, -0.5, 0.5)
     const dizzyWobble = now < s.dizzyUntil ? Math.sin(t * 15) * 0.14 : 0
@@ -376,18 +388,44 @@ export default function Mascot() {
     <group>
       <group ref={root} position={[3, 0, 0]}>
         <group ref={squash} onPointerDown={onBotDown}>
-          {/* body */}
+          {/* body — glossy clearcoat plastic that catches the studio env */}
           <RoundedBox args={[1.15, 1.28, 0.95]} radius={0.3} smoothness={5} castShadow>
-            <meshStandardMaterial color="#ff8a1f" metalness={0.3} roughness={0.38} />
+            <meshPhysicalMaterial
+              color="#ff8a1f"
+              metalness={0.1}
+              roughness={0.4}
+              clearcoat={1}
+              clearcoatRoughness={0.28}
+              envMapIntensity={0.9}
+            />
           </RoundedBox>
           {/* belly light */}
           <mesh position={[0, -0.32, 0.468]}>
             <circleGeometry args={[0.08, 24]} />
             <meshBasicMaterial color="#00e5ff" toneMapped={false} transparent opacity={0.9} />
           </mesh>
-          {/* visor */}
+          {/* rainbow bezel — the signature ring peeks out around the visor */}
+          <mesh ref={bezel} position={[0, 0.16, 0.49]}>
+            <planeGeometry args={[1.0, 0.64]} />
+            <meshBasicMaterial
+              map={rainbowTex}
+              transparent
+              opacity={0.9}
+              toneMapped={false}
+              blending={THREE.AdditiveBlending}
+              depthWrite={false}
+            />
+          </mesh>
+          {/* visor — high-gloss black screen */}
           <RoundedBox args={[0.84, 0.5, 0.12]} radius={0.13} smoothness={4} position={[0, 0.16, 0.45]}>
-            <meshStandardMaterial color="#07070d" metalness={0.4} roughness={0.18} />
+            <meshPhysicalMaterial
+              color="#05050b"
+              metalness={0.2}
+              roughness={0.06}
+              clearcoat={1}
+              clearcoatRoughness={0.08}
+              envMapIntensity={1.3}
+            />
           </RoundedBox>
           {/* face */}
           <mesh ref={facePlane} position={[0, 0.16, 0.52]}>
