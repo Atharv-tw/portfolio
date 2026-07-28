@@ -10,6 +10,7 @@ export default function Hero() {
   const reduced = usePrefersReducedMotion()
   return (
     <section id="hero" data-section="hero" className="hero">
+      <div className="hero-aurora" aria-hidden="true" />
       {!reduced && (
         <Suspense fallback={null}>
           <HeroView />
@@ -29,7 +30,7 @@ export default function Hero() {
           <p className="body-lg hero-sub">{person.heroSub}</p>
           <div className="chip-row hero-chips">
             <span className="chip">📍 {person.location}</span>
-            <span className="chip">{person.tagline}</span>
+            <span className="chip chip-accent">{person.tagline}</span>
           </div>
         </div>
       </div>

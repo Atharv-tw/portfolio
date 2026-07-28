@@ -45,6 +45,28 @@
   letter-spacing: 0.08em;
   color: var(--ink-dim);
   white-space: nowrap;
+  transition: border-color 0.3s var(--ease-out), color 0.3s var(--ease-out),
+    transform 0.3s var(--ease-out);
+}
+
+.chip:hover {
+  border-color: color-mix(in srgb, var(--accent) 50%, var(--line-strong));
+  color: var(--ink);
+  transform: translateY(-2px);
+}
+
+/* gradient-ringed highlight chip (the hero tagline) */
+.chip-accent {
+  color: var(--ink);
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--surface), var(--surface)) padding-box,
+    var(--spectrum) border-box;
+}
+
+.chip-accent:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
 }
 
 .chip-row {

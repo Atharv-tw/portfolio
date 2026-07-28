@@ -8,9 +8,36 @@
 }
 
 .hero-inner {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   gap: clamp(1.5rem, 3vh, 2.5rem);
+}
+
+/* soft colored bloom behind the giant name — energy without touching the 3D */
+.hero-aurora {
+  position: absolute;
+  inset: -12% -10% 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(38vw 38vw at 16% 28%, color-mix(in srgb, var(--accent) 60%, transparent), transparent 68%),
+    radial-gradient(30vw 30vw at 84% 22%, color-mix(in srgb, var(--accent-pink) 55%, transparent), transparent 68%),
+    radial-gradient(42vw 42vw at 62% 82%, color-mix(in srgb, var(--accent-warm) 45%, transparent), transparent 70%);
+  filter: blur(34px) saturate(1.25);
+  opacity: 0.38;
+  mix-blend-mode: screen;
+  animation: aurora-drift 24s var(--ease-inout) infinite alternate;
+}
+
+@keyframes aurora-drift {
+  from {
+    transform: translate3d(-3%, -2%, 0) scale(1.05);
+  }
+  to {
+    transform: translate3d(4%, 3%, 0) scale(1.16);
+  }
 }
 
 .hero-kicker {
@@ -39,7 +66,18 @@
 
 .hero-line-2 {
   color: transparent;
-  -webkit-text-stroke: 2px var(--ink);
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--accent) 40%, transparent);
+  background: var(--spectrum);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: hue-slide 9s linear infinite;
+}
+
+@keyframes hue-slide {
+  to {
+    background-position: 200% 0;
+  }
 }
 
 .hero-kicker,
@@ -74,6 +112,10 @@
     transform: none;
     opacity: 1;
     transition: none;
+  }
+  .hero-aurora,
+  .hero-line-2 {
+    animation: none;
   }
 }
 

@@ -1,0 +1,109 @@
+.music-player {
+  position: fixed;
+  left: clamp(1rem, 3vw, 2rem);
+  bottom: clamp(1rem, 3vw, 2rem);
+  z-index: var(--z-nav);
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.4rem 0.85rem 0.4rem 0.4rem;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: color-mix(in srgb, var(--bg) 62%, transparent);
+  backdrop-filter: blur(16px) saturate(1.3);
+  -webkit-backdrop-filter: blur(16px) saturate(1.3);
+  box-shadow: 0 10px 40px -18px rgba(0, 0, 0, 0.9);
+  transition: border-color 0.4s var(--ease-out), transform 0.4s var(--ease-out),
+    box-shadow 0.4s var(--ease-out);
+  animation: music-in 0.7s var(--ease-out) both;
+}
+
+@keyframes music-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.music-player.is-playing {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--line-strong));
+  box-shadow: 0 10px 44px -16px color-mix(in srgb, var(--accent) 60%, transparent);
+}
+
+.music-btn {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  color: #06060c;
+  background: linear-gradient(135deg, #00e5ff, #ff4d9d 55%, #ffb114);
+  box-shadow: 0 4px 16px -6px color-mix(in srgb, #ff4d9d 70%, transparent);
+  transition: transform 0.25s var(--ease-bounce), filter 0.25s var(--ease-out);
+}
+
+.music-btn:hover {
+  transform: scale(1.08);
+  filter: brightness(1.12);
+}
+
+.music-btn:active {
+  transform: scale(0.94);
+}
+
+.music-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.music-title {
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  color: var(--ink-dim);
+  transition: color 0.4s var(--ease-out);
+}
+
+.is-playing .music-title {
+  color: var(--ink);
+}
+
+.music-viz {
+  width: 132px;
+  height: 26px;
+}
+
+.music-track {
+  flex: none;
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+  color: var(--ink-faint);
+  padding-left: 0.7rem;
+  border-left: 1px solid var(--line);
+}
+
+@media (max-width: 640px) {
+  .music-player {
+    gap: 0.5rem;
+    padding: 0.35rem 0.5rem 0.35rem 0.35rem;
+  }
+  .music-track {
+    display: none;
+  }
+  .music-viz {
+    width: 84px;
+  }
+}
+
+/* keep clear of nothing else lives bottom-left, so this is the only tenant */
+@media (prefers-reduced-motion: reduce) {
+  .music-player {
+    animation: none;
+  }
+}

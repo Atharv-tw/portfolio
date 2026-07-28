@@ -41,6 +41,11 @@ export function audioReady() {
   return !!ctx
 }
 
+/** shared AudioContext — the music engine reuses this instead of opening a second one */
+export function getCtx(): AudioContext | null {
+  return ctx
+}
+
 function getNoise(c: AudioContext) {
   if (noiseBuf) return noiseBuf
   const len = Math.floor(c.sampleRate * 0.4)

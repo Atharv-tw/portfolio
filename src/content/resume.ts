@@ -61,7 +61,7 @@ export const projects: Project[] = [
     ],
     impact: '~70% reduction in Mean Time To Repair · showcased in hackathons, tested by judges',
     tech: ['Python', 'FastAPI', 'Nuclei', 'Nmap', 'Claude', 'GitHub API', 'Docker'],
-    links: { repo: '', live: '' },
+    links: { repo: 'https://github.com/Atharv-tw/Onyx', live: '' },
   },
   {
     id: 'finstar',
@@ -80,7 +80,7 @@ export const projects: Project[] = [
     ],
     impact: '100+ positive reviews from real users',
     tech: ['React', 'Firebase', 'Supabase', 'TypeScript', 'AI simulation'],
-    links: { repo: '', live: '' },
+    links: { repo: 'https://github.com/Atharv-tw/FINSTAR', live: '' },
   },
   {
     id: 'health-companion',
@@ -99,7 +99,10 @@ export const projects: Project[] = [
     ],
     impact: '8 context-aware agents in one system — built overnight for a 36-hour live hackathon',
     tech: ['Python', 'RAG', 'Vector DBs', 'FastAPI', 'AI Agents'],
-    links: { repo: '', live: '' },
+    links: {
+      repo: 'https://github.com/Atharv-tw/Health-companion',
+      live: 'https://health-companion-navy.vercel.app',
+    },
   },
   {
     id: 'codeswipe',

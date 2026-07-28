@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { person, sections } from '../content/resume'
 import { scrollToSection } from '../lib/smoothScroll'
 import { sfx } from '../audio/synth'
+import { toggleMusic } from '../audio/music'
 import { useApp } from '../store'
 import './CommandPalette.css'
 
@@ -54,8 +55,14 @@ export default function CommandPalette() {
         },
       },
       {
+        id: 'music',
+        label: 'Play / pause music',
+        hint: '🎧 generative lofi',
+        run: () => toggleMusic(),
+      },
+      {
         id: 'sound',
-        label: 'Toggle sound',
+        label: 'Toggle sound effects',
         hint: 'mute / unmute',
         run: () => toggleMuted(),
       },

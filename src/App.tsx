@@ -5,6 +5,8 @@ import SoundFX from './audio/SoundFX'
 import CommandPalette from './components/CommandPalette'
 import Cursor from './components/Cursor'
 import EasterEggs from './components/EasterEggs'
+import MusicPlayer from './components/MusicPlayer'
+import MascotSpeech from './components/MascotSpeech'
 import Nav from './components/Nav'
 import SectionSpy from './components/SectionSpy'
 import Preloader from './sections/Preloader'
@@ -48,12 +50,14 @@ export default function App() {
       </main>
       <ProjectCase />
       <CommandPalette />
+      <MusicPlayer />
 
       {!reduced && (
         <Suspense fallback={null}>
           <div className="mascot-layer" aria-hidden="true">
             <MascotView />
           </div>
+          <MascotSpeech />
           <SceneRoot eventSource={appRef} />
         </Suspense>
       )}

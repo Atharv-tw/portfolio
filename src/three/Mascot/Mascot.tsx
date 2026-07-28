@@ -7,7 +7,17 @@ import { sfx } from '../../audio/synth'
 import { scrollState } from '../../lib/scrollState'
 import { useApp } from '../../store'
 import type { SectionId } from '../../content/resume'
+import { onMusicChange } from '../../audio/music'
+import { musicState } from '../../audio/musicState'
+import { mascotState, sayQuip } from '../../lib/mascotState'
 import { createFace, makeGlowTexture, makeZTexture, type FaceMood } from './face'
+
+// reused every frame so drag/projection math never allocates
+const _proj = new THREE.Vector3()
+const _ndc = new THREE.Vector3()
+const _dir = new THREE.Vector3()
+const _drag = new THREE.Vector3()
+const CYAN = new THREE.Color('#00e5ff')
 
 type Anchor = { fx: number; fy: number; s: number }
 
@@ -99,6 +109,13 @@ export default function Mascot() {
     burstVel: Array.from({ length: BURST_COUNT }, () => new THREE.Vector3()),
     appeared: false,
     flipping: false,
+    // drag + smoothed base position (music bounce is added on top of these)
+    dragging: false,
+    pressing: false,
+    downX: 0,
+    downY: 0,
+    posX: 3,
+    posY: 0,
   })
 
   const setFace = (m: FaceMood) => {
@@ -199,6 +216,48 @@ export default function Mascot() {
     })
   }, [entered])
 
+  // perk up when the music kicks on
+  useEffect(
+    () =>
+      onMusicChange((on) => {
+        if (on) {
+          setFace('happy')
+          st.current.happyUntil = performance.now() + 1400
+          sayQuip('ooh, a tune 🎧')
+        }
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  )
+
+  // a plain click (no drag): the escalating happy → dizzy reaction
+  const clickReact = () => {
+    const s = st.current
+    const now = performance.now()
+
+    s.clicks = s.clicks.filter((t) => now - t < 1600)
+    s.clicks.push(now)
+
+    if (s.clicks.length >= 4 && now > s.dizzyUntil) {
+      s.dizzyUntil = now + 2300
+      s.clicks = []
+      setFace('dizzy')
+      sfx.dizzy()
+      squashPop(1.3)
+      sayQuip('okay okay — dizzy now 😵')
+      return
+    }
+
+    if (now > s.dizzyUntil) {
+      setFace('happy')
+      s.happyUntil = now + 900
+      sfx.chirp()
+      squashPop(1)
+      popBurst(root.current.position.clone().add(new THREE.Vector3(0, 0.4, 0.4)))
+      if (Math.random() > 0.55) sayQuip()
+    }
+  }
+
   const onBotDown = (e: ThreeEvent<PointerEvent>) => {
     e.stopPropagation()
     const s = st.current
@@ -213,25 +272,39 @@ export default function Mascot() {
       return
     }
 
-    s.clicks = s.clicks.filter((t) => now - t < 1600)
-    s.clicks.push(now)
+    // start tracking: past a small threshold it becomes a drag, else a click
+    s.pressing = true
+    s.dragging = false
+    s.downX = e.nativeEvent.clientX
+    s.downY = e.nativeEvent.clientY
 
-    if (s.clicks.length >= 4 && now > s.dizzyUntil) {
-      s.dizzyUntil = now + 2300
-      s.clicks = []
-      setFace('dizzy')
-      sfx.dizzy()
-      squashPop(1.3)
-      return
+    const move = (ev: PointerEvent) => {
+      if (!s.pressing) return
+      const dx = ev.clientX - s.downX
+      const dy = ev.clientY - s.downY
+      if (!s.dragging && dx * dx + dy * dy > 36) {
+        s.dragging = true
+        setFace('wow')
+        sfx.whoosh()
+      }
     }
-
-    if (now > s.dizzyUntil) {
-      setFace('happy')
-      s.happyUntil = now + 900
-      sfx.chirp()
-      squashPop(1)
-      popBurst(root.current.position.clone().add(new THREE.Vector3(0, 0.4, 0.4)))
+    const up = () => {
+      window.removeEventListener('pointermove', move)
+      window.removeEventListener('pointerup', up)
+      if (s.dragging) {
+        s.dragging = false
+        setFace('happy')
+        s.happyUntil = performance.now() + 1100
+        sfx.boing()
+        squashPop(1.1)
+        sayQuip('wheee 🌀')
+      } else {
+        clickReact()
+      }
+      s.pressing = false
     }
+    window.addEventListener('pointermove', move)
+    window.addEventListener('pointerup', up)
   }
 
   useFrame((state, dt) => {
@@ -252,8 +325,35 @@ export default function Mascot() {
     const margin = Math.max(0.5, 1.25 * a.s * sizeMul)
     const tx = THREE.MathUtils.clamp(a.fx * halfW, -halfW + margin, halfW - margin)
     const ty = THREE.MathUtils.clamp(a.fy * halfH, -halfH + margin, halfH - margin)
-    root.current.position.x = lerp(root.current.position.x, tx, 2.6)
-    root.current.position.y = lerp(root.current.position.y, ty + Math.sin(t * (s.sleeping ? 0.9 : 1.6)) * 0.07, 2.6)
+
+    let targetX = tx
+    let targetY = ty + Math.sin(t * (s.sleeping ? 0.9 : 1.6)) * 0.07
+    let travelK = 2.6
+
+    // ---- drag: grab him and fling him around, then he springs back ----
+    if (s.dragging) {
+      _ndc.set(state.pointer.x, state.pointer.y, 0.5).unproject(state.camera)
+      _dir.copy(_ndc).sub(state.camera.position).normalize()
+      const dist = -state.camera.position.z / _dir.z
+      _drag.copy(state.camera.position).add(_dir.multiplyScalar(dist))
+      targetX = _drag.x
+      targetY = _drag.y
+      travelK = 16
+    }
+    s.posX = lerp(s.posX, targetX, travelK)
+    s.posY = lerp(s.posY, targetY, travelK)
+
+    // ---- dance: pop on the beat, sway with the loudness ----
+    let danceX = 0
+    let danceY = 0
+    if (musicState.playing && !s.dragging) {
+      const sinceBeat = (now - musicState.beatAt) / 1000
+      const pop = Math.max(0, 1 - sinceBeat / 0.34)
+      danceY = pop * pop * 0.22 + Math.sin(t * 3.1) * 0.03 * musicState.level
+      danceX = Math.sin(t * 1.7) * 0.045 * musicState.level
+    }
+    root.current.position.x = s.posX + danceX
+    root.current.position.y = s.posY + danceY
 
     if (s.appeared && !s.flipping) {
       // duck out of the way when an interactive 3D panel owns the screen —
@@ -264,6 +364,15 @@ export default function Mascot() {
       root.current.scale.z = lerp(root.current.scale.z, targetS, 3.4)
       root.current.visible = root.current.scale.x > 0.02
     }
+
+    // ---- report a point just above his head so the DOM bubble can track him ----
+    _proj.copy(root.current.position)
+    _proj.y += 1.05 * root.current.scale.y
+    _proj.project(state.camera)
+    mascotState.screenX = (_proj.x * 0.5 + 0.5) * state.size.width
+    mascotState.screenY = (-_proj.y * 0.5 + 0.5) * state.size.height
+    mascotState.onScreen = root.current.visible && !useApp.getState().botSuppressed
+    mascotState.dragging = s.dragging
 
     // ---- moods ----
     if (!s.sleeping && now - scrollState.lastActivity > SLEEP_AFTER_MS) {
@@ -314,7 +423,13 @@ export default function Mascot() {
       tipMat.emissive.setHSL((t * 0.7) % 1, 1, 0.55)
       tipMat.emissiveIntensity = 2.6
       root.current.rotation.y = Math.sin(t * 6) * 0.25
+    } else if (musicState.playing && !s.dragging) {
+      // groove: antenna glows to the beat and he sways to the tune
+      tipMat.emissive.setHSL(musicState.hue, 0.85, 0.55)
+      tipMat.emissiveIntensity = 1.5 + musicState.level * 2.6
+      root.current.rotation.y = lerp(root.current.rotation.y, Math.sin(t * 2.4) * 0.16, 3)
     } else {
+      tipMat.emissive.copy(CYAN)
       tipMat.emissiveIntensity = 1.6 + Math.sin(t * 3.2) * 0.6
       root.current.rotation.y = lerp(root.current.rotation.y, 0, 3)
     }

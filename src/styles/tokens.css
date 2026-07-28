@@ -12,7 +12,20 @@
 
   --accent: #00e5ff;
   --accent-warm: #ffb114;
+  --accent-pink: #ff4d9d;
+  --accent-mint: #2ee6a8;
   --accent-dim: rgba(0, 229, 255, 0.12);
+
+  /* energetic multi-hue sweep — used for gradient text, glows, the music bar */
+  --spectrum: linear-gradient(100deg, #00e5ff, #ff4d9d 52%, #ffb114);
+  --spectrum-conic: conic-gradient(
+    from 210deg,
+    #00e5ff,
+    #2ee6a8,
+    #ffb114,
+    #ff4d9d,
+    #00e5ff
+  );
 
   /* type */
   --font-display: 'Bricolage Grotesque Variable', 'Segoe UI', system-ui, sans-serif;

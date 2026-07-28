@@ -1,0 +1,64 @@
+.mascot-speech {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: var(--z-overlay);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.28s var(--ease-out);
+  will-change: transform, opacity;
+}
+
+.mascot-speech-text {
+  display: inline-block;
+  max-width: 15rem;
+  padding: 0.5rem 0.85rem;
+  border-radius: 14px;
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--line-strong));
+  background: linear-gradient(
+    150deg,
+    color-mix(in srgb, var(--bg) 78%, transparent),
+    color-mix(in srgb, var(--surface-2) 78%, transparent)
+  );
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 12px 34px -18px color-mix(in srgb, var(--accent) 70%, transparent);
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.02em;
+  line-height: 1.35;
+  color: var(--ink);
+  white-space: nowrap;
+  animation: quip-pop 0.42s var(--ease-bounce) both;
+}
+
+/* little tail pointing down at the bot */
+.mascot-speech-text::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 12px;
+  height: 12px;
+  transform: translateX(-50%) rotate(45deg);
+  border-right: 1px solid color-mix(in srgb, var(--accent) 45%, var(--line-strong));
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 45%, var(--line-strong));
+  background: color-mix(in srgb, var(--surface-2) 78%, transparent);
+}
+
+@keyframes quip-pop {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mascot-speech {
+    display: none;
+  }
+}
