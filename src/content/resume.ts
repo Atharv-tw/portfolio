@@ -9,7 +9,7 @@ export const person = {
   role: 'Full-Stack Developer × AI Engineer',
   tagline: 'I build AI systems that ship.',
   heroSub:
-    '120+ APIs shipped across healthcare, fintech & civic tech. Currently CTO @ Nexera. Second-year CSE, Delhi.',
+    '120+ APIs shipped across healthcare, fintech & civic tech. Currently Tech Lead @ Nexera. Second-year CSE, Delhi.',
   location: 'New Delhi, India',
   timezone: 'Asia/Kolkata',
   email: 'tiwariatharv01042005@gmail.com',
@@ -17,7 +17,7 @@ export const person = {
   linkedin: { label: 'LinkedIn', handle: 'atharvtw', url: 'https://www.linkedin.com/in/atharvtw' },
   resumePdf: '/resume.pdf',
   about: [
-    'Second-year CSE student at GGSIPU, Delhi — and CTO at Nexera, where I own technical and product decisions end to end.',
+    'Second-year CSE student at GGSIPU, Delhi — and Tech Lead at Nexera, where I own technical and product decisions end to end.',
     'I have shipped production systems in healthcare, civic governance and fintech: zero-knowledge encryption, multi-agent AI platforms, and 120+ APIs that real users depend on.',
     'I lead teams, write about what I build, and turn hackathon weekends into working products.',
   ],
@@ -215,12 +215,11 @@ export interface Milestone {
 }
 
 export const timeline: Milestone[] = [
-  { year: '2023', title: 'Class XII', detail: 'AES Dr. KRBM Sr. Sec. School, Delhi. The launchpad.' },
   { year: '2024', title: 'B.Tech CSE — GGSIPU', detail: 'Started engineering. Immediately started shipping.' },
   { year: '2025', title: 'IEEE T-Hacks 8.0 — 2nd of 200+', detail: '24-hour build. Podium finish.', highlight: true },
   { year: '2025', title: 'Shloka Decode 2.0 — Winner', detail: 'First place. No notes.', highlight: true },
   { year: '2025', title: 'B-Plan e-Summit — Top 10 of 200+', detail: 'Finalist with 100+ pre-registrations on the pitch.' },
-  { year: '2025', title: 'CTO — Nexera', detail: 'Nov 2025. Owning every technical and product decision.', highlight: true },
+  { year: '2025', title: 'Tech Lead - Nexera', detail: 'Nov 2025. Owning every technical and product decision.', highlight: true },
   { year: '2026', title: 'Now', detail: 'Building the next thing. Probably tonight.' },
 ]
 
