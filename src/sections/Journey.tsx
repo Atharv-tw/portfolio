@@ -97,7 +97,7 @@ export default function Journey() {
       <div className="container">
         <div className="section-head">
           <ScrambleText as="p" className="mono-label" text="The road so far — 004" />
-          <RiseText as="h2" className="display-lg" text="From classroom to CTO." />
+          <RiseText as="h2" className="display-lg" text="Milestones" />
           <div className="rule" />
         </div>
 
