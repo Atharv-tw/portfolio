@@ -212,13 +212,12 @@ export interface Milestone {
 }
 
 export const timeline: Milestone[] = [
-  { year: '2023', title: 'Class XII', detail: 'AES Dr. KRBM Sr. Sec. School, Delhi. The launchpad.' },
-  { year: '2024', title: 'B.Tech CSE — GGSIPU', detail: 'Started engineering. Immediately started shipping.' },
-  { year: '2025', title: 'IEEE T-Hacks 8.0 — 2nd of 200+', detail: '24-hour build. Podium finish.', highlight: true },
-  { year: '2025', title: 'Shloka Decode 2.0 — Winner', detail: 'First place. No notes.', highlight: true },
-  { year: '2025', title: 'B-Plan e-Summit — Top 10 of 200+', detail: 'Finalist with 100+ pre-registrations on the pitch.' },
-  { year: '2025', title: 'CTO — Nexera', detail: 'Nov 2025. Owning every technical and product decision.', highlight: true },
-  { year: '2026', title: 'Now', detail: 'Building the next thing. Probably tonight.' },
+  { year: '2025', title: 'VibeForge\'26 — Winner', detail: 'Emerged Winner among 500+ participants in an 8-hour hackathon.', highlight: true },
+  { year: '2025', title: 'Shloka Decode 2.0, NSUT — Winner', detail: 'Emerged Winner among 500+ participants in an 8-hour hackathon.', highlight: true },
+  { year: '2025', title: 'IEEE T-Hacks 8.0 — 2nd Place', detail: '2nd Place among 800+ participants in a 24-hour hackathon.', highlight: true },
+  { year: '2025', title: 'Pitch Tank, DU — 2nd Place', detail: '2nd Place among 500+ participants.' },
+  { year: '2025', title: 'eDC\'s Blueprint 6.0, IIT Delhi', detail: 'Competed till Delhi Regionals. Invited to Emergence (IITD incubation) & BeCon\'26.' },
+  { year: '2025', title: 'B-Plan e-Summit 2025, DTU', detail: 'Top 10 among 500 participants.' },
 ]
 
 export const interests = [
