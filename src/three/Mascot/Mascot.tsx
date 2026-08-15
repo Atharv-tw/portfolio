@@ -23,6 +23,8 @@ const ANCHORS: Record<SectionId, Anchor> = {
   // the corridor between .about-copy (ends 0.45) and .about-side (starts 0.62)
   about: { fx: 0.07, fy: -0.72, s: 0.42 },
   work: { fx: 0.7, fy: -0.64, s: 0.4 },
+  // the experience rows run full width, so park him low-right under the last card
+  experience: { fx: 0.78, fy: -0.7, s: 0.38 },
   proof: { fx: 0.7, fy: 0.5, s: 0.42 },
   journey: { fx: 0.58, fy: -0.62, s: 0.4 },
   contact: { fx: 0.74, fy: -0.62, s: 0.5 },
@@ -33,6 +35,7 @@ const MEDIUM_ANCHORS: Record<SectionId, Anchor> = {
   hero: { fx: 0.55, fy: 0.5, s: 0.5 },
   about: { fx: 0.72, fy: -0.72, s: 0.34 },
   work: { fx: 0.72, fy: -0.72, s: 0.32 },
+  experience: { fx: 0.72, fy: -0.72, s: 0.32 },
   proof: { fx: 0.72, fy: -0.72, s: 0.34 },
   journey: { fx: 0.72, fy: -0.72, s: 0.34 },
   contact: { fx: 0.6, fy: -0.66, s: 0.42 },
@@ -43,6 +46,7 @@ const COMPACT_ANCHORS: Record<SectionId, Anchor> = {
   hero: { fx: 0.44, fy: 0.52, s: 0.5 },
   about: { fx: 0.66, fy: -0.68, s: 0.36 },
   work: { fx: 0.66, fy: -0.68, s: 0.32 },
+  experience: { fx: 0.66, fy: -0.68, s: 0.32 },
   proof: { fx: 0.66, fy: -0.68, s: 0.36 },
   journey: { fx: 0.66, fy: -0.68, s: 0.36 },
   contact: { fx: 0.5, fy: 0.5, s: 0.46 },
