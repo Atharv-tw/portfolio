@@ -25,7 +25,7 @@ export default function Contact() {
   return (
     <section id="contact" data-section="contact" className="section contact">
       <div className="container contact-inner">
-        <p className="mono-label">Next — 005</p>
+        <p className="mono-label">Next — 006</p>
         <RiseText as="h2" className="display-lg contact-heading" text="Let's build something." />
         <p className="body-lg contact-sub">
           Open to internships, freelance work, and ambitious ideas that need shipping.
