@@ -12,6 +12,7 @@ import Hero from './sections/Hero'
 import About from './sections/About'
 import Projects from './sections/Projects'
 import ProjectCase from './sections/ProjectCase'
+import Experience from './sections/Experience'
 import Dashboard from './sections/Dashboard'
 import Journey from './sections/Journey'
 import Contact from './sections/Contact'
@@ -42,6 +43,7 @@ export default function App() {
         <Hero />
         <About />
         <Projects />
+        <Experience />
         <Dashboard />
         <Journey />
         <Contact />
