@@ -96,7 +96,7 @@ export default function Journey() {
     <section id="journey" data-section="journey" className="section journey">
       <div className="container">
         <div className="section-head">
-          <ScrambleText as="p" className="mono-label" text="Trophy Cabinet — 004" />
+          <ScrambleText as="p" className="mono-label" text="Trophy Cabinet — 005" />
           <RiseText as="h2" className="display-lg" text="Achievements." />
           <div className="rule" />
         </div>
