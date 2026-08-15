@@ -141,67 +141,59 @@ export const projects: Project[] = [
   },
 ]
 
-export interface StatItem {
-  value: number
-  prefix?: string
-  suffix?: string
-  label: string
-  sub?: string
-}
-
-export const stats: StatItem[] = [
-  { value: 120, suffix: '+', label: 'APIs shipped', sub: 'healthcare · fintech · civic' },
-  { value: 5, label: 'Production-grade builds', sub: 'from idea to real users' },
-  { value: 8, label: 'AI agents, one system', sub: 'built in a 36h live hackathon' },
-  { value: 2, prefix: '#', label: 'of 200+ — IEEE T-Hacks 8.0', sub: '24-hour build, podium finish' },
-  { value: 100, suffix: '+', label: 'Positive reviews', sub: 'Finstar, from real teens' },
-  { value: 100, suffix: '+', label: 'Pre-registrations', sub: 'Codeswipe, before launch' },
-]
-
-/** Skills + the projects that use them — drives the tech matrix in Proof */
-export interface SkillNode {
+export interface Role {
   id: string
-  label: string
-  weight: number // 1..5 → node size
-  group: 'lang' | 'frontend' | 'backend' | 'data' | 'ai' | 'ops' | 'project'
+  company: string
+  /** shown next to the company when there is a public site worth naming */
+  site?: string
+  title: string
+  period: string
+  location: string
+  current?: boolean
+  bullets: string[]
+  tech: string[]
 }
 
-export const skillNodes: SkillNode[] = [
-  { id: 'python', label: 'Python', weight: 5, group: 'lang' },
-  { id: 'ts', label: 'TypeScript / JS', weight: 5, group: 'lang' },
-  { id: 'react', label: 'React', weight: 5, group: 'frontend' },
-  { id: 'nextjs', label: 'Next.js', weight: 3, group: 'frontend' },
-  { id: 'tailwind', label: 'Tailwind', weight: 3, group: 'frontend' },
-  { id: 'framer', label: 'Framer Motion', weight: 3, group: 'frontend' },
-  { id: 'node', label: 'Node.js', weight: 4, group: 'backend' },
-  { id: 'fastapi', label: 'FastAPI', weight: 4, group: 'backend' },
-  { id: 'postgres', label: 'Postgres', weight: 3, group: 'data' },
-  { id: 'mongodb', label: 'MongoDB', weight: 3, group: 'data' },
-  { id: 'firebase', label: 'Firebase', weight: 3, group: 'data' },
-  { id: 'supabase', label: 'Supabase', weight: 3, group: 'data' },
-  { id: 'rag', label: 'RAG', weight: 4, group: 'ai' },
-  { id: 'vectordb', label: 'Vector DBs', weight: 3, group: 'ai' },
-  { id: 'agents', label: 'AI Agents', weight: 5, group: 'ai' },
-  { id: 'docker', label: 'Docker', weight: 3, group: 'ops' },
-  { id: 'git', label: 'Git', weight: 3, group: 'ops' },
-  // project hubs
-  { id: 'onyx', label: 'Onyx', weight: 4, group: 'project' },
-  { id: 'finstar', label: 'Finstar', weight: 4, group: 'project' },
-  { id: 'health-companion', label: 'Health Companion', weight: 4, group: 'project' },
-  { id: 'codeswipe', label: 'Codeswipe', weight: 4, group: 'project' },
-  { id: 'healthvault', label: 'HealthVault', weight: 4, group: 'project' },
-]
-
-export const skillEdges: Array<[string, string]> = [
-  ['onyx', 'python'], ['onyx', 'fastapi'], ['onyx', 'agents'], ['onyx', 'docker'], ['onyx', 'git'],
-  ['finstar', 'react'], ['finstar', 'firebase'], ['finstar', 'supabase'], ['finstar', 'ts'],
-  ['health-companion', 'python'], ['health-companion', 'rag'], ['health-companion', 'vectordb'],
-  ['health-companion', 'agents'], ['health-companion', 'fastapi'],
-  ['codeswipe', 'react'], ['codeswipe', 'framer'], ['codeswipe', 'tailwind'], ['codeswipe', 'ts'],
-  ['healthvault', 'node'], ['healthvault', 'postgres'], ['healthvault', 'ts'],
-  // skill ↔ skill affinities to make the web feel organic
-  ['react', 'ts'], ['react', 'nextjs'], ['node', 'ts'], ['fastapi', 'python'],
-  ['rag', 'vectordb'], ['agents', 'rag'], ['mongodb', 'node'], ['git', 'docker'],
+export const experience: Role[] = [
+  {
+    id: 'nexera',
+    company: 'Nexera',
+    site: 'nexeraofficial.in',
+    title: 'Founding Chief Technical Officer',
+    period: 'Nov 2025 — Present',
+    location: 'Remote',
+    current: true,
+    bullets: [
+      'Led technical development of a production platform serving 2K+ daily users — owning architecture, infrastructure and the key product calls.',
+      'Engineered secure premium-content delivery with Redis-based concurrent-stream protection and access-control workflows.',
+      'Built a centralized admin panel with role-based access control for premium content management.',
+    ],
+    tech: ['Redis', 'Node.js', 'Docker', 'RBAC', 'Job Queues'],
+  },
+  {
+    id: 'foundu',
+    company: 'FoundU',
+    title: 'Full-Stack Intern',
+    period: 'Jun 2026 — Aug 2026',
+    location: 'Remote',
+    bullets: [
+      'Built the end-to-end founder onboarding experience across landing, authentication and profile completion, wiring frontend to backend workflows.',
+      'Developed the founder AI chat interface and integrated it with AI-powered workflows and founder profiles.',
+    ],
+    tech: ['Next.js', 'Node.js', 'AI Workflows', 'Auth'],
+  },
+  {
+    id: 'adxplorers',
+    company: 'Adxplorers',
+    title: 'Full-Stack AI Intern',
+    period: 'Jun 2026 — Jul 2026',
+    location: 'Remote',
+    bullets: [
+      'Designed and implemented evaluation datasets and test cases for multiple LLMs, scoring responses against defined quality and performance criteria.',
+      'Analyzed evaluation results to improve the reliability and quality of model outputs.',
+    ],
+    tech: ['Python', 'LLM Evals', 'Claude', 'Llama'],
+  },
 ]
 
 export interface Milestone {
@@ -233,6 +225,7 @@ export const sections = [
   { id: 'hero', label: 'Start' },
   { id: 'about', label: 'About' },
   { id: 'work', label: 'Work' },
+  { id: 'experience', label: 'Experience' },
   { id: 'proof', label: 'Proof' },
   { id: 'journey', label: 'Journey' },
   { id: 'contact', label: 'Contact' },
