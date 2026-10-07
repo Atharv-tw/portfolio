@@ -2,7 +2,7 @@ import { useEffect, useRef, type ReactNode } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { projects, type Project, type ProjectDeep } from '../content/resume'
 import Awaiting from '../components/Awaiting'
-import ProjectMedia from '../components/ProjectMedia'
+import ProjectMedia, { stageShot } from '../components/ProjectMedia'
 import { lockScroll, unlockScroll } from '../lib/smoothScroll'
 import { sfx } from '../audio/synth'
 import { useApp } from '../store'
@@ -85,9 +85,11 @@ function Deep({ section }: { section: ProjectDeep }) {
  * sees them.
  */
 function Shots({ project }: { project: Project }) {
-  const shots = project.media.shots ?? []
+  // the one already on the big stage is not repeated here
+  const onStage = stageShot(project)
+  const shots = (project.media.shots ?? []).filter((shot) => shot !== onStage)
   if (shots.length === 0) {
-    if (!import.meta.env.DEV || project.tier !== 'featured') return null
+    if (!import.meta.env.DEV || project.tier !== 'featured' || onStage) return null
     return (
       <section className="case-shots-block" data-awaiting>
         <h4 className="mono-label case-sub">Screens</h4>
