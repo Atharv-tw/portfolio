@@ -78,7 +78,7 @@ export default function Experience() {
                 <span className="xp-dot" aria-hidden="true" />
 
                 <div className="xp-meta">
-                  <span className="xp-period mono-label">{role.period}</span>
+                  {role.period && <span className="xp-period mono-label">{role.period}</span>}
                   <span className="xp-location mono-label">{role.location}</span>
                   {role.current && (
                     <span className="xp-live mono-label">
