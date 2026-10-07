@@ -12,8 +12,8 @@ export default function Hero() {
           <div className="hero-copy">
             <ScrambleText as="p" className="mono-label hero-kicker" text={person.role} delay={200} />
             <h1 className="display-xl hero-name">
-              <span className="hero-mask">
-                <span className="hero-line">Atharv</span>
+              <span className="hero-mask has-field">
+                <span className="hero-line hero-line-1">Atharv</span>
               </span>
               <span className="hero-mask">
                 <span className="hero-line hero-line-2">Tiwari</span>
