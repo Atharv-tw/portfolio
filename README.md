@@ -35,17 +35,28 @@ Everything written on the site comes from `src/content/`. Empty strings and empt
 **A project** (`projects` in `resume.ts`)
 
 - `tier: 'featured'` puts it among the big tiles, `'archive'` in "More work".
-- `statement` is the one-liner, `summary` the short explanation on the tile.
-- `overview`, `built`, `why`, `results`, `topics`, `links` fill the modal.
+- `statement` is the one-liner, `summary` the short explanation on the tile. Keep `summary` near 150 characters: it sits on the tile.
+- `context`, `overview`, `built`, `why`, `results`, `topics`, `links` fill the modal.
+- `deep` is the "Under the hood" part of the modal, for projects that need it (the ML ones). Each section takes any mix of `specs` (label → value rows), `points` and one `table`; `ours` marks the rows that are this project's own model.
 - `accent` and `stage` are the project's own colours. They are only ever used inside that project.
 
-**A demo video.** Put the file in `public/videos/` and point at it:
+**A demo video.** Give the project its YouTube id (the part after `youtu.be/`). It plays muted, on a loop, with a link to watch it with sound:
 
 ```ts
-media: { video: '/videos/onyx.mp4', poster: '/videos/onyx.jpg' }
+media: { youtube: 'uufrmJR8MEI' }
 ```
 
-Until a project has one, its modal shows the live visual, labelled as an illustration.
+A file of your own works too: put it in `public/videos/` and use `media: { video: '/videos/onyx.mp4', poster: '/videos/onyx.jpg' }`. Until a project has footage, its modal shows the live visual, labelled as an illustration.
+
+**Screenshots.** Put the files in `public/shots/<project id>/` and list them:
+
+```ts
+media: { youtube: '…', shots: [{ src: '/shots/onyx/scan.png', alt: 'A finished scan with its findings' }] }
+```
+
+Until a featured project has some, `npm run dev` shows three empty frames at the foot of its modal. A visitor never sees them.
+
+**Where the project facts come from.** Every number in `resume.ts` is taken from the project's own repository or deck: OKEANOS from its results report, NetWM from its README, `results.md` and architecture document, the others from their repos. When one of those changes, change it here.
 
 **The build log.** Add entries to `src/content/log.ts` (the file shows the shape). The LOG link appears in the nav as soon as there is one entry.
 
@@ -81,9 +92,9 @@ To change where the page gets dark, change the `data-env` values. To pin an elem
 
 ### TODO for Atharv
 
-- `src/content/resume.ts` → OKEANOS and NETWM: `overview`, `built`, `why`, `results`, `topics`, `links`.
+- `public/shots/<project id>/` → screenshots for the four featured projects, listed in `media.shots`.
+- `src/content/resume.ts` → Codeswipe and HealthVault still have no summary, overview or links.
 - `src/content/site.ts` → set `url` to the custom domain once it is live.
-- `public/videos/` → demo footage for the featured projects.
 - `src/content/log.ts` → first build log entries.
 - `public/og.jpg` still shows the old design; replace it with a capture of the new hero.
 - Refresh `public/resume.pdf` whenever the résumé changes.
