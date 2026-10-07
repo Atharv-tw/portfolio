@@ -1,6 +1,6 @@
-/* a long quiet beat after the four loud stages, before anything else speaks */
+/* a quiet beat after the four loud stages: this is the archive, and it looks like one */
 .archive {
-  padding-top: clamp(4.5rem, min(30vh, 20vw), 19rem);
+  padding-top: clamp(4.5rem, min(24vh, 16vw), 15rem);
   padding-bottom: clamp(2rem, 6vh, 4rem);
 }
 
@@ -8,14 +8,7 @@
   display: flex;
   align-items: baseline;
   gap: 1.4rem;
-  margin-bottom: clamp(1.6rem, 4vh, 2.6rem);
-}
-
-.archive-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.5fr) minmax(0, 0.85fr);
-  gap: clamp(1.5rem, 4vw, 4rem);
-  align-items: start;
+  margin-bottom: clamp(1.4rem, 3.4vh, 2.2rem);
 }
 
 .archive-list {
@@ -31,17 +24,18 @@
     'index title go'
     '.     kind  .';
   align-items: baseline;
-  gap: 0.5rem clamp(0.8rem, 2vw, 1.6rem);
-  padding: clamp(1.1rem, 2.4vh, 1.6rem) 0;
+  gap: 0.45rem clamp(0.8rem, 2vw, 1.6rem);
+  padding: clamp(1rem, 2.2vh, 1.45rem) 0;
   border-bottom: 1px solid var(--line);
   text-align: left;
-  transition: padding 0.4s var(--ease-out);
+  transition: padding 0.4s var(--ease-out), opacity 0.3s var(--ease-out);
 }
 
 .archive-index {
   grid-area: index;
   font-size: 0.62rem;
   color: var(--ink-faint);
+  transition: color 0.25s var(--ease-out);
 }
 
 .archive-title {
@@ -72,8 +66,18 @@
 
 .archive-go {
   grid-area: go;
-  color: var(--ink-faint);
-  transition: color 0.25s var(--ease-out), transform 0.4s var(--ease-out);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5em;
+  font-size: 0.62rem;
+  color: var(--ink-dim);
+  transition: color 0.25s var(--ease-out);
+}
+
+.archive-go span {
+  display: inline-block;
+  font-size: 1.5em;
+  transition: transform 0.4s var(--ease-out);
 }
 
 .archive-row:hover,
@@ -81,32 +85,63 @@
   padding-left: 0.7rem;
 }
 
+.archive-row:hover .archive-index,
+.archive-row:hover .archive-go,
 .archive-row.is-active .archive-index,
 .archive-row.is-active .archive-go {
   color: var(--project-accent);
 }
 
-.archive-row:hover .archive-go {
+.archive-row:hover .archive-go span {
   transform: translate(3px, -3px);
 }
 
-.archive-preview {
-  --project-accent: var(--ink);
-  --project-stage: #0c0c10;
-  aspect-ratio: 4 / 3.4;
-  border-radius: 18px;
-  border: 1px solid color-mix(in srgb, var(--project-accent) 26%, transparent);
-  background: color-mix(in srgb, #000 45%, var(--project-stage));
-  overflow: hidden;
+/* the row under the pointer is the only one speaking */
+@media (hover: hover) {
+  .archive-list:hover .archive-row:not(:hover) {
+    opacity: 0.45;
+  }
 }
 
-@media (max-width: 900px) {
-  .archive-grid {
-    grid-template-columns: 1fr;
-  }
-  .archive-preview {
-    display: none;
-  }
+/*
+ * The preview: small, and it belongs to the pointer, not to the layout. It is
+ * positioned from Archive.tsx (transform on this box), so the pop lives on the
+ * stage inside it.
+ */
+.archive-float {
+  --project-accent: var(--ink);
+  --project-stage: #0c0c10;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: var(--z-scene);
+  width: clamp(320px, 26vw, 400px);
+  aspect-ratio: 4 / 3.4;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.22s var(--ease-out);
+  will-change: transform;
+}
+
+.archive-float.is-on {
+  opacity: 1;
+}
+
+.archive-float-stage {
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--project-accent) 30%, transparent);
+  background: color-mix(in srgb, #000 45%, var(--project-stage));
+  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.55);
+  overflow: hidden;
+  transform: scale(0.94) rotate(-1.2deg);
+  transform-origin: 0 40%;
+  transition: transform 0.4s var(--ease-out);
+}
+
+.archive-float.is-on .archive-float-stage {
+  transform: none;
 }
 
 @media (max-width: 760px) {
@@ -115,5 +150,19 @@
   }
   .archive-head {
     margin-bottom: 1.4rem;
+  }
+  /* the word is in the way on a phone: the arrow says it */
+  .archive-go {
+    font-size: 0;
+  }
+  .archive-go span {
+    font-size: 0.95rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .archive-float-stage {
+    transform: none;
+    transition: none;
   }
 }
