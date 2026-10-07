@@ -7,18 +7,24 @@
   overflow: clip;
 }
 
+/*
+ * One grid for the whole hero: the name sets the left column, the bot's stage
+ * takes whatever is left. Both rows share those columns, so the facts in the
+ * foot sit directly under the bot instead of floating somewhere mid-page.
+ */
 .hero-inner {
-  display: flex;
-  flex-direction: column;
-  gap: clamp(1.4rem, 3.2vh, 2.4rem);
-}
-
-/* name on the left, the bot's stage takes whatever is left */
-.hero-top {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
+  column-gap: clamp(1rem, 3vw, 3rem);
+  row-gap: clamp(1.4rem, 3.2vh, 2.4rem);
+}
+
+.hero-top,
+.hero-foot {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
   align-items: end;
-  gap: clamp(1rem, 3vw, 3rem);
 }
 
 .hero-copy {
@@ -100,11 +106,7 @@
 }
 
 .hero-foot {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: clamp(1rem, 2vw, 4rem);
-  flex-wrap: wrap;
+  row-gap: 1.6rem;
   padding-top: clamp(1.2rem, 2.6vh, 2rem);
   border-top: 1px solid var(--line-strong);
 }
@@ -141,9 +143,13 @@
   color: var(--ink);
 }
 
+/* centred on the same column as his stage: a caption under the bot */
 .hero-proof {
+  justify-self: center;
   display: flex;
-  gap: clamp(1.4rem, 2.2vw, 3.4rem);
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem clamp(1.4rem, 3vw, 3.4rem);
 }
 
 .hero-proof-item {
@@ -157,7 +163,7 @@
 }
 
 .hero-proof-item dd {
-  font-size: clamp(1.9rem, 3.6vw, 3.2rem);
+  font-size: clamp(1.7rem, 2.7vw, 2.5rem);
   font-weight: 740;
   line-height: 0.95;
   letter-spacing: -0.025em;
@@ -170,10 +176,12 @@
     align-items: stretch;
   }
   .hero-inner {
-    justify-content: flex-end;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: end;
   }
-  .hero-top {
-    grid-template-columns: 1fr;
+  .hero-proof {
+    justify-self: start;
+    justify-content: flex-start;
   }
   .hero-stage {
     order: -1;
