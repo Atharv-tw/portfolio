@@ -1,31 +1,21 @@
-import { useLayoutEffect, useRef, type ReactNode } from 'react'
-import { projects, type Project } from '../content/resume'
+import { useLayoutEffect, useRef } from 'react'
+import { featured } from '../content/resume'
+import Awaiting from '../components/Awaiting'
 import RiseText from '../components/RiseText'
 import ScrambleText from '../components/ScrambleText'
-import Radar from '../components/motifs/Radar'
-import Arcade from '../components/motifs/Arcade'
-import Orbit from '../components/motifs/Orbit'
-import SwipeDeck from '../components/motifs/SwipeDeck'
-import Vault from '../components/motifs/Vault'
+import Motif from '../components/motifs/Motif'
 import { gsap, ScrollTrigger } from '../lib/gsap'
 import { usePrefersReducedMotion } from '../lib/hooks'
+import { botTookClick } from '../lib/scrollState'
 import { useApp } from '../store'
 import './Projects.css'
 
-function Motif({ project }: { project: Project }): ReactNode {
-  switch (project.motif) {
-    case 'radar':
-      return <Radar accent={project.accent} />
-    case 'arcade':
-      return <Arcade accent={project.accent} />
-    case 'orbit':
-      return <Orbit accent={project.accent} />
-    case 'deck':
-      return <SwipeDeck />
-    case 'vault':
-      return <Vault accent={project.accent} />
-  }
-}
+/**
+ * Where each stage sits on the paper → void ramp. The page crosses mid-grey
+ * here on purpose: these cards carry their own surface and ink, so nothing
+ * page-coloured has to stay legible while it happens.
+ */
+const ENV = [0.34, 0.5, 0.66, 0.8]
 
 export default function Projects() {
   const listRef = useRef<HTMLDivElement>(null)
@@ -46,14 +36,14 @@ export default function Projects() {
 
         // content reveal
         gsap.fromTo(
-          panel.querySelectorAll('.project-index, .project-kind, .project-kicker, .project-bullets li, .project-impact, .project-actions'),
+          panel.querySelectorAll('.project-top, .project-kind, .project-statement, .project-summary, .project-foot'),
           { y: 42, opacity: 0 },
           {
             y: 0,
             opacity: 1,
             duration: 0.8,
             ease: 'power3.out',
-            stagger: 0.06,
+            stagger: 0.07,
             scrollTrigger: { trigger: panel, start: 'top 62%', once: true },
           },
         )
@@ -83,55 +73,71 @@ export default function Projects() {
 
   return (
     <section id="work" data-section="work" className="section projects">
-      <div className="container">
+      <div className="container" data-env="0.24">
         <div className="section-head">
           <ScrambleText as="p" className="mono-label" text="Selected work — 002" />
-          <RiseText as="h2" className="display-lg" text="Things I've shipped." />
+          <RiseText as="h2" className="display-lg" text="The four I'd show you first." />
           <div className="rule" />
         </div>
       </div>
 
       <div className="projects-list" ref={listRef}>
-        {projects.map((p) => (
+        {featured.map((p, i) => (
           <article
             key={p.id}
             className="project-panel"
             data-project={p.id}
-            style={{ ['--project-accent' as string]: p.accent }}
+            data-env={ENV[i] ?? ENV[ENV.length - 1]}
+            style={{ ['--project-accent' as string]: p.accent, ['--project-stage' as string]: p.stage }}
           >
-            <div className="project-card">
-              <div className="container project-grid">
+            {/* the whole stage opens the project; the button is the same action for keyboards */}
+            <div
+              className="project-card env-dark"
+              data-cursor="open"
+              onClick={() => {
+                if (!botTookClick()) setCaseOpenId(p.id)
+              }}
+            >
+              <div className="project-grid">
                 <div className="project-meta">
-                  <span className="project-index" aria-hidden="true">
-                    {p.index}
-                  </span>
-                  <h3 className="display-md project-name">{p.name}</h3>
-                  <p className="mono-label project-kind">
-                    {p.kind} — {p.year}
-                  </p>
-                  <p className="body-lg project-kicker">{p.kicker}</p>
-                  <ul className="project-bullets">
-                    {p.bullets.map((b) => (
-                      <li key={b.slice(0, 24)}>{b}</li>
-                    ))}
-                  </ul>
-                  <p className="project-impact mono-label">{p.impact}</p>
-                  <div className="project-actions">
-                    <button className="btn project-open" onClick={() => setCaseOpenId(p.id)} data-cursor="open">
-                      Case study ↗
+                  <div className="project-top">
+                    <span className="project-index" aria-hidden="true">
+                      {p.index}
+                    </span>
+                    <h3 className="project-name">{p.name}</h3>
+                    <span className="project-tag mono-label">{p.building ? 'Building' : p.year}</span>
+                  </div>
+                  <p className="mono-label project-kind">{p.kind}</p>
+                  <p className="project-statement">{p.statement}</p>
+                  <p className="project-summary">{p.summary}</p>
+                  <div className="project-foot">
+                    <button
+                      className="btn project-open"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setCaseOpenId(p.id)
+                      }}
+                      aria-label={`Open ${p.name}`}
+                    >
+                      Open project ↗
                     </button>
-                    <div className="chip-row project-chips">
-                      {p.tech.slice(0, 4).map((t) => (
-                        <span key={t} className="chip">
-                          {t}
-                        </span>
-                      ))}
-                      {p.tech.length > 4 && <span className="chip">+{p.tech.length - 4}</span>}
-                    </div>
+                    {p.topics.length > 0 ? (
+                      <ul className="chip-row project-topics" aria-label="Topics">
+                        {p.topics.slice(0, 4).map((t) => (
+                          <li key={t} className="chip">
+                            {t}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <Awaiting what="topics" />
+                    )}
                   </div>
                 </div>
+
                 <div className="project-visual" data-motif={p.motif}>
                   <Motif project={p} />
+                  <div className="project-seat" data-bot-seat={p.id} aria-hidden="true" />
                 </div>
               </div>
             </div>
