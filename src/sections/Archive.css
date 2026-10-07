@@ -1,6 +1,6 @@
 /* a long quiet beat after the four loud stages, before anything else speaks */
 .archive {
-  padding-top: clamp(9rem, 30vh, 19rem);
+  padding-top: clamp(4.5rem, min(30vh, 20vw), 19rem);
   padding-bottom: clamp(2rem, 6vh, 4rem);
 }
 
@@ -106,5 +106,14 @@
   }
   .archive-preview {
     display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .archive {
+    padding-bottom: 1rem;
+  }
+  .archive-head {
+    margin-bottom: 1.4rem;
   }
 }
