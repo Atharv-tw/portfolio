@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { person, projects, sections } from '../content/resume'
-import { scrollToSection } from '../lib/smoothScroll'
+import { lockScroll, scrollToSection, unlockScroll } from '../lib/smoothScroll'
 import { sfx } from '../audio/synth'
 import { useApp } from '../store'
 import { hasLog } from './Nav'
@@ -123,12 +123,14 @@ export default function CommandPalette() {
   }, [setOpen])
 
   useEffect(() => {
-    if (open) {
-      setQuery('')
-      setCursor(0)
-      setFlash('')
-      window.setTimeout(() => inputRef.current?.focus(), 30)
-    }
+    if (!open) return
+    setQuery('')
+    setCursor(0)
+    setFlash('')
+    window.setTimeout(() => inputRef.current?.focus(), 30)
+    // freeze the page: the wheel belongs to the list while the palette is up
+    lockScroll()
+    return () => unlockScroll()
   }, [open])
 
   useEffect(() => {
@@ -141,9 +143,14 @@ export default function CommandPalette() {
   }, [cursor])
 
   const runAction = (a: Action) => {
-    a.run()
-    if (a.id !== 'copy-email') setOpen(false)
-    else window.setTimeout(() => setOpen(false), 900)
+    if (a.id === 'copy-email') {
+      a.run()
+      window.setTimeout(() => setOpen(false), 900)
+      return
+    }
+    setOpen(false)
+    // the page is frozen while the palette is up — let it thaw before anything scrolls it
+    window.setTimeout(a.run, 40)
   }
 
   const onInputKey = (e: React.KeyboardEvent) => {
