@@ -34,7 +34,7 @@ Everything written on the site comes from `src/content/`. Empty strings and empt
 
 **A project** (`projects` in `resume.ts`)
 
-- `tier: 'featured'` puts it among the big tiles, `'archive'` in "More work".
+- `tier: 'featured'` puts it among the big tiles, `'archive'` in "More work": plain rows, with a small preview of the project's visual that follows the pointer.
 - `statement` is the one-liner, `summary` the short explanation on the tile. Keep `summary` near 150 characters: it sits on the tile.
 - `context`, `overview`, `built`, `why`, `results`, `topics`, `links` fill the modal.
 - `deep` is the "Under the hood" part of the modal, for projects that need it (the ML ones). Each section takes any mix of `specs` (label → value rows), `points` and one `table`; `ours` marks the rows that are this project's own model.
@@ -86,6 +86,7 @@ To change where the page gets dark, change the `data-env` values. To pin an elem
 ## Nice to know
 
 - **Sound** unlocks on the preloader's *Enter* click (browser autoplay policy). Mute toggle in the nav persists in `localStorage`.
+- **Checking a looping visual:** in `npm run dev`, `?motion=reduced&t=6.5` freezes every project visual at that second of its loop.
 - **Reduced motion**: the site honors `prefers-reduced-motion` — no smooth scroll, static reveals, and the robot holds still instead of animating. Override with `?motion=full` or `?motion=reduced`.
 - **Easter eggs**: `Ctrl/⌘ + K` command palette (jump, open a project, copy email, bot tricks) · Konami code (↑↑↓↓←→←→BA) · click the bot · spam-click the bot · leave it alone for 30s.
 - The GitHub heatmap fetches live data client-side and silently falls back to the bundled snapshot when offline.
@@ -93,7 +94,6 @@ To change where the page gets dark, change the `data-env` values. To pin an elem
 ### TODO for Atharv
 
 - `public/shots/<project id>/` → screenshots for the four featured projects, listed in `media.shots`.
-- `src/content/resume.ts` → Codeswipe and HealthVault still have no summary, overview or links.
 - `src/content/site.ts` → set `url` to the custom domain once it is live.
 - `src/content/log.ts` → first build log entries.
 - `public/og.jpg` still shows the old design; replace it with a capture of the new hero.
