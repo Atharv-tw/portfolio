@@ -1,18 +1,30 @@
-:root {
-  /* palette — dark cinematic */
-  --bg: #07070b;
-  --bg-2: #0b0b13;
-  --surface: #10101a;
-  --surface-2: #16161f;
-  --ink: #f4f4f6;
-  --ink-dim: #a2a2b1;
-  --ink-faint: #62626f;
-  --line: rgba(244, 244, 246, 0.08);
-  --line-strong: rgba(244, 244, 246, 0.16);
+/*
+ * Ink tokens are registered so the light ↔ dark flip can transition as one
+ * property on :root instead of every element needing its own colour transition.
+ */
+@property --ink { syntax: '<color>'; inherits: true; initial-value: #0e0e11; }
+@property --ink-dim { syntax: '<color>'; inherits: true; initial-value: #4b4b54; }
+@property --ink-faint { syntax: '<color>'; inherits: true; initial-value: #84848c; }
+@property --line { syntax: '<color>'; inherits: true; initial-value: rgba(14, 14, 17, 0.1); }
+@property --line-strong { syntax: '<color>'; inherits: true; initial-value: rgba(14, 14, 17, 0.2); }
+@property --on-ink { syntax: '<color>'; inherits: true; initial-value: #f4f0e8; }
 
-  --accent: #00e5ff;
-  --accent-warm: #ffb114;
-  --accent-dim: rgba(0, 229, 255, 0.12);
+:root {
+  /* environment — the page runs paper → void with scroll.
+     --bg is written every scroll frame by lib/environment.ts */
+  --paper: #f4f0e8;
+  --void: #050506;
+  --bg: var(--paper);
+  --bg-2: color-mix(in srgb, var(--bg) 96%, var(--ink));
+  --surface: color-mix(in srgb, var(--bg) 92%, var(--ink));
+  --surface-2: color-mix(in srgb, var(--bg) 87%, var(--ink));
+  /* backing for things that float over the page (nav pills). It leans away from
+     the ink, so they keep their contrast even where the page passes mid-grey. */
+  --float: color-mix(in srgb, color-mix(in srgb, var(--bg) 55%, var(--on-ink)) 84%, transparent);
+
+  /* the bot's orange. Logo slash, live dots, selection and focus only —
+     project colour lives inside each project, never here. */
+  --accent: #ff6a17;
 
   /* type */
   --font-display: 'Bricolage Grotesque Variable', 'Segoe UI', system-ui, sans-serif;
@@ -36,4 +48,44 @@
   /* layout */
   --container: min(1440px, 92vw);
   --gutter: clamp(1rem, 4vw, 3rem);
+
+  transition: --ink 0.35s linear, --ink-dim 0.35s linear, --ink-faint 0.35s linear,
+    --line 0.35s linear, --line-strong 0.35s linear, --on-ink 0.35s linear;
+}
+
+/* ink for light ground. `.env-light` pins it on an element regardless of scroll. */
+:root,
+:root[data-env='light'],
+.env-light {
+  --ink: #0e0e11;
+  --ink-dim: #4b4b54;
+  --ink-faint: #84848c;
+  --line: rgba(14, 14, 17, 0.1);
+  --line-strong: rgba(14, 14, 17, 0.2);
+  --on-ink: #f4f0e8;
+  color-scheme: light;
+}
+
+/* ink for dark ground. `.env-dark` is what project stages and their modal use:
+   they carry their own surface, so they never follow the page. */
+:root[data-env='dark'],
+.env-dark {
+  --ink: #f4f4f6;
+  --ink-dim: #a9a9b6;
+  --ink-faint: #6b6b78;
+  --line: rgba(244, 244, 246, 0.09);
+  --line-strong: rgba(244, 244, 246, 0.18);
+  --on-ink: #07070b;
+  color-scheme: dark;
+}
+
+.env-light,
+.env-dark {
+  color: var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    transition: none;
+  }
 }
