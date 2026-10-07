@@ -339,8 +339,7 @@ export const experience: Role[] = [
     company: 'AAIRO',
     site: 'AI & Robotics Society of ADGIPS',
     title: 'Computational Intelligence Lead',
-    // TODO(Atharv): add the start date, e.g. 'Aug 2026 — Present'
-    period: '',
+    period: 'Sep 2026 — Present',
     location: 'ADGIPS',
     current: true,
     bullets: [
