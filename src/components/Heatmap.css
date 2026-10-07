@@ -32,7 +32,7 @@
 }
 
 .heatmap-badge.is-live {
-  color: #2ee6a8;
+  color: var(--ink-dim);
 }
 
 .heatmap-scroll {
@@ -66,7 +66,7 @@
   width: var(--cell);
   height: var(--cell);
   border-radius: 3px;
-  background: #14141d;
+  background: color-mix(in srgb, var(--ink) 7%, transparent);
   opacity: 0;
   transform: scale(0.5);
   transition: opacity 0.4s var(--ease-out), transform 0.4s var(--ease-out),
@@ -79,13 +79,10 @@
   transform: scale(1);
 }
 
-.heatmap-cell[data-level='1'] { background: #0b3b46; }
-.heatmap-cell[data-level='2'] { background: #0a6e80; }
-.heatmap-cell[data-level='3'] { background: #00b8cf; }
-.heatmap-cell[data-level='4'] {
-  background: var(--accent);
-  box-shadow: 0 0 8px rgba(0, 229, 255, 0.55);
-}
+.heatmap-cell[data-level='1'] { background: color-mix(in srgb, var(--ink) 24%, transparent); }
+.heatmap-cell[data-level='2'] { background: color-mix(in srgb, var(--ink) 46%, transparent); }
+.heatmap-cell[data-level='3'] { background: color-mix(in srgb, var(--ink) 72%, transparent); }
+.heatmap-cell[data-level='4'] { background: var(--ink); }
 
 .heatmap-cell:hover {
   box-shadow: 0 0 0 1.5px var(--ink);
@@ -97,7 +94,7 @@
 }
 
 .heatmap-link:hover {
-  color: var(--accent);
+  color: var(--ink);
 }
 
 .heatmap-tip {
