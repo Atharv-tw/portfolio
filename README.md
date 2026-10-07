@@ -54,7 +54,7 @@ A file of your own works too: put it in `public/videos/` and use `media: { video
 media: { youtube: '…', shots: [{ src: '/shots/onyx/scan.png', alt: 'A finished scan with its findings' }] }
 ```
 
-Until a featured project has some, `npm run dev` shows three empty frames at the foot of its modal. A visitor never sees them.
+When a project has no video, its first screenshot takes the big stage at the top of the modal; the rest are shown under "Screens". Until a featured project has some, `npm run dev` shows three empty frames at the foot of its modal. A visitor never sees them.
 
 **Where the project facts come from.** Every number in `resume.ts` is taken from the project's own repository or deck: OKEANOS from its results report, NetWM from its README, `results.md` and architecture document, the others from their repos. When one of those changes, change it here.
 
