@@ -1,0 +1,108 @@
+.archive {
+  padding-bottom: clamp(3rem, 8vh, 6rem);
+}
+
+.archive-head {
+  display: flex;
+  align-items: baseline;
+  gap: 1.4rem;
+  margin-bottom: clamp(1.6rem, 4vh, 2.6rem);
+}
+
+.archive-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 0.85fr);
+  gap: clamp(1.5rem, 4vw, 4rem);
+  align-items: start;
+}
+
+.archive-list {
+  list-style: none;
+  border-top: 1px solid var(--line-strong);
+}
+
+.archive-row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 2.4rem minmax(0, 1fr) auto;
+  grid-template-areas:
+    'index title go'
+    '.     kind  .';
+  align-items: baseline;
+  gap: 0.5rem clamp(0.8rem, 2vw, 1.6rem);
+  padding: clamp(1.1rem, 2.4vh, 1.6rem) 0;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  transition: padding 0.4s var(--ease-out);
+}
+
+.archive-index {
+  grid-area: index;
+  font-size: 0.62rem;
+  color: var(--ink-faint);
+}
+
+.archive-title {
+  grid-area: title;
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.3rem 1.1rem;
+}
+
+.archive-name {
+  font-size: clamp(1.3rem, 2.2vw, 1.9rem);
+  font-weight: 720;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: -0.005em;
+}
+
+.archive-statement {
+  color: var(--ink-dim);
+}
+
+.archive-kind {
+  grid-area: kind;
+  font-size: 0.62rem;
+  color: var(--ink-faint);
+}
+
+.archive-go {
+  grid-area: go;
+  color: var(--ink-faint);
+  transition: color 0.25s var(--ease-out), transform 0.4s var(--ease-out);
+}
+
+.archive-row:hover,
+.archive-row:focus-visible {
+  padding-left: 0.7rem;
+}
+
+.archive-row.is-active .archive-index,
+.archive-row.is-active .archive-go {
+  color: var(--project-accent);
+}
+
+.archive-row:hover .archive-go {
+  transform: translate(3px, -3px);
+}
+
+.archive-preview {
+  --project-accent: var(--ink);
+  --project-stage: #0c0c10;
+  aspect-ratio: 4 / 3.4;
+  border-radius: 18px;
+  border: 1px solid color-mix(in srgb, var(--project-accent) 26%, transparent);
+  background: color-mix(in srgb, #000 45%, var(--project-stage));
+  overflow: hidden;
+}
+
+@media (max-width: 900px) {
+  .archive-grid {
+    grid-template-columns: 1fr;
+  }
+  .archive-preview {
+    display: none;
+  }
+}
