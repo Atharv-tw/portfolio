@@ -90,17 +90,33 @@
   height: clamp(170px, 30svh, 270px);
 }
 
+/* tablet and down: he dribbles beside the heading, the tiles get the full width */
 @media (max-width: 900px) {
   .outside-grid {
-    grid-template-columns: minmax(0, 1fr) clamp(5.5rem, 26vw, 8rem);
+    grid-template-columns: minmax(0, 1fr) clamp(5.5rem, 22vw, 9rem);
+    align-items: end;
   }
   .outside-head {
-    grid-column: 1 / -1;
+    grid-area: 1 / 1;
+    align-self: end;
   }
+  .outside-seat {
+    grid-area: 1 / 2;
+    height: clamp(120px, 18svh, 190px);
+  }
+  .outside-list {
+    grid-area: 2 / 1 / 3 / -1;
+  }
+}
+
+@media (max-width: 560px) {
   .outside-list {
     grid-template-columns: 1fr;
   }
-  .outside-seat {
-    height: clamp(140px, 22svh, 200px);
+  .outside-tile {
+    min-height: 11.5rem;
+  }
+  .outside-note {
+    max-width: 15ch;
   }
 }
