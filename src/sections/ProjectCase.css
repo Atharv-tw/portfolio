@@ -136,6 +136,12 @@
 
 /* the media stage — demo footage when it exists, the live visual until then */
 .case-media {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.case-media-frame {
   position: relative;
   aspect-ratio: 16 / 9;
   max-height: 72svh;
@@ -155,12 +161,8 @@
 }
 
 .case-media-note {
-  position: absolute;
-  top: 0.9rem;
-  right: 1rem;
   font-size: 0.56rem;
   color: var(--ink-faint);
-  pointer-events: none;
 }
 
 .case-grid {
@@ -270,7 +272,7 @@
   .case-grid {
     grid-template-columns: 1fr;
   }
-  .case-media {
+  .case-media-frame {
     aspect-ratio: 4 / 3.4;
   }
   .case-close .mono-label {
