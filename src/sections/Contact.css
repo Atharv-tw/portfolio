@@ -15,8 +15,23 @@
 .contact-top {
   display: grid;
   grid-template-columns: minmax(0, 1fr) clamp(9rem, 26vw, 24rem);
+  grid-template-areas:
+    'label   label'
+    'heading seat';
   align-items: end;
-  gap: clamp(1rem, 3vw, 3rem);
+  gap: clamp(1.1rem, 2.8vh, 2rem) clamp(1rem, 3vw, 3rem);
+}
+
+.contact-label {
+  grid-area: label;
+}
+
+.contact-heading {
+  grid-area: heading;
+}
+
+.contact-seat {
+  grid-area: seat;
 }
 
 .contact-heading {
@@ -114,19 +129,37 @@
   font-size: 0.56rem;
 }
 
+/*
+ * Phones: no forced full screen. "LET'S BUILD" is the short line of the
+ * heading, so the bot stands in the space it leaves on the right instead of
+ * taking a row of his own — the whole section then fits one screen. Type and
+ * seat are both in vw here so that space is the same share of every phone.
+ */
 @media (max-width: 760px) {
   .contact {
-    padding-top: 4.8rem;
+    min-height: 0;
+    padding-top: 3.6rem;
   }
   .contact-top {
-    grid-template-columns: 1fr;
+    position: relative;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'label'
+      'heading';
+    row-gap: 0.9rem;
   }
-  /* small and tucked top-right, so the whole section still fits one phone screen */
+  .contact-heading {
+    font-size: max(2.4rem, 13vw);
+  }
   .contact-seat {
-    order: -1;
-    justify-self: end;
-    width: min(40vw, 11rem);
-    height: clamp(130px, 18svh, 190px);
-    margin-bottom: -0.6rem;
+    /* out of the grid: a placed absolute box would take its grid area as its frame */
+    grid-area: auto;
+    position: absolute;
+    right: 0;
+    /* soles on the first line's baseline */
+    bottom: max(2.47rem, 13.4vw);
+    /* capped so that on a small tablet his head stays inside this section */
+    width: min(24vw, 8rem);
+    height: min(30vw, 10rem);
   }
 }
