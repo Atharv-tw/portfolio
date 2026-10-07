@@ -378,7 +378,7 @@ export const trackRecord = {
     { title: 'Shloka Decode 2.0, NSUT', result: 'Winner', detail: '500+ participants · 8-hour hackathon', lead: false },
     { title: 'IEEE T-Hacks 8.0', result: 'Winners', detail: '800+ participants · 24-hour hackathon', lead: false },
   ],
-  also: ["VibeForge'26 — Winner", 'Bytecode — 4th position', 'B-Plan e-Summit 2025, DTU — Top 10'],
+  also: ["VibeForge'26 — Winner", 'Bytecode, HackWithBVP 7.0 — 4th position', 'B-Plan e-Summit 2025, DTU — Top 10'],
 } as const
 
 export interface OutsideItem {
