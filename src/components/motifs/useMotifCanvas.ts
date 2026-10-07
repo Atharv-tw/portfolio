@@ -13,8 +13,15 @@ export interface MotifCtx {
 /**
  * Shared plumbing for the 2D-canvas project motifs: DPR-aware sizing,
  * pause-when-offscreen, pointer state, reduced-motion single frame.
+ *
+ * `stillAt` is the moment (seconds into the loop) shown when motion is reduced,
+ * so a looping story can freeze on its most telling frame instead of its first.
  */
-export function useMotifCanvas(draw: (m: MotifCtx) => void, onTap?: (x: number, y: number) => void) {
+export function useMotifCanvas(
+  draw: (m: MotifCtx) => void,
+  onTap?: (x: number, y: number) => void,
+  stillAt = 0,
+) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const reduced = usePrefersReducedMotion()
 
@@ -49,7 +56,7 @@ export function useMotifCanvas(draw: (m: MotifCtx) => void, onTap?: (x: number, 
       const now = performance.now()
       const dt = Math.min(0.05, (now - last) / 1000)
       last = now
-      t += dt
+      t = single ? stillAt : t + dt
       c.clearRect(0, 0, w, h)
       draw({ c, w, h, t, dt, pointer })
       if (!single && running) raf = requestAnimationFrame(() => frame())
@@ -108,7 +115,7 @@ export function useMotifCanvas(draw: (m: MotifCtx) => void, onTap?: (x: number, 
       canvas.removeEventListener('pointerup', onUp)
       canvas.removeEventListener('pointerleave', onLeave)
     }
-  }, [draw, onTap, reduced])
+  }, [draw, onTap, reduced, stillAt])
 
   return canvasRef
 }
