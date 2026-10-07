@@ -7,6 +7,9 @@
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.25s ease;
+  /* white + difference: reads on paper, on void, and on a dark project stage
+     sitting on a light page, without knowing which one it is over */
+  mix-blend-mode: difference;
 }
 
 .cursor-dot.is-visible,
@@ -22,7 +25,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--accent);
+  background: #fff;
 }
 
 .cursor-ring::before {
@@ -33,15 +36,15 @@
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  border: 1.5px solid rgba(244, 244, 246, 0.55);
+  border: 1.5px solid rgba(255, 255, 255, 0.7);
   transition: transform 0.3s var(--ease-out), border-color 0.3s var(--ease-out),
     background 0.3s var(--ease-out);
 }
 
 .cursor-ring.is-hover::before {
   transform: scale(1.65);
-  border-color: var(--accent);
-  background: rgba(0, 229, 255, 0.07);
+  border-color: #fff;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .cursor-ring.is-down::before {
@@ -55,7 +58,7 @@
   font-size: 0.55rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: #fff;
   white-space: nowrap;
 }
 
