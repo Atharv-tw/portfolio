@@ -240,6 +240,8 @@ export default function ProjectCase() {
   useEffect(() => {
     if (!open) return
     returnFocus.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
+    // opened with the mouse: its trigger is focused, but shows no focus ring
+    const byPointer = returnFocus.current ? !returnFocus.current.matches(':focus-visible') : false
     lockScroll()
     sfx.whoosh()
 
@@ -267,7 +269,15 @@ export default function ProjectCase() {
     return () => {
       window.removeEventListener('keydown', onKey)
       unlockScroll()
-      returnFocus.current?.focus({ preventScroll: true })
+      const back = returnFocus.current
+      if (!back) return
+      // Focus goes back where it was. Closing with Esc would make the browser ring
+      // that element even for someone who has only used the mouse, so keep it quiet for them.
+      if (byPointer) {
+        back.setAttribute('data-quiet-focus', '')
+        back.addEventListener('blur', () => back.removeAttribute('data-quiet-focus'), { once: true })
+      }
+      back.focus({ preventScroll: true })
     }
   }, [open, setCaseOpenId])
 
