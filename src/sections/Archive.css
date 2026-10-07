@@ -1,5 +1,7 @@
+/* a long quiet beat after the four loud stages, before anything else speaks */
 .archive {
-  padding-bottom: clamp(3rem, 8vh, 6rem);
+  padding-top: clamp(9rem, 30vh, 19rem);
+  padding-bottom: clamp(2rem, 6vh, 4rem);
 }
 
 .archive-head {
