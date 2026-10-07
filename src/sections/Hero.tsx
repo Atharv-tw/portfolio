@@ -52,8 +52,8 @@ export default function Hero() {
           <dl className="hero-proof">
             {person.heroProof.map((f) => (
               <div key={f.label} className="hero-proof-item">
-                <dt className="mono-label">{f.label}</dt>
                 <dd>{f.value}</dd>
+                <dt className="mono-label">{f.label}</dt>
               </div>
             ))}
           </dl>
