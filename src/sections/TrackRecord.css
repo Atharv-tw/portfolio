@@ -1,6 +1,6 @@
 .track-stats {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   border-top: 1px solid var(--line-strong);
   border-bottom: 1px solid var(--line);
 }
@@ -41,7 +41,7 @@
 .track-highlights {
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 1fr);
   gap: clamp(0.8rem, 1.6vw, 1.4rem);
 }
 
@@ -76,6 +76,26 @@
   font-size: 0.9rem;
 }
 
+/* the one result that gets the weight: inverted, so it is found first */
+.track-highlight.is-lead {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--on-ink);
+}
+
+.track-highlight.is-lead .track-result {
+  background: var(--on-ink);
+  color: var(--ink);
+}
+
+.track-highlight.is-lead .track-title {
+  font-size: clamp(1.3rem, 2.3vw, 1.9rem);
+}
+
+.track-highlight.is-lead .track-detail {
+  color: color-mix(in srgb, var(--on-ink) 72%, var(--ink));
+}
+
 .track-also {
   display: flex;
   flex-wrap: wrap;
@@ -106,16 +126,6 @@
 }
 
 @media (max-width: 860px) {
-  .track-stats {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .track-stat:nth-child(odd) {
-    border-left: 0;
-    padding-left: 0;
-  }
-  .track-stat:nth-child(n + 3) {
-    border-top: 1px solid var(--line);
-  }
   .track-highlights {
     grid-template-columns: 1fr;
   }
