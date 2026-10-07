@@ -25,9 +25,8 @@ export default function Contact() {
   return (
     <section id="contact" data-section="contact" data-env="1" className="section contact">
       <div className="container contact-inner">
-        <p className="mono-label">Next — 005</p>
-
         <div className="contact-top">
+          <p className="mono-label contact-label">Next — 005</p>
           <RiseText as="h2" className="contact-heading" text="Let's build something." />
           <div className="contact-seat" data-bot-seat="contact" aria-hidden="true" />
         </div>
