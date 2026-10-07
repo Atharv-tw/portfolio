@@ -23,7 +23,7 @@ npm run preview    # serve the production build
 | Design tokens (ink, accent, type, z-layers) | `src/styles/tokens.css` |
 | The paper → void background | `src/lib/environment.ts` |
 | The robot | `src/three/Mascot/` |
-| Project visuals (radar, depth, forecast, orbit, arcade, swipe deck, vault) | `src/components/motifs/` |
+| Project visuals (radar, depth, forecast, orbit, arcade, swipe deck, vault, sequence, civic) | `src/components/motifs/` |
 | Project modal | `src/sections/ProjectCase.tsx`, `src/components/ProjectMedia.tsx` |
 | Sound synth (click/chirp/boing/…) | `src/audio/synth.ts` |
 | GitHub heatmap (live fetch + fallback) | `src/components/Heatmap.tsx`, `public/github-fallback.json` |
