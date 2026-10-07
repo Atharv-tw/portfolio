@@ -385,30 +385,19 @@ export interface OutsideItem {
   id: string
   label: string
   note: string
-  /** optional short lists under the note, e.g. what is on repeat */
-  lists?: { heading: string; items: string[] }[]
 }
 
-/** Outside the terminal: the person, not the engineer. Keep it to three. */
+/** Outside the terminal: the person, not the engineer. Keep it short. */
 export const outside: OutsideItem[] = [
   {
     id: 'taekwondo',
     label: 'Taekwondo',
-    note: 'Three-time international medalist for India, with multiple national and state medals.',
+    note: 'Three-time international medalist for India.',
   },
   {
     id: 'basketball',
     label: 'Basketball',
-    note: 'District-level player. Still hooping every weekend.',
-  },
-  {
-    id: 'music',
-    label: 'Music',
-    note: 'Drake and The Weeknd, on repeat.',
-    lists: [
-      { heading: 'The Weeknd', items: ['After Hours', 'Reflections Laughing', 'Open Hearts', 'Take My Breath'] },
-      { heading: 'Drake', items: ["Child's Play", 'Passionfruit', 'Know Yourself'] },
-    ],
+    note: 'Hooping every weekend.',
   },
 ]
 
