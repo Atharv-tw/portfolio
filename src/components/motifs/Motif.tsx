@@ -1,10 +1,12 @@
 import type { ReactNode } from 'react'
 import type { Project } from '../../content/resume'
 import Arcade from './Arcade'
+import Civic from './Civic'
 import Depth from './Depth'
 import Forecast from './Forecast'
 import Orbit from './Orbit'
 import Radar from './Radar'
+import Sequence from './Sequence'
 import SwipeDeck from './SwipeDeck'
 import Vault from './Vault'
 
@@ -25,5 +27,9 @@ export default function Motif({ project }: { project: Project }): ReactNode {
       return <SwipeDeck accent={project.accent} />
     case 'vault':
       return <Vault accent={project.accent} />
+    case 'sequence':
+      return <Sequence accent={project.accent} />
+    case 'civic':
+      return <Civic accent={project.accent} />
   }
 }
