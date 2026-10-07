@@ -1,6 +1,6 @@
-/* arrives after a wide gap, and opens on the role itself instead of a title */
+/* follows the archive at an ordinary distance, and opens on the role itself instead of a title */
 .experience {
-  padding-top: clamp(4.5rem, min(34vh, 22vw), 21rem);
+  padding-top: clamp(3.5rem, 10vh, 6.5rem);
 }
 
 .xp-timeline {
