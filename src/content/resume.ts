@@ -16,8 +16,8 @@ export const person = {
   /** the facts under the name — four at most */
   heroProof: [
     { value: '3K+', label: 'daily users on Nexera' },
-    { value: 'Founding CTO', label: '@ Nexera' },
-    { value: 'AI / ML', label: 'current focus' },
+    { value: 'CTO', label: '@ Nexera' },
+    { value: '5×', label: 'hackathon podiums' },
   ],
   location: 'New Delhi, India',
   timezone: 'Asia/Kolkata',
