@@ -17,12 +17,6 @@ export default function Outside() {
               <span className="mono-label outside-index">0{i + 1}</span>
               <span className="outside-label">{item.label}</span>
               {item.note && <span className="outside-note">{item.note}</span>}
-              {item.lists?.map((l) => (
-                <span key={l.heading} className="outside-tracks">
-                  <span className="mono-label">{l.heading}</span>
-                  {l.items.join(' · ')}
-                </span>
-              ))}
             </li>
           ))}
         </ul>
