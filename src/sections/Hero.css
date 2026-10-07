@@ -46,8 +46,50 @@
 }
 
 .hero-mask {
+  position: relative;
   display: block;
-  overflow: clip;
+  /* clip only up and down: the line rises through it, the field bleeds sideways */
+  overflow-x: visible;
+  overflow-y: clip;
+}
+
+/*
+ * The first name sits on a field of the bot's orange. It is cut to the
+ * letters, not to the line: the insets are this typeface's own metrics
+ * (cap height 0.667em, baseline 0.783em into a 0.92em line), plus 0.07em of
+ * breathing room, so it hugs the caps at every size. It sweeps in from the
+ * left as the name rises, then stays.
+ */
+.hero-mask.has-field {
+  align-self: flex-start;
+}
+
+.hero-mask.has-field::before {
+  content: '';
+  position: absolute;
+  top: 0.047em;
+  bottom: 0.067em;
+  left: -0.07em;
+  right: -0.09em;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.85s var(--ease-inout) 0.08s;
+}
+
+.app.is-entered .hero-mask.has-field::before {
+  transform: scaleX(1);
+}
+
+.hero-line-1 {
+  position: relative;
+  color: #0e0e11;
+}
+
+/* selecting the name must still show on its own colour */
+.hero-line-1::selection {
+  background: #0e0e11;
+  color: var(--paper);
 }
 
 .hero-line {
@@ -96,6 +138,10 @@
   .hero-foot {
     transform: none;
     opacity: 1;
+    transition: none;
+  }
+  .hero-mask.has-field::before {
+    transform: none;
     transition: none;
   }
 }
