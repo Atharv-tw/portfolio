@@ -18,7 +18,6 @@ export const person = {
     { value: '3K+', label: 'daily users on Nexera' },
     { value: 'Founding CTO', label: '@ Nexera' },
     { value: 'AI / ML', label: 'current focus' },
-    { value: '5×', label: 'hackathon podiums' },
   ],
   location: 'New Delhi, India',
   timezone: 'Asia/Kolkata',
