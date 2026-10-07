@@ -9,15 +9,16 @@
 export const person = {
   name: 'Atharv Tiwari',
   firstName: 'Atharv',
-  role: 'Full-Stack Engineer × AI Builder',
+  role: 'AI / ML Engineer × Product Builder',
   tagline: 'I build AI systems that ship.',
   heroSub:
     'I build real systems and put them in front of real users. AI, backend and product, end to end.',
-  /** the three facts under the name — keep it to three */
+  /** the facts under the name — four at most */
   heroProof: [
-    { value: '2K+', label: 'daily users' },
+    { value: '3K+', label: 'daily users on Nexera' },
+    { value: 'Founding CTO', label: '@ Nexera' },
+    { value: 'AI / ML', label: 'current focus' },
     { value: '5×', label: 'hackathon podiums' },
-    { value: 'CTO', label: '@ Nexera' },
   ],
   location: 'New Delhi, India',
   timezone: 'Asia/Kolkata',
@@ -27,7 +28,7 @@ export const person = {
   resumePdf: '/resume.pdf',
   aboutLead: "I'm Atharv. I turn ideas into things people actually use.",
   about: [
-    'Right now that means being CTO at Nexera, where I own the technical and product calls for a platform 2K+ people use every day. Around it I have built for healthcare, civic governance and fintech.',
+    'Right now that means being CTO at Nexera, where I own the technical and product calls for a platform 3K+ people use every day. Around it I have built for healthcare, civic governance and fintech.',
     'Most of my work sits where AI meets backend and product: agents that need guardrails, systems that have to stay up, interfaces someone has to understand at a glance. I am a third-year CSE student in Delhi, and I would rather ship something real over a weekend than talk about it for a month.',
   ],
   aboutFacts: [
@@ -325,10 +326,10 @@ export const experience: Role[] = [
     period: 'Nov 2025 — Present',
     location: 'Remote',
     current: true,
-    headline: { value: '2K+', label: 'daily users on the platform I own' },
+    headline: { value: '3K+', label: 'daily users on the platform I own' },
     scope: ['Architecture', 'Infrastructure', 'Product decisions', 'Secure content delivery', 'Admin & RBAC'],
     bullets: [
-      'Led technical development of a production platform serving 2K+ daily users — owning architecture, infrastructure and the key product calls.',
+      'Led technical development of a production platform serving 3K+ daily users — owning architecture, infrastructure and the key product calls.',
       'Engineered secure premium-content delivery with Redis-based concurrent-stream protection and access-control workflows.',
       'Built a centralized admin panel with role-based access control for premium content management.',
     ],
@@ -363,7 +364,7 @@ export const experience: Role[] = [
 /** Compact proof. Not a trophy cabinet. */
 export const trackRecord = {
   stats: [
-    { value: 2, suffix: 'K+', label: 'daily users on Nexera' },
+    { value: 3, suffix: 'K+', label: 'daily users on Nexera' },
     { value: 5, suffix: '×', label: 'hackathon podiums' },
   ],
   role: { value: 'CTO', label: 'Nexera, since Nov 2025' },
