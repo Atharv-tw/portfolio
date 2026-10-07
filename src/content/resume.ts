@@ -528,7 +528,7 @@ export const projects: Project[] = [
       live: 'https://outreach.upgradeyourselfonline.com',
       caseStudy: '',
     },
-    media: {},
+    media: { youtube: 'ZFR7xbYfnz0' },
   },
   {
     id: 'civic-setu',
