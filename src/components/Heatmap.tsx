@@ -17,6 +17,7 @@ export default function Heatmap() {
   const [live, setLive] = useState(false)
   const [tip, setTip] = useState<Tooltip | null>(null)
   const hostRef = useRef<HTMLDivElement>(null)
+  const scrollRef = useRef<HTMLDivElement>(null)
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -73,6 +74,12 @@ export default function Heatmap() {
     return { weeks, total, monthMarks: monthMarks.slice(1) } // drop partial first label
   }, [days])
 
+  // on a narrow screen the year does not fit: start at this month, not last year's
+  useEffect(() => {
+    const el = scrollRef.current
+    if (el && days) el.scrollLeft = el.scrollWidth
+  }, [days])
+
   const onOver = (e: React.PointerEvent) => {
     const t = e.target
     if (!(t instanceof HTMLElement) || !t.dataset.date) {
@@ -105,7 +112,7 @@ export default function Heatmap() {
         </span>
       </div>
 
-      <div className="heatmap-scroll">
+      <div className="heatmap-scroll" ref={scrollRef}>
         <div className="heatmap-months mono-label" aria-hidden="true">
           {monthMarks.map((m) => (
             <span key={`${m.label}-${m.week}`} style={{ gridColumnStart: m.week + 1 }}>
