@@ -19,16 +19,17 @@
 .outside-list {
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0 clamp(1.2rem, 2.6vw, 2.6rem);
+  align-self: start;
   border-top: 1px solid var(--line-strong);
 }
 
 .outside-item {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-  padding: 1.1rem 1.2rem 1.2rem 0;
-  border-bottom: 1px solid var(--line);
+  gap: 0.5rem;
+  padding: 1.1rem 0 1.2rem;
 }
 
 .outside-index {
@@ -45,6 +46,23 @@
 .outside-note {
   color: var(--ink-dim);
   font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+/* what is on repeat */
+.outside-tracks {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+  font-size: 0.86rem;
+  line-height: 1.5;
+  color: var(--ink-dim);
+}
+
+.outside-tracks .mono-label {
+  font-size: 0.58rem;
+  color: var(--ink-faint);
 }
 
 .outside-seat {
@@ -60,6 +78,9 @@
   }
   .outside-list {
     grid-template-columns: 1fr;
+  }
+  .outside-item {
+    border-bottom: 1px solid var(--line);
   }
   .outside-seat {
     height: clamp(140px, 22svh, 200px);
