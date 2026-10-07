@@ -71,7 +71,6 @@ To change where the page gets dark, change the `data-env` values. To pin an elem
 ### TODO for Atharv
 
 - `src/content/resume.ts` → OKEANOS and NETWM: `overview`, `built`, `why`, `results`, `topics`, `links`.
-- `src/content/resume.ts` → `trackRecord.stats`: confirm the hackathon podium count. `outside`: a line each for Taekwondo and Basketball.
 - `public/videos/` → demo footage for the featured projects.
 - `src/content/log.ts` → first build log entries.
 - `public/og.jpg` still shows the old design; replace it with a capture of the new hero.
