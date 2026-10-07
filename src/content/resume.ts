@@ -1,46 +1,89 @@
 /**
  * Single source of truth for everything written on the site.
  * Edit here → whole site updates.
+ *
+ * Empty strings and empty arrays are fine everywhere: the UI hides what has no
+ * content (in `npm run dev` it outlines the gap so you can see what is missing).
  */
 
 export const person = {
   name: 'Atharv Tiwari',
   firstName: 'Atharv',
-  role: 'Full-Stack Developer × AI Engineer',
+  role: 'Full-Stack Engineer × AI Builder',
   tagline: 'I build AI systems that ship.',
   heroSub:
-    '120+ APIs shipped across healthcare, fintech & civic tech. Currently CTO @ Nexera. Second-year CSE, Delhi.',
+    'I build real systems and put them in front of real users. AI, backend and product, end to end.',
+  /** the three facts under the name — keep it to three */
+  heroProof: [
+    { value: '2K+', label: 'daily users' },
+    { value: '120+', label: 'APIs shipped' },
+    { value: 'CTO', label: '@ Nexera' },
+  ],
   location: 'New Delhi, India',
   timezone: 'Asia/Kolkata',
   email: 'tiwariatharv01042005@gmail.com',
   github: { label: 'GitHub', handle: 'Atharv-tw', url: 'https://github.com/Atharv-tw' },
   linkedin: { label: 'LinkedIn', handle: 'atharvtw', url: 'https://www.linkedin.com/in/atharvtw' },
   resumePdf: '/resume.pdf',
+  aboutLead: "I'm Atharv. I turn ideas into things people actually use.",
   about: [
-    'Second-year CSE student at GGSIPU, Delhi — and CTO at Nexera, where I own technical and product decisions end to end.',
-    'I have shipped production systems in healthcare, civic governance and fintech: zero-knowledge encryption, multi-agent AI platforms, and 120+ APIs that real users depend on.',
-    'I lead teams, write about what I build, and turn hackathon weekends into working products.',
+    'Right now that means being CTO at Nexera, where I own the technical and product calls for a platform 2K+ people use every day. Around it I have built for healthcare, civic governance and fintech.',
+    'Most of my work sits where AI meets backend and product: agents that need guardrails, systems that have to stay up, interfaces someone has to understand at a glance. I am a second-year CSE student in Delhi, and I would rather ship something real over a weekend than talk about it for a month.',
   ],
+  aboutFacts: [
+    { label: 'Based in', value: 'New Delhi, India' },
+    { label: 'Currently', value: 'CTO @ Nexera' },
+    { label: 'Studying', value: 'CSE, GGSIPU — second year' },
+  ],
+  openTo: ['Internships', 'Freelance work', 'Ambitious ideas', 'Collaborations'],
 } as const
 
-export type ProjectMotif = 'radar' | 'arcade' | 'orbit' | 'deck' | 'vault'
+export type ProjectMotif = 'radar' | 'depth' | 'forecast' | 'orbit' | 'arcade' | 'deck' | 'vault'
+
+export interface ProjectResult {
+  /** the big part: "~70%", "8", "36 h" */
+  value: string
+  label: string
+}
 
 export interface Project {
   id: string
   index: string
   name: string
-  /** compact label for tight spots like the tech matrix columns */
-  short: string
+  /** category line under the name */
   kind: string
+  /** leave '' while a project has no public date */
   year: string
+  /** featured = one of the four big tiles; archive = the "more work" list */
+  tier: 'featured' | 'archive'
+  /** shows a BUILDING tag instead of the year */
+  building?: boolean
+  /** the project's own colour — only ever used inside its tile, visual and modal */
   accent: string
+  /** deep tinted surface the tile and modal sit on */
+  stage: string
   motif: ProjectMotif
-  kicker: string
-  bullets: string[]
-  impact: string
-  tech: string[]
-  /** TODO(Atharv): drop repo/live URLs here when ready — UI hides empty ones */
-  links: { repo: string; live: string }
+  /** the one line that makes someone lean in */
+  statement: string
+  /** one or two plain sentences: what it actually does */
+  summary: string
+  /** modal — the problem and what the project does */
+  overview: string[]
+  /** modal — what I built */
+  built: string[]
+  /** modal — why it matters */
+  why: string
+  /** modal — real numbers only */
+  results: ProjectResult[]
+  /** tile shows the first four */
+  topics: string[]
+  links: { repo: string; live: string; caseStudy: string }
+  /**
+   * Demo footage. Drop the file in `public/videos/` and point at it:
+   *   media: { video: '/videos/onyx.mp4', poster: '/videos/onyx.jpg' }
+   * Until then the modal shows the live visual in its place.
+   */
+  media: { video?: string; poster?: string }
 }
 
 export const projects: Project[] = [
@@ -48,98 +91,214 @@ export const projects: Project[] = [
     id: 'onyx',
     index: '01',
     name: 'Onyx',
-    short: 'Onyx',
-    kind: 'AI-powered DAST security platform',
+    kind: 'AI-powered cybersecurity',
     year: '2025',
-    accent: '#ff4655',
+    tier: 'featured',
+    accent: '#f2364b',
+    stage: '#17060a',
     motif: 'radar',
-    kicker: 'Finds vulnerabilities. Then ships the fix.',
-    bullets: [
+    statement: 'Finds vulnerabilities. Then ships the fix.',
+    summary:
+      'Scans a web application, uses AI to work out which findings are real, and opens a pull request with the fix.',
+    overview: [
+      'Onyx checks the security of a web application end to end. It scans, works out which findings actually matter, and raises the pull request that fixes them.',
+    ],
+    built: [
       'High-concurrency scanning engine integrating Subfinder, Nmap and Nuclei with custom logical probes for SQLi, SSRF and IDOR.',
       'AI triage layer (Claude / Llama) that reads raw scanner output and deduplicates findings with 90%+ accuracy.',
       'Automated remediation via GitHub App — opens verified security pull requests on the affected repo.',
     ],
-    impact: '~70% reduction in Mean Time To Repair · showcased in hackathons, tested by judges',
-    tech: ['Python', 'FastAPI', 'Nuclei', 'Nmap', 'Claude', 'GitHub API', 'Docker'],
-    links: { repo: '', live: '' },
+    why: 'The time between finding a vulnerability and fixing it is where the risk lives. Onyx takes a finding all the way to a reviewed pull request instead of stopping at a report.',
+    results: [
+      { value: '~70%', label: 'reduction in mean time to repair' },
+      { value: '90%+', label: 'accuracy deduplicating scanner findings' },
+    ],
+    topics: ['Python', 'FastAPI', 'Nuclei', 'Nmap', 'Claude', 'GitHub API', 'Docker'],
+    links: { repo: 'https://github.com/Atharv-tw/Onyx', live: '', caseStudy: '' },
+    media: {},
   },
   {
-    id: 'finstar',
+    id: 'okeanos',
     index: '02',
-    name: 'Finstar',
-    short: 'Finstar',
-    kind: 'Gamified finance education for teens',
-    year: '2025',
-    accent: '#ffb114',
-    motif: 'arcade',
-    kicker: 'Finance education Gen-Z teens actually finish.',
-    bullets: [
-      'Four interactive game modules — Life Swipe, Budget Hero, Market Explorer, Quiz Battle — with emotion-aware scoring wired into the learning path.',
-      'Robust Firebase database backed by Supabase edge functions for data integrity and atomic operations.',
-      'AI-backed market simulation that reacts like a real (chaotic) market.',
-    ],
-    impact: '100+ positive reviews from real users',
-    tech: ['React', 'Firebase', 'Supabase', 'TypeScript', 'AI simulation'],
-    links: { repo: '', live: '' },
+    name: 'OKEANOS',
+    kind: 'Satellite ocean intelligence',
+    year: '',
+    tier: 'featured',
+    building: true,
+    accent: '#3fa7c4',
+    stage: '#04131b',
+    motif: 'depth',
+    statement: 'See beneath the ocean surface from space.',
+    summary:
+      'Reconstructs the temperature beneath the ocean surface from what satellites can observe above it.',
+    // TODO(Atharv): everything below is yours to fill — nothing here is invented.
+    overview: [],
+    built: [],
+    why: '',
+    results: [],
+    topics: [],
+    links: { repo: '', live: '', caseStudy: '' },
+    media: {},
+  },
+  {
+    id: 'netwm',
+    index: '03',
+    name: 'NETWM',
+    kind: 'Network attack forecasting',
+    year: '',
+    tier: 'featured',
+    building: true,
+    accent: '#f5a524',
+    stage: '#171003',
+    motif: 'forecast',
+    statement: 'Predict the next move before the attacker makes it.',
+    summary:
+      'A world model for networks: it reads the state of a network and forecasts how an attack could move through it next, instead of detecting it after the fact.',
+    // TODO(Atharv): everything below is yours to fill — nothing here is invented.
+    overview: [],
+    built: [],
+    why: '',
+    results: [],
+    topics: [],
+    links: { repo: '', live: '', caseStudy: '' },
+    media: {},
   },
   {
     id: 'health-companion',
-    index: '03',
+    index: '04',
     name: 'AI Health Companion',
-    short: 'Health AI',
-    kind: 'Context-aware multi-agent health platform',
+    kind: 'Multi-agent AI for health',
     year: '2025',
-    accent: '#2ee6a8',
+    tier: 'featured',
+    accent: '#6cc392',
+    stage: '#06130c',
     motif: 'orbit',
-    kicker: 'Eight agents that explain your health — without playing doctor.',
-    bullets: [
+    statement: 'Eight agents. One health context.',
+    summary:
+      'Eight specialised agents work around one shared picture of your health to explain symptoms and reports, without ever playing doctor.',
+    overview: [
+      'A safety-first platform that explains symptoms and medical reports without diagnosing. Every agent reads from the same user history, with strict guardrails on what it is allowed to say.',
+    ],
+    built: [
       'Safety-first platform that explains symptoms and medical reports without diagnosing — RAG over user history with strict guardrails.',
       'Deterministic risk detection surfacing early warning patterns across logs, vitals and lifestyle data.',
       'Medical-safe workflows: report analysis, multi-assistant routing, emergency escalation logic.',
     ],
-    impact: '8 context-aware agents in one system — built overnight for a 36-hour live hackathon',
-    tech: ['Python', 'RAG', 'Vector DBs', 'FastAPI', 'AI Agents'],
-    links: { repo: '', live: '' },
+    why: 'Health is where a confident wrong answer does real damage. The system is built to explain and to escalate, never to diagnose.',
+    results: [
+      { value: '8', label: 'context-aware agents in one system' },
+      { value: '36 h', label: 'built overnight at a live hackathon' },
+    ],
+    topics: ['Python', 'RAG', 'Vector DBs', 'FastAPI', 'AI Agents'],
+    links: {
+      repo: 'https://github.com/Atharv-tw/Health-companion',
+      live: 'https://health-companion-navy.vercel.app',
+      caseStudy: '',
+    },
+    media: {},
+  },
+  {
+    id: 'finstar',
+    index: '05',
+    name: 'Finstar',
+    kind: 'Gamified finance education for teens',
+    year: '2025',
+    tier: 'archive',
+    accent: '#ffb114',
+    stage: '#161004',
+    motif: 'arcade',
+    statement: 'Finance education Gen-Z teens actually finish.',
+    summary: '',
+    overview: [],
+    built: [
+      'Four interactive game modules — Life Swipe, Budget Hero, Market Explorer, Quiz Battle — with emotion-aware scoring wired into the learning path.',
+      'Robust Firebase database backed by Supabase edge functions for data integrity and atomic operations.',
+      'AI-backed market simulation that reacts like a real (chaotic) market.',
+    ],
+    why: '',
+    results: [{ value: '100+', label: 'positive reviews from real users' }],
+    topics: ['React', 'Firebase', 'Supabase', 'TypeScript', 'AI simulation'],
+    links: { repo: 'https://github.com/Atharv-tw/FINSTAR', live: '', caseStudy: '' },
+    media: {},
   },
   {
     id: 'codeswipe',
-    index: '04',
+    index: '06',
     name: 'Codeswipe',
-    short: 'Codeswipe',
     kind: 'Swipe-based developer collaboration platform',
     year: '2025',
+    tier: 'archive',
     accent: '#ff4d9d',
+    stage: '#16060e',
     motif: 'deck',
-    kicker: 'Swipe right on your next collaborator.',
-    bullets: [
+    statement: 'Swipe right on your next collaborator.',
+    summary: '',
+    overview: [],
+    built: [
       'Swipe-based, mobile-first frontend for matching developers to projects and people.',
       'Gesture-driven cards, physics-y animations and responsive layouts with Framer Motion + Tailwind.',
       'Reusable UI components and state-driven flows tuned for UX performance and clarity.',
     ],
-    impact: '100+ pre-registrations before launch',
-    tech: ['React', 'Framer Motion', 'Tailwind CSS', 'TypeScript'],
-    links: { repo: '', live: '' },
+    why: '',
+    results: [{ value: '100+', label: 'pre-registrations before launch' }],
+    topics: ['React', 'Framer Motion', 'Tailwind CSS', 'TypeScript'],
+    links: { repo: '', live: '', caseStudy: '' },
+    media: {},
   },
   {
     id: 'healthvault',
-    index: '05',
+    index: '07',
     name: 'HealthVault',
-    short: 'HealthVault',
     kind: 'Zero-knowledge encrypted health records',
     year: '2024',
-    accent: '#00e5ff',
+    tier: 'archive',
+    accent: '#35c6dc',
+    stage: '#04131a',
     motif: 'vault',
-    kicker: 'Your records. Your keys. Nobody else.',
-    bullets: [
+    statement: 'Your records. Your keys. Nobody else.',
+    summary: '',
+    overview: [],
+    built: [
       'Zero-knowledge health record system with AES-256-GCM client-side encryption — the server never sees plaintext.',
       '30+ APIs for secure medical data access, sharing, and instant revocation.',
       'QR-based access control plus AI summaries in patient-friendly and clinical flavors.',
     ],
-    impact: '40% easier comprehension of medical reports via AI summaries',
-    tech: ['Node.js', 'AES-256-GCM', 'Postgres', 'QR access', 'AI summaries'],
-    links: { repo: '', live: '' },
+    why: '',
+    results: [{ value: '40%', label: 'easier comprehension of medical reports via AI summaries' }],
+    topics: ['Node.js', 'AES-256-GCM', 'Postgres', 'QR access', 'AI summaries'],
+    links: { repo: '', live: '', caseStudy: '' },
+    media: {},
   },
 ]
+
+export const featured = projects.filter((p) => p.tier === 'featured')
+export const archive = projects.filter((p) => p.tier === 'archive')
+
+/** What I am working on right now. Keep it to three. */
+export const now = {
+  updated: 'October 2026',
+  items: [
+    {
+      id: 'okeanos',
+      name: 'OKEANOS',
+      line: 'Satellite ocean intelligence. Reconstructing subsurface temperature from the surface.',
+      /** opens this project's modal when set */
+      projectId: 'okeanos',
+    },
+    {
+      id: 'netwm',
+      name: 'NETWM',
+      line: 'A world model for network attack forecasting.',
+      projectId: 'netwm',
+    },
+    {
+      id: 'personal-ai',
+      name: 'Personal AI',
+      line: 'Agentic systems, and where personal AI goes next.',
+      projectId: '',
+    },
+  ],
+} as const
 
 export interface Role {
   id: string
@@ -150,6 +309,9 @@ export interface Role {
   period: string
   location: string
   current?: boolean
+  /** the lead role gets a headline number and a row of what it covers */
+  headline?: { value: string; label: string }
+  scope?: string[]
   bullets: string[]
   tech: string[]
 }
@@ -163,6 +325,8 @@ export const experience: Role[] = [
     period: 'Nov 2025 — Present',
     location: 'Remote',
     current: true,
+    headline: { value: '2K+', label: 'daily users on the platform I own' },
+    scope: ['Architecture', 'Infrastructure', 'Product decisions', 'Secure content delivery', 'Admin & RBAC'],
     bullets: [
       'Led technical development of a production platform serving 2K+ daily users — owning architecture, infrastructure and the key product calls.',
       'Engineered secure premium-content delivery with Redis-based concurrent-stream protection and access-control workflows.',
@@ -196,21 +360,35 @@ export const experience: Role[] = [
   },
 ]
 
-export interface Milestone {
-  year: string
-  title: string
-  detail: string
-  highlight?: boolean
-}
+/** Compact proof. Not a trophy cabinet. */
+export const trackRecord = {
+  stats: [
+    { value: 2, suffix: 'K+', label: 'daily users on Nexera' },
+    { value: 120, suffix: '+', label: 'APIs shipped' },
+    // TODO(Atharv): the results below add up to four podiums — confirm the fifth
+    { value: 5, suffix: '×', label: 'hackathon podiums' },
+  ],
+  role: { value: 'CTO', label: 'Nexera, since Nov 2025' },
+  highlights: [
+    { title: "VibeForge'26", result: 'Winner', detail: '500+ participants · 8-hour hackathon' },
+    { title: 'Shloka Decode 2.0, NSUT', result: 'Winner', detail: '500+ participants · 8-hour hackathon' },
+    { title: 'IEEE T-Hacks 8.0', result: '2nd place', detail: '800+ participants · 24-hour hackathon' },
+  ],
+  also: [
+    'Pitch Tank, DU — 2nd place',
+    "eDC's Blueprint 6.0, IIT Delhi — Delhi Regionals",
+    'B-Plan e-Summit 2025, DTU — Top 10',
+  ],
+} as const
 
-export const timeline: Milestone[] = [
-  { year: '2025', title: 'VibeForge\'26 — Winner', detail: 'Emerged Winner among 500+ participants in an 8-hour hackathon.', highlight: true },
-  { year: '2025', title: 'Shloka Decode 2.0, NSUT — Winner', detail: 'Emerged Winner among 500+ participants in an 8-hour hackathon.', highlight: true },
-  { year: '2025', title: 'IEEE T-Hacks 8.0 — 2nd Place', detail: '2nd Place among 800+ participants in a 24-hour hackathon.', highlight: true },
-  { year: '2025', title: 'Pitch Tank, DU — 2nd Place', detail: '2nd Place among 500+ participants.' },
-  { year: '2025', title: 'eDC\'s Blueprint 6.0, IIT Delhi', detail: 'Competed till Delhi Regionals. Invited to Emergence (IITD incubation) & BeCon\'26.' },
-  { year: '2025', title: 'B-Plan e-Summit 2025, DTU', detail: 'Top 10 among 500 participants.' },
-]
+/** Outside the terminal. `note` is optional — the label stands alone without it. */
+export const outside = [
+  { id: 'hackathons', label: 'Hackathons', note: 'Weekends that end with a working product.' },
+  // TODO(Atharv): one line each for these two
+  { id: 'taekwondo', label: 'International Taekwondo', note: '' },
+  { id: 'basketball', label: 'Basketball', note: '' },
+  { id: 'leadership', label: 'Technical leadership', note: 'Leading the engineering side at Nexera.' },
+] as const
 
 export const interests = [
   'AR & spatial computing',
@@ -221,14 +399,23 @@ export const interests = [
   'Technical writing',
 ]
 
+/**
+ * Page order. `nav` decides what the floating nav shows; the homepage stays
+ * the journey, so not every section is a destination.
+ */
 export const sections = [
-  { id: 'hero', label: 'Start' },
-  { id: 'about', label: 'About' },
-  { id: 'work', label: 'Work' },
-  { id: 'experience', label: 'Experience' },
-  { id: 'proof', label: 'Proof' },
-  { id: 'journey', label: 'Journey' },
-  { id: 'contact', label: 'Contact' },
+  { id: 'hero', label: 'Start', nav: false },
+  { id: 'about', label: 'About', nav: true },
+  { id: 'now', label: 'Now', nav: true },
+  { id: 'work', label: 'Work', nav: true },
+  { id: 'archive', label: 'More work', nav: false },
+  { id: 'experience', label: 'Experience', nav: true },
+  { id: 'track', label: 'Track record', nav: false },
+  { id: 'outside', label: 'Outside', nav: false },
+  { id: 'contact', label: 'Contact', nav: true },
 ] as const
 
 export type SectionId = (typeof sections)[number]['id']
+
+/** Where the bot can be: any section, or inside one of the featured projects. */
+export type SceneId = SectionId | 'onyx' | 'okeanos' | 'netwm' | 'health-companion'
