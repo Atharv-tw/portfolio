@@ -161,6 +161,39 @@
   pointer-events: none;
 }
 
+/*
+ * His weight changes from one project to the next so he never reads as a
+ * sticker: he leads in ONYX and NETWM (big, stepping out of the frame) and is
+ * a small part of the scene in OKEANOS and Health.
+ */
+.project-panel[data-project='onyx'] .project-seat {
+  right: -9%;
+  bottom: -5%;
+  width: 42%;
+  height: 64%;
+}
+
+.project-panel[data-project='okeanos'] .project-seat {
+  right: 16%;
+  bottom: 24%;
+  width: 17%;
+  height: 30%;
+}
+
+.project-panel[data-project='netwm'] .project-seat {
+  right: -7%;
+  bottom: -9%;
+  width: 38%;
+  height: 56%;
+}
+
+.project-panel[data-project='health-companion'] .project-seat {
+  right: 5%;
+  bottom: 5%;
+  width: 18%;
+  height: 30%;
+}
+
 .motif-canvas {
   width: 100%;
   height: 100%;
@@ -188,5 +221,18 @@
   }
   .project-statement {
     max-width: 16ch;
+  }
+  /* less room around the stage here: he leads without leaving it */
+  .project-panel[data-project='onyx'] .project-seat {
+    right: -3%;
+    bottom: -2%;
+    width: 40%;
+    height: 60%;
+  }
+  .project-panel[data-project='netwm'] .project-seat {
+    right: -3%;
+    bottom: -2%;
+    width: 36%;
+    height: 54%;
   }
 }
