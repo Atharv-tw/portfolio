@@ -13,28 +13,31 @@ export default function ProjectMedia({ project }: { project: Project }) {
   const { video, poster } = project.media
 
   return (
-    <figure className="case-media" data-motif={project.motif}>
-      {video ? (
-        <video
-          className="case-video"
-          src={video}
-          poster={poster}
-          controls
-          muted
-          loop
-          playsInline
-          autoPlay
-          preload="metadata"
-          aria-label={`${project.name} demo`}
-        />
-      ) : (
-        <>
+    <figure className="case-media">
+      <div className="case-media-frame" data-motif={project.motif}>
+        {video ? (
+          <video
+            className="case-video"
+            src={video}
+            poster={poster}
+            controls
+            muted
+            loop
+            playsInline
+            autoPlay
+            preload="metadata"
+            aria-label={`${project.name} demo`}
+          />
+        ) : (
           <Motif project={project} />
-          <figcaption className="case-media-note mono-label">
-            Illustrative visual
-            {import.meta.env.DEV && ` — add public/videos/${project.id}.mp4 and set media.video to show footage here`}
-          </figcaption>
-        </>
+        )}
+      </div>
+      {/* under the frame, not over it: on a narrow screen it would sit on the visual's own labels */}
+      {!video && (
+        <figcaption className="case-media-note mono-label">
+          Illustrative visual
+          {import.meta.env.DEV && ` — add public/videos/${project.id}.mp4 and set media.video to show footage here`}
+        </figcaption>
       )}
     </figure>
   )
