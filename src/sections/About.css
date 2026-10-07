@@ -1,54 +1,69 @@
+.about-lead {
+  max-width: 17ch;
+  text-wrap: balance;
+}
+
 .about-grid {
   display: grid;
-  grid-template-columns: 1.6fr 1fr;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
   gap: clamp(2rem, 6vw, 6rem);
-  align-items: start;
+  align-items: end;
 }
 
 .about-copy {
   display: flex;
   flex-direction: column;
   gap: 1.4rem;
-  max-width: 62ch;
+  max-width: 60ch;
+}
+
+.about-copy p:first-child {
+  color: var(--ink);
 }
 
 .about-side {
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
 }
 
-.about-links {
+.about-seat {
+  align-self: flex-end;
+  width: min(60%, 13rem);
+  height: clamp(150px, 24svh, 230px);
+  margin-right: 8%;
+}
+
+.about-facts {
+  border-top: 1px solid var(--line-strong);
+}
+
+.about-fact {
   display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-  align-items: stretch;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 0.95rem 0;
+  border-bottom: 1px solid var(--line);
 }
 
-.about-links .btn {
-  justify-content: space-between;
+.about-fact dt {
+  font-size: 0.62rem;
+}
+
+.about-fact dd {
+  text-align: right;
+  font-weight: 560;
 }
 
 .about-interests {
   margin-top: clamp(3rem, 7vh, 5rem);
 }
 
-.about-links .magnetic {
-  display: block;
-}
-
-.about-links .magnetic .btn {
-  width: 100%;
-  justify-content: space-between;
-}
-
-.about em {
-  font-style: normal;
-  color: var(--accent);
-}
-
 @media (max-width: 900px) {
   .about-grid {
     grid-template-columns: 1fr;
+  }
+  .about-seat {
+    height: clamp(130px, 20svh, 190px);
   }
 }
