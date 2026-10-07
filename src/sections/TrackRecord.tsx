@@ -36,7 +36,7 @@ export default function TrackRecord() {
         <div className="track-grid">
           <ol className="track-highlights">
             {highlights.map((h) => (
-              <li key={h.title} className="track-highlight">
+              <li key={h.title} className={`track-highlight ${h.lead ? 'is-lead' : ''}`}>
                 <span className="mono-label track-result">{h.result}</span>
                 <h3 className="track-title">{h.title}</h3>
                 <p className="track-detail">{h.detail}</p>
