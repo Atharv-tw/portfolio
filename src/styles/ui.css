@@ -29,8 +29,7 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 12px var(--accent);
+  background: var(--ink);
 }
 
 .chip {
@@ -71,19 +70,19 @@
 }
 
 .btn:hover {
-  border-color: var(--accent);
-  background: var(--accent-dim);
+  border-color: var(--ink);
+  background: color-mix(in srgb, var(--ink) 7%, transparent);
 }
 
 .btn.btn-solid {
   background: var(--ink);
-  color: #07070b;
+  color: var(--on-ink);
   border-color: var(--ink);
 }
 
 .btn.btn-solid:hover {
-  background: var(--accent);
-  border-color: var(--accent);
+  background: transparent;
+  color: var(--ink);
 }
 
 .magnetic {
@@ -102,3 +101,49 @@
   will-change: transform;
 }
 
+
+/* "this is live" — one of the few places the accent is allowed */
+.live-dot {
+  position: relative;
+  flex: none;
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.live-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: live-ping 2.2s var(--ease-out) infinite;
+}
+
+@keyframes live-ping {
+  0% { transform: scale(1); opacity: 0.7; }
+  80%, 100% { transform: scale(3.2); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .live-dot::after {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/* dev-only marker for content that has not been written yet (see Awaiting.tsx) */
+.awaiting {
+  padding: 0.7rem 0.9rem;
+  border: 1px dashed var(--line-strong);
+  border-radius: 10px;
+  font-size: 0.58rem;
+  color: var(--ink-faint);
+}
+
+/* an empty box the bot fits himself into — see three/Mascot/states.ts */
+[data-bot-seat] {
+  pointer-events: none;
+}

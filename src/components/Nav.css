@@ -8,7 +8,6 @@
   align-items: center;
   justify-content: space-between;
   padding: 1.1rem var(--gutter);
-  mix-blend-mode: normal;
   pointer-events: none;
 }
 
@@ -16,10 +15,18 @@
   pointer-events: auto;
 }
 
+/* every nav item carries its own backing, so it reads over the page and over
+   a dark project stage alike */
 .nav-logo {
+  height: 38px;
+  padding: 0 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--float);
+  backdrop-filter: blur(14px);
   font-family: var(--font-display);
   font-weight: 760;
-  font-size: 1.35rem;
+  font-size: 1.2rem;
   letter-spacing: -0.02em;
 }
 
@@ -33,7 +40,7 @@
   padding: 0.35rem;
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: color-mix(in srgb, var(--bg) 72%, transparent);
+  background: var(--float);
   backdrop-filter: blur(14px);
 }
 
@@ -44,16 +51,18 @@
   font-size: 0.72rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--ink-dim);
+  /* full ink, not the dim one: the nav is the only text left on screen while
+     the page passes through mid-grey */
+  color: var(--ink);
   transition: color 0.25s var(--ease-out), background 0.25s var(--ease-out);
 }
 
 .nav-link:hover {
-  color: var(--ink);
+  background: color-mix(in srgb, var(--ink) 10%, transparent);
 }
 
 .nav-link.is-active {
-  color: #07070b;
+  color: var(--on-ink);
   background: var(--ink);
 }
 
@@ -64,8 +73,18 @@
 }
 
 .nav-clock {
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--float);
+  backdrop-filter: blur(14px);
+  font-size: 0.66rem;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.12em;
+  color: var(--ink);
 }
 
 .nav-kbd {
@@ -73,16 +92,16 @@
   padding: 0 12px;
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: color-mix(in srgb, var(--bg) 72%, transparent);
+  background: var(--float);
   backdrop-filter: blur(14px);
   font-size: 0.66rem;
-  color: var(--ink-dim);
+  color: var(--ink);
   transition: color 0.25s, border-color 0.25s;
 }
 
 .nav-kbd:hover {
-  color: var(--accent);
-  border-color: var(--accent);
+  color: var(--ink);
+  border-color: var(--ink);
 }
 
 /* burger — mobile only */
@@ -96,7 +115,7 @@
   padding: 0 11px;
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: color-mix(in srgb, var(--bg) 72%, transparent);
+  background: var(--float);
   backdrop-filter: blur(14px);
 }
 
@@ -150,7 +169,7 @@
 }
 
 .mobile-menu-link.is-active {
-  color: var(--accent);
+  color: var(--ink-faint);
 }
 
 .mobile-menu-index {
@@ -164,21 +183,21 @@
 }
 
 .mobile-menu-foot a:hover {
-  color: var(--accent);
+  color: var(--ink);
+}
+
+@media (max-width: 1100px) {
+  .nav-clock {
+    display: none;
+  }
 }
 
 @media (max-width: 760px) {
-  .nav-clock,
-  .nav-kbd {
+  .nav-kbd,
+  .nav-links {
     display: none;
   }
   .nav-burger {
     display: flex;
-  }
-}
-
-@media (max-width: 760px) {
-  .nav-links {
-    display: none;
   }
 }

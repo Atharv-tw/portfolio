@@ -1,20 +1,62 @@
+.xp-timeline {
+  --spine: 5px;
+  position: relative;
+  padding-left: clamp(1.4rem, 3vw, 2.6rem);
+}
+
 .xp-list {
   list-style: none;
-  border-top: 1px solid var(--line);
+}
+
+/* timeline spine — fills with scroll */
+.xp-spine {
+  position: absolute;
+  left: var(--spine);
+  top: 0.4rem;
+  bottom: 0;
+  width: 1px;
+  background: var(--line);
+}
+
+.xp-spine-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--ink);
+  transform-origin: center top;
 }
 
 .xp-row {
+  position: relative;
   display: grid;
-  grid-template-columns: minmax(150px, 0.28fr) 1fr;
+  grid-template-columns: minmax(150px, 0.24fr) 1fr;
   gap: clamp(1.2rem, 4vw, 3rem);
-  padding: clamp(1.6rem, 4vw, 2.6rem) 0;
-  border-bottom: 1px solid var(--line);
+  padding: 0 0 clamp(2.4rem, 6vh, 4.2rem);
+}
+
+.xp-row:last-child {
+  padding-bottom: 0;
+}
+
+.xp-dot {
+  position: absolute;
+  left: calc(-1 * clamp(1.4rem, 3vw, 2.6rem) + var(--spine) - 5px);
+  top: 0.35rem;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 2px solid var(--ink-faint);
+}
+
+.xp-row.is-current .xp-dot {
+  border-color: var(--ink);
+  background: var(--ink);
 }
 
 .xp-meta {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.45rem;
 }
 
 .xp-period {
@@ -27,36 +69,32 @@
 }
 
 .xp-live {
-  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.3rem;
+  color: var(--ink);
 }
 
-.xp-live::before {
-  content: '';
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  margin-right: 0.45rem;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 10px var(--accent);
-  vertical-align: middle;
+.xp-lead {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem 3rem;
 }
 
 .xp-company {
   font-family: var(--font-display);
-  font-size: clamp(1.5rem, 3.4vw, 2.4rem);
+  font-size: clamp(1.5rem, 3.2vw, 2.3rem);
   font-weight: 700;
-  line-height: 1.05;
+  line-height: 1.02;
   letter-spacing: -0.02em;
-}
-
-.xp-row.is-current .xp-company {
-  color: var(--accent);
 }
 
 .xp-site {
   display: block;
-  margin-top: 0.3rem;
+  margin-top: 0.4rem;
   font-family: var(--font-mono);
   font-size: 0.68rem;
   font-weight: 400;
@@ -65,9 +103,69 @@
 }
 
 .xp-title {
-  margin-top: 0.35rem;
+  margin-top: 0.4rem;
   color: var(--ink-dim);
   font-size: 1rem;
+}
+
+/* the role that matters most gets the weight */
+.xp-row.is-lead .xp-company {
+  font-size: clamp(2.8rem, 8vw, 7rem);
+  font-weight: 760;
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+
+.xp-row.is-lead .xp-title {
+  margin-top: 0.8rem;
+  font-family: var(--font-mono);
+  font-size: clamp(0.8rem, 1.2vw, 1rem);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.xp-headline {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  max-width: 16rem;
+  padding-left: 1.2rem;
+  border-left: 1px solid var(--line-strong);
+}
+
+.xp-headline strong {
+  font-size: clamp(2.4rem, 5vw, 4.4rem);
+  font-weight: 740;
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+}
+
+.xp-headline span {
+  font-size: 0.88rem;
+  line-height: 1.4;
+  color: var(--ink-dim);
+}
+
+.xp-scope {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.6rem;
+  margin-top: clamp(1.2rem, 3vh, 2rem);
+  padding: 0.9rem 0;
+  border-top: 1px solid var(--line-strong);
+  border-bottom: 1px solid var(--line);
+  font-weight: 560;
+}
+
+.xp-scope li + li::before {
+  content: '/';
+  margin-right: 1.6rem;
+  color: var(--ink-faint);
+  font-weight: 400;
 }
 
 .xp-bullets {
@@ -76,6 +174,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.65rem;
+  max-width: 78ch;
 }
 
 .xp-bullets li {
@@ -119,6 +218,16 @@
   .xp-meta {
     flex-direction: row;
     flex-wrap: wrap;
-    gap: 0.9rem;
+    align-items: center;
+    gap: 0.5rem 0.9rem;
+  }
+  .xp-live {
+    margin-top: 0;
+  }
+  .xp-scope li + li::before {
+    margin-right: 0.8rem;
+  }
+  .xp-scope {
+    gap: 0.4rem 0.8rem;
   }
 }

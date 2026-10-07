@@ -2,7 +2,7 @@
   position: fixed;
   inset: 0;
   z-index: var(--z-overlay);
-  background: rgba(4, 4, 9, 0.6);
+  background: color-mix(in srgb, var(--bg) 55%, transparent);
   backdrop-filter: blur(8px);
   display: flex;
   justify-content: center;
@@ -15,7 +15,7 @@
   border-radius: 16px;
   border: 1px solid var(--line-strong);
   background: var(--surface);
-  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.28);
   overflow: hidden;
 }
 
@@ -28,7 +28,7 @@
 }
 
 .palette-prompt {
-  color: var(--accent);
+  color: var(--ink);
 }
 
 .palette-input {
@@ -69,7 +69,7 @@
 }
 
 .palette-item.is-active {
-  background: var(--accent-dim);
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
   color: var(--ink);
 }
 

@@ -3,8 +3,8 @@ import { useMotifCanvas, type MotifCtx } from './useMotifCanvas'
 
 const AGENTS = ['Symptoms', 'Reports', 'Risk', 'Vitals', 'History', 'Routing', 'Escalate', 'Summary']
 
-/** AI Health Companion — 8 agents orbiting a safety core. */
-export default function Orbit({ accent = '#2ee6a8' }: { accent?: string }) {
+/** AI Health Companion — eight agents around one shared health context. */
+export default function Orbit({ accent = '#6cc392' }: { accent?: string }) {
   const hovered = useRef(-1)
 
   const draw = useCallback(
@@ -16,7 +16,7 @@ export default function Orbit({ accent = '#2ee6a8' }: { accent?: string }) {
 
       // core
       const pulse = 1 + Math.sin(t * 2.2) * 0.08
-      const coreR = Math.min(w, h) * 0.075 * pulse
+      const coreR = Math.min(w, h) * 0.092 * pulse
       const grad = c.createRadialGradient(cx, cy, 1, cx, cy, coreR * 2.4)
       grad.addColorStop(0, `${accent}ee`)
       grad.addColorStop(0.5, `${accent}44`)
@@ -32,11 +32,11 @@ export default function Orbit({ accent = '#2ee6a8' }: { accent?: string }) {
       c.strokeStyle = accent
       c.lineWidth = 1.5
       c.stroke()
-      c.font = `700 ${Math.max(9, coreR * 0.5)}px "JetBrains Mono Variable", monospace`
+      c.font = `700 ${Math.max(8, coreR * 0.3)}px "JetBrains Mono Variable", monospace`
       c.textAlign = 'center'
       c.textBaseline = 'middle'
       c.fillStyle = accent
-      c.fillText('CORE', cx, cy)
+      c.fillText('CONTEXT', cx, cy)
 
       // orbit rings
       c.strokeStyle = 'rgba(244,244,246,0.09)'
@@ -95,7 +95,8 @@ export default function Orbit({ accent = '#2ee6a8' }: { accent?: string }) {
       c.font = '600 10px "JetBrains Mono Variable", monospace'
       c.textAlign = 'left'
       c.fillStyle = 'rgba(244,244,246,0.4)'
-      c.fillText('8 AGENTS · HOVER THEM', 14, h - 14)
+      c.textBaseline = 'alphabetic'
+      c.fillText('8 AGENTS · 1 CONTEXT · HOVER THEM', 18, h - 22)
     },
     [accent],
   )

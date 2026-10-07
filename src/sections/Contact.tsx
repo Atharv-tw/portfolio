@@ -23,48 +23,67 @@ export default function Contact() {
   }
 
   return (
-    <section id="contact" data-section="contact" className="section contact">
+    <section id="contact" data-section="contact" data-env="1" className="section contact">
       <div className="container contact-inner">
-        <p className="mono-label">Next — 006</p>
-        <RiseText as="h2" className="display-lg contact-heading" text="Let's build something." />
-        <p className="body-lg contact-sub">
-          Open to internships, freelance work, and ambitious ideas that need shipping.
-        </p>
+        <p className="mono-label">Next — 005</p>
+
+        <div className="contact-top">
+          <RiseText as="h2" className="contact-heading" text="Let's build something." />
+          <div className="contact-seat" data-bot-seat="contact" aria-hidden="true" />
+        </div>
+
+        <div className="contact-open">
+          <span className="mono-label">Open to</span>
+          <ul className="chip-row">
+            {person.openTo.map((o) => (
+              <li key={o} className="chip">
+                {o}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <button
+          className={`contact-email ${copied ? 'is-copied' : ''}`}
+          onClick={copyEmail}
+          data-sfx="none"
+          data-cursor="copy"
+          aria-label={`Copy email address ${person.email}`}
+        >
+          <span className="contact-email-text">{person.email}</span>
+          <span className="mono-label contact-email-hint" aria-live="polite">
+            {copied ? 'Copied ✓' : 'Click to copy'}
+          </span>
+        </button>
 
         <div className="contact-actions">
           <Magnetic strength={0.25}>
-            <button
-              className={`btn btn-solid contact-copy ${copied ? 'is-copied' : ''}`}
-              onClick={copyEmail}
-              data-sfx="none"
-              data-cursor="copy"
-            >
-              {copied ? 'copied to clipboard ✓' : person.email}
-            </button>
+            <a className="btn btn-solid" href={`mailto:${person.email}`}>
+              Email ↗
+            </a>
           </Magnetic>
           <Magnetic strength={0.25}>
             <a className="btn" href={person.resumePdf} download="Atharv-Tiwari-Resume.pdf">
               Résumé ↓
             </a>
           </Magnetic>
-          <a className="contact-mailto mono-label" href={`mailto:${person.email}`}>
-            or open mail app ↗
-          </a>
+          <Magnetic strength={0.25}>
+            <a className="btn" href={person.github.url} target="_blank" rel="noreferrer">
+              GitHub ↗
+            </a>
+          </Magnetic>
+          <Magnetic strength={0.25}>
+            <a className="btn" href={person.linkedin.url} target="_blank" rel="noreferrer">
+              LinkedIn ↗
+            </a>
+          </Magnetic>
         </div>
 
         <footer className="contact-footer">
-          <div className="contact-footer-left mono-label">
+          <div className="mono-label">
             © 2026 {person.name} — {person.location}
           </div>
-          <div className="contact-footer-links">
-            <a href={person.github.url} target="_blank" rel="noreferrer" className="mono-label" data-sfx="click">
-              GitHub
-            </a>
-            <a href={person.linkedin.url} target="_blank" rel="noreferrer" className="mono-label" data-sfx="click">
-              LinkedIn
-            </a>
-          </div>
-          <div className="contact-footer-right mono-label">
+          <div className="mono-label">
             built with React · Three.js · too much chai — press <kbd>Ctrl K</kbd>
           </div>
         </footer>

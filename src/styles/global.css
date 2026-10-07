@@ -10,13 +10,17 @@
 }
 
 html {
-  color-scheme: dark;
-  scrollbar-color: #26262f var(--bg);
+  scrollbar-color: var(--ink-faint) var(--bg);
+}
+
+/* the live page colour is painted on <html> by lib/environment.ts; var(--bg)
+   is the same colour as a token, and what shows before the script runs */
+html {
+  background: var(--bg);
 }
 
 html,
 body {
-  background: var(--bg);
   color: var(--ink);
 }
 
@@ -50,7 +54,7 @@ button {
 
 ::selection {
   background: var(--accent);
-  color: #04040a;
+  color: #0e0e11;
 }
 
 :focus-visible {
@@ -120,8 +124,8 @@ main {
   z-index: var(--z-grain);
   pointer-events: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  opacity: 0.055;
-  mix-blend-mode: overlay;
+  opacity: 0.07;
+  mix-blend-mode: soft-light;
   animation: grain-jitter 0.9s steps(6) infinite;
 }
 
@@ -152,12 +156,6 @@ main {
 .mascot-view {
   position: absolute;
   inset: 0;
-}
-
-.hero-view {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
 }
 
 /* ---------- helpers ---------- */

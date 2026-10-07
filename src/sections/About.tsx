@@ -1,5 +1,4 @@
 import { interests, person } from '../content/resume'
-import Magnetic from '../components/Magnetic'
 import Marquee from '../components/Marquee'
 import RiseText from '../components/RiseText'
 import ScrambleText from '../components/ScrambleText'
@@ -7,11 +6,11 @@ import './About.css'
 
 export default function About() {
   return (
-    <section id="about" data-section="about" className="section about">
+    <section id="about" data-section="about" data-env="0.06" className="section about">
       <div className="container">
         <div className="section-head">
           <ScrambleText as="p" className="mono-label" text="About — 001" />
-          <RiseText as="h2" className="display-lg" text="Building real things, really fast." />
+          <RiseText as="h2" className="display-lg about-lead" text={person.aboutLead} />
           <div className="rule" />
         </div>
 
@@ -24,29 +23,21 @@ export default function About() {
             ))}
           </div>
 
-          <div className="about-side">
-            <p className="mono-label">Find me</p>
-            <div className="about-links">
-              <Magnetic>
-                <a className="btn" href={person.github.url} target="_blank" rel="noreferrer">
-                  GitHub ↗
-                </a>
-              </Magnetic>
-              <Magnetic>
-                <a className="btn" href={person.linkedin.url} target="_blank" rel="noreferrer">
-                  LinkedIn ↗
-                </a>
-              </Magnetic>
-              <Magnetic>
-                <a className="btn" href={`mailto:${person.email}`}>
-                  Email ↗
-                </a>
-              </Magnetic>
-            </div>
-          </div>
+          <aside className="about-side">
+            {/* he sits on the top rule of the facts list */}
+            <div className="about-seat" data-bot-seat="about" aria-hidden="true" />
+            <dl className="about-facts">
+              {person.aboutFacts.map((f) => (
+                <div key={f.label} className="about-fact">
+                  <dt className="mono-label">{f.label}</dt>
+                  <dd>{f.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </aside>
         </div>
 
-        <div className="about-interests" aria-label="Interests">
+        <div className="about-interests" aria-label="Things I keep coming back to">
           <Marquee speed={30}>
             {interests.map((it) => (
               <span key={it} className="chip">
