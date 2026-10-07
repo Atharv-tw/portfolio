@@ -156,6 +156,7 @@
   width: 100%;
   height: 100%;
   display: block;
+  border: 0;
   object-fit: contain;
   background: #000;
 }
@@ -163,6 +164,24 @@
 .case-media-note {
   font-size: 0.56rem;
   color: var(--ink-faint);
+}
+
+.case-media-note a {
+  color: var(--ink-dim);
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+  transition: color 0.25s var(--ease-out);
+}
+
+.case-media-note a:hover {
+  color: var(--project-accent);
+}
+
+.case-context {
+  margin-top: 0.3rem;
+  font-size: 0.6rem;
+  line-height: 1.7;
+  color: var(--ink-dim);
 }
 
 .case-grid {
@@ -268,12 +287,228 @@
   background: color-mix(in srgb, var(--project-accent) 14%, transparent);
 }
 
+/* under the hood — the technical sections of a project that has them */
+.case-deep {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.2rem, 2.4vw, 2rem);
+  padding-top: clamp(1.6rem, 3.4vw, 3rem);
+  border-top: 1px solid var(--line);
+}
+
+.case-deep-label {
+  color: var(--ink-dim);
+}
+
+.case-deep-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.8rem, 3.6vw, 3.2rem) clamp(1.8rem, 5vw, 5rem);
+  align-items: start;
+}
+
+.case-deep-block {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.case-deep-block.is-wide {
+  grid-column: 1 / -1;
+}
+
+.case-deep-block .case-sub {
+  margin-bottom: 0;
+}
+
+.case-specs {
+  display: flex;
+  flex-direction: column;
+}
+
+.case-specs > div {
+  display: grid;
+  grid-template-columns: minmax(7.5rem, 0.36fr) minmax(0, 1fr);
+  gap: 0.3rem 1.2rem;
+  padding: 0.7rem 0;
+  border-top: 1px solid var(--line);
+}
+
+.case-specs > div:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.case-specs dt {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  line-height: 1.7;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+
+.case-specs dd {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.case-deep-block .case-bullets {
+  max-width: none;
+  font-size: 0.94rem;
+}
+
+.case-table-wrap {
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+.case-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.case-table th,
+.case-table td {
+  padding: 0.85rem 1rem 0.85rem 0;
+  border-bottom: 1px solid var(--line);
+  text-align: right;
+  white-space: nowrap;
+  font-size: 0.94rem;
+  font-weight: 400;
+  color: var(--ink-dim);
+}
+
+.case-table th:first-child {
+  text-align: left;
+  white-space: normal;
+  min-width: 12rem;
+}
+
+.case-table th:last-child,
+.case-table td:last-child {
+  padding-right: 0;
+}
+
+.case-table thead th {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  border-bottom-color: var(--line-strong);
+}
+
+/* this project's own rows carry the weight and its colour */
+.case-table .is-ours th,
+.case-table .is-ours td {
+  color: var(--ink);
+  font-weight: 620;
+  background: color-mix(in srgb, var(--project-accent) 9%, transparent);
+}
+
+.case-table .is-ours th {
+  padding-left: 0.8rem;
+  box-shadow: inset 2px 0 0 var(--project-accent);
+}
+
+.case-table-note {
+  margin-top: 0.9rem;
+  max-width: 72ch;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: var(--ink-dim);
+}
+
+/* screenshots */
+.case-shots-block {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.case-shots-block .case-sub {
+  margin-bottom: 0;
+}
+
+.case-shots {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  gap: 0.8rem;
+}
+
+.case-shot {
+  aspect-ratio: 16 / 10;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, #000 55%, var(--project-stage));
+  overflow: hidden;
+}
+
+.case-shot img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.case-shot.is-empty {
+  display: grid;
+  place-items: center;
+  padding: 1.2rem;
+  border-style: dashed;
+  border-color: var(--line-strong);
+  background: none;
+  text-align: center;
+  font-size: 0.56rem;
+  line-height: 1.8;
+  color: var(--ink-faint);
+}
+
 @media (max-width: 820px) {
-  .case-grid {
+  .case-grid,
+  .case-deep-grid {
     grid-template-columns: 1fr;
   }
   .case-media-frame {
     aspect-ratio: 4 / 3.4;
+  }
+  /* footage keeps its own shape */
+  .case-media-frame.has-footage {
+    aspect-ratio: 16 / 9;
+  }
+  .case-specs > div {
+    grid-template-columns: 1fr;
+  }
+  .case-table th,
+  .case-table td {
+    font-size: 0.86rem;
+    padding-right: 0.9rem;
+  }
+  .case-table th:first-child {
+    min-width: 9.5rem;
+  }
+}
+
+/* phones: a five-column table still fits without scrolling sideways */
+@media (max-width: 520px) {
+  .case-table th,
+  .case-table td {
+    font-size: 0.8rem;
+    padding-right: 0.6rem;
+  }
+  .case-table thead th {
+    font-size: 0.52rem;
+    letter-spacing: 0.04em;
+  }
+  .case-table th:first-child {
+    min-width: 6.6rem;
+  }
+  .case-table .is-ours th {
+    padding-left: 0.55rem;
   }
   .case-close .mono-label {
     display: none;
