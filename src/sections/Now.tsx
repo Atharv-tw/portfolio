@@ -25,9 +25,9 @@ export default function Now() {
                 <span className="mono-label now-index">0{i + 1}</span>
                 <span className="now-name">{item.name}</span>
                 <span className="now-line">{item.line}</span>
-                {item.projectId && (
+                {(item.projectId || item.href) && (
                   <span className="mono-label now-go" aria-hidden="true">
-                    Open ↗
+                    {item.projectId ? 'Open ↗' : 'GitHub ↗'}
                   </span>
                 )}
               </>
@@ -43,6 +43,16 @@ export default function Now() {
                   >
                     {body}
                   </button>
+                ) : item.href ? (
+                  <a
+                    className="now-row is-link"
+                    href={item.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={`${item.name}: ${item.line} Open on GitHub.`}
+                  >
+                    {body}
+                  </a>
                 ) : (
                   <div className="now-row">{body}</div>
                 )}
