@@ -54,7 +54,7 @@
 .preloader-bar-fill {
   position: absolute;
   inset: 0;
-  background: var(--accent);
+  background: var(--ink);
   transform-origin: left center;
 }
 
