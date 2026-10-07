@@ -120,3 +120,13 @@
     max-width: 15ch;
   }
 }
+
+@media (max-width: 760px) {
+  .outside {
+    padding: 2rem 0 2.4rem;
+  }
+  /* he is taller than the heading beside him: keep him small so he does not push it down */
+  .outside-seat {
+    height: clamp(100px, 15svh, 150px);
+  }
+}
