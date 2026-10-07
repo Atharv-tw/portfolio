@@ -16,6 +16,8 @@ export interface MotifCtx {
  *
  * `stillAt` is the moment (seconds into the loop) shown when motion is reduced,
  * so a looping story can freeze on its most telling frame instead of its first.
+ * In `npm run dev`, `?motion=reduced&t=6.5` freezes every motif at that second
+ * instead, to check a loop frame by frame.
  */
 export function useMotifCanvas(
   draw: (m: MotifCtx) => void,
@@ -24,6 +26,8 @@ export function useMotifCanvas(
 ) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const reduced = usePrefersReducedMotion()
+  const devT = import.meta.env.DEV ? Number(new URLSearchParams(window.location.search).get('t') ?? NaN) : NaN
+  const still = Number.isFinite(devT) ? devT : stillAt
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -56,7 +60,7 @@ export function useMotifCanvas(
       const now = performance.now()
       const dt = Math.min(0.05, (now - last) / 1000)
       last = now
-      t = single ? stillAt : t + dt
+      t = single ? still : t + dt
       c.clearRect(0, 0, w, h)
       draw({ c, w, h, t, dt, pointer })
       if (!single && running) raf = requestAnimationFrame(() => frame())
@@ -115,7 +119,7 @@ export function useMotifCanvas(
       canvas.removeEventListener('pointerup', onUp)
       canvas.removeEventListener('pointerleave', onLeave)
     }
-  }, [draw, onTap, reduced, stillAt])
+  }, [draw, onTap, reduced, still])
 
   return canvasRef
 }
