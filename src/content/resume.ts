@@ -16,7 +16,7 @@ export const person = {
   /** the three facts under the name — keep it to three */
   heroProof: [
     { value: '2K+', label: 'daily users' },
-    { value: '120+', label: 'APIs shipped' },
+    { value: '5×', label: 'hackathon podiums' },
     { value: 'CTO', label: '@ Nexera' },
   ],
   location: 'New Delhi, India',
@@ -28,12 +28,12 @@ export const person = {
   aboutLead: "I'm Atharv. I turn ideas into things people actually use.",
   about: [
     'Right now that means being CTO at Nexera, where I own the technical and product calls for a platform 2K+ people use every day. Around it I have built for healthcare, civic governance and fintech.',
-    'Most of my work sits where AI meets backend and product: agents that need guardrails, systems that have to stay up, interfaces someone has to understand at a glance. I am a second-year CSE student in Delhi, and I would rather ship something real over a weekend than talk about it for a month.',
+    'Most of my work sits where AI meets backend and product: agents that need guardrails, systems that have to stay up, interfaces someone has to understand at a glance. I am a third-year CSE student in Delhi, and I would rather ship something real over a weekend than talk about it for a month.',
   ],
   aboutFacts: [
     { label: 'Based in', value: 'New Delhi, India' },
     { label: 'Currently', value: 'CTO @ Nexera' },
-    { label: 'Studying', value: 'CSE, GGSIPU — second year' },
+    { label: 'Studying', value: 'CSE, GGSIPU — class of 2028' },
   ],
   openTo: ['Internships', 'Freelance work', 'Ambitious ideas', 'Collaborations'],
 } as const
@@ -364,31 +364,53 @@ export const experience: Role[] = [
 export const trackRecord = {
   stats: [
     { value: 2, suffix: 'K+', label: 'daily users on Nexera' },
-    { value: 120, suffix: '+', label: 'APIs shipped' },
-    // TODO(Atharv): the results below add up to four podiums — confirm the fifth
     { value: 5, suffix: '×', label: 'hackathon podiums' },
   ],
   role: { value: 'CTO', label: 'Nexera, since Nov 2025' },
+  /** `lead: true` is the one card that gets the weight — keep it to one */
   highlights: [
-    { title: "VibeForge'26", result: 'Winner', detail: '500+ participants · 8-hour hackathon' },
-    { title: 'Shloka Decode 2.0, NSUT', result: 'Winner', detail: '500+ participants · 8-hour hackathon' },
-    { title: 'IEEE T-Hacks 8.0', result: '2nd place', detail: '800+ participants · 24-hour hackathon' },
+    {
+      title: 'Blueprint 2026, eDC IIT Delhi',
+      result: 'Selected for incubation',
+      detail: "Emergence, eDC IIT Delhi's startup incubation cohort",
+      lead: true,
+    },
+    { title: 'Shloka Decode 2.0, NSUT', result: 'Winner', detail: '500+ participants · 8-hour hackathon', lead: false },
+    { title: 'IEEE T-Hacks 8.0', result: 'Winners', detail: '800+ participants · 24-hour hackathon', lead: false },
   ],
-  also: [
-    'Pitch Tank, DU — 2nd place',
-    "eDC's Blueprint 6.0, IIT Delhi — Delhi Regionals",
-    'B-Plan e-Summit 2025, DTU — Top 10',
-  ],
+  also: ["VibeForge'26 — Winner", 'Bytecode — 4th position', 'B-Plan e-Summit 2025, DTU — Top 10'],
 } as const
 
-/** Outside the terminal. `note` is optional — the label stands alone without it. */
-export const outside = [
-  { id: 'hackathons', label: 'Hackathons', note: 'Weekends that end with a working product.' },
-  // TODO(Atharv): one line each for these two
-  { id: 'taekwondo', label: 'International Taekwondo', note: '' },
-  { id: 'basketball', label: 'Basketball', note: '' },
-  { id: 'leadership', label: 'Technical leadership', note: 'Leading the engineering side at Nexera.' },
-] as const
+export interface OutsideItem {
+  id: string
+  label: string
+  note: string
+  /** optional short lists under the note, e.g. what is on repeat */
+  lists?: { heading: string; items: string[] }[]
+}
+
+/** Outside the terminal: the person, not the engineer. Keep it to three. */
+export const outside: OutsideItem[] = [
+  {
+    id: 'taekwondo',
+    label: 'Taekwondo',
+    note: 'Three-time international medalist for India, with multiple national and state medals.',
+  },
+  {
+    id: 'basketball',
+    label: 'Basketball',
+    note: 'District-level player. Still hooping every weekend.',
+  },
+  {
+    id: 'music',
+    label: 'Music',
+    note: 'Drake and The Weeknd, on repeat.',
+    lists: [
+      { heading: 'The Weeknd', items: ['After Hours', 'Reflections Laughing', 'Open Hearts', 'Take My Breath'] },
+      { heading: 'Drake', items: ["Child's Play", 'Passionfruit', 'Know Yourself'] },
+    ],
+  },
+]
 
 export const interests = [
   'AR & spatial computing',
