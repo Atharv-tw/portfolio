@@ -130,3 +130,20 @@
     grid-template-columns: 1fr;
   }
 }
+
+@media (max-width: 760px) {
+  .track-grid {
+    margin-top: 1.6rem;
+  }
+  .track-activity {
+    margin-top: 2rem;
+  }
+  /* swipe it; no bar under it */
+  .track-activity .heatmap-scroll {
+    scrollbar-width: none;
+    padding-bottom: 0;
+  }
+  .track-activity .heatmap-scroll::-webkit-scrollbar {
+    display: none;
+  }
+}
