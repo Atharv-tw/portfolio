@@ -22,7 +22,7 @@ export default function Motif({ project }: { project: Project }): ReactNode {
     case 'arcade':
       return <Arcade accent={project.accent} />
     case 'deck':
-      return <SwipeDeck />
+      return <SwipeDeck accent={project.accent} />
     case 'vault':
       return <Vault accent={project.accent} />
   }
