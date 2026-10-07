@@ -1,6 +1,5 @@
 import { useLayoutEffect, useRef } from 'react'
 import { experience } from '../content/resume'
-import RiseText from '../components/RiseText'
 import ScrambleText from '../components/ScrambleText'
 import { gsap, ScrollTrigger } from '../lib/gsap'
 import { usePrefersReducedMotion } from '../lib/hooks'
@@ -63,8 +62,8 @@ export default function Experience() {
     <section id="experience" data-section="experience" data-env="0.9" className="section experience">
       <div className="container">
         <div className="section-head">
-          <ScrambleText as="p" className="mono-label" text="Where I've built — 003" />
-          <RiseText as="h2" className="display-lg" text="Experience." />
+          {/* no display heading here on purpose: the first role is the headline */}
+          <ScrambleText as="h2" className="mono-label" text="Experience — 003" />
           <div className="rule" />
         </div>
 
