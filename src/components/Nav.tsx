@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { person, sections } from '../content/resume'
+import { log } from '../content/log'
 import { lockScroll, scrollToSection, unlockScroll } from '../lib/smoothScroll'
 import { sfx } from '../audio/synth'
 import { useApp } from '../store'
@@ -15,10 +16,21 @@ const clockFmt = new Intl.DateTimeFormat('en-GB', {
   timeZone: 'Asia/Kolkata',
 })
 
+/** LOG is a side door, not a section: it only shows once there is something in it (always, while developing). */
+export const hasLog = log.length > 0 || import.meta.env.DEV
+
+type NavItem = { id: string; label: string; log?: boolean }
+
+const items: NavItem[] = sections.filter((s) => s.nav).map((s) => ({ id: s.id, label: s.label }))
+if (hasLog) items.splice(items.length - 1, 0, { id: 'log', label: 'Log', log: true })
+
 export default function Nav() {
   const active = useApp((s) => s.section)
+  const logOpen = useApp((s) => s.logOpen)
+  const setLogOpen = useApp((s) => s.setLogOpen)
+  const menuOpen = useApp((s) => s.menuOpen)
+  const setMenuOpen = useApp((s) => s.setMenuOpen)
   const [time, setTime] = useState(() => clockFmt.format(new Date()))
-  const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
     const id = window.setInterval(() => setTime(clockFmt.format(new Date())), 1000)
@@ -36,13 +48,22 @@ export default function Nav() {
       window.removeEventListener('keydown', onKey)
       unlockScroll()
     }
-  }, [menuOpen])
+  }, [menuOpen, setMenuOpen])
 
-  const go = (id: string) => {
+  const go = (item: NavItem) => {
+    const wasMenu = menuOpen
     setMenuOpen(false)
-    // wait one tick so unlockScroll runs before the scroll starts
-    window.setTimeout(() => scrollToSection(id), 40)
+    // wait one tick so unlockScroll runs before the scroll (or the next lock) starts
+    window.setTimeout(
+      () => {
+        if (item.log) setLogOpen(true)
+        else scrollToSection(item.id)
+      },
+      wasMenu ? 40 : 0,
+    )
   }
+
+  const isActive = (item: NavItem) => (item.log ? logOpen : !logOpen && active === item.id)
 
   return (
     <>
@@ -57,18 +78,16 @@ export default function Nav() {
         </button>
 
         <nav className="nav-links" aria-label="Sections">
-          {sections
-            .filter((s) => s.id !== 'hero')
-            .map((s) => (
-              <button
-                key={s.id}
-                className={`nav-link ${active === s.id ? 'is-active' : ''}`}
-                onClick={() => scrollToSection(s.id)}
-                data-sfx="click"
-              >
-                {s.label}
-              </button>
-            ))}
+          {items.map((item) => (
+            <button
+              key={item.id}
+              className={`nav-link ${isActive(item) ? 'is-active' : ''}`}
+              onClick={() => go(item)}
+              data-sfx="click"
+            >
+              {item.label}
+            </button>
+          ))}
         </nav>
 
         <div className="nav-right">
@@ -87,7 +106,7 @@ export default function Nav() {
           <button
             className={`nav-burger ${menuOpen ? 'is-open' : ''}`}
             onClick={() => {
-              setMenuOpen((v) => !v)
+              setMenuOpen(!menuOpen)
               sfx.whoosh()
             }}
             aria-label={menuOpen ? 'Close menu' : 'Open menu'}
@@ -112,18 +131,18 @@ export default function Nav() {
             aria-label="Menu"
           >
             <nav className="mobile-menu-links" aria-label="Sections">
-              {sections.map((s, i) => (
+              {items.map((item, i) => (
                 <motion.button
-                  key={s.id}
-                  className={`mobile-menu-link ${active === s.id ? 'is-active' : ''}`}
+                  key={item.id}
+                  className={`mobile-menu-link ${isActive(item) ? 'is-active' : ''}`}
                   initial={{ y: 34, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.05 + i * 0.05, ease: [0.16, 1, 0.3, 1], duration: 0.5 }}
-                  onClick={() => go(s.id)}
+                  onClick={() => go(item)}
                   data-sfx="click"
                 >
                   <span className="mono-label mobile-menu-index">0{i + 1}</span>
-                  {s.label}
+                  {item.label}
                 </motion.button>
               ))}
             </nav>
