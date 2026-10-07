@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { person, sections } from '../content/resume'
+import { person, projects, sections } from '../content/resume'
 import { scrollToSection } from '../lib/smoothScroll'
 import { sfx } from '../audio/synth'
 import { useApp } from '../store'
+import { hasLog } from './Nav'
 import './CommandPalette.css'
 
 interface Action {
@@ -18,6 +19,8 @@ export default function CommandPalette() {
   const setOpen = useApp((s) => s.setPaletteOpen)
   const toggleMuted = useApp((s) => s.toggleMuted)
   const setBotMood = useApp((s) => s.setBotMood)
+  const setCaseOpenId = useApp((s) => s.setCaseOpenId)
+  const setLogOpen = useApp((s) => s.setLogOpen)
   const [query, setQuery] = useState('')
   const [cursor, setCursor] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -31,6 +34,22 @@ export default function CommandPalette() {
         hint: 'navigate',
         run: () => scrollToSection(s.id),
       })),
+      ...projects.map((p) => ({
+        id: `open-${p.id}`,
+        label: `Open project: ${p.name}`,
+        hint: p.tier === 'featured' ? 'featured' : 'more work',
+        run: () => setCaseOpenId(p.id),
+      })),
+      ...(hasLog
+        ? [
+            {
+              id: 'log',
+              label: 'Open build log',
+              hint: 'field notes',
+              run: () => setLogOpen(true),
+            },
+          ]
+        : []),
       {
         id: 'copy-email',
         label: 'Copy email address',
@@ -78,7 +97,7 @@ export default function CommandPalette() {
         run: () => window.open(person.github.url, '_blank', 'noopener'),
       },
     ],
-    [setBotMood, toggleMuted],
+    [setBotMood, setCaseOpenId, setLogOpen, toggleMuted],
   )
 
   const filtered = useMemo(() => {
