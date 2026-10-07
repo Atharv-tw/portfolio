@@ -13,12 +13,6 @@ export const person = {
   tagline: 'I build AI systems that ship.',
   heroSub:
     'I build real systems and put them in front of real users. AI, backend and product, end to end.',
-  /** the facts under the name — four at most */
-  heroProof: [
-    { value: '3K+', label: 'daily users on Nexera' },
-    { value: 'CTO', label: '@ Nexera' },
-    { value: '5×', label: 'hackathon podiums' },
-  ],
   location: 'New Delhi, India',
   timezone: 'Asia/Kolkata',
   email: 'tiwariatharv01042005@gmail.com',
