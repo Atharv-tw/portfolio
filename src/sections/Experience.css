@@ -1,3 +1,8 @@
+/* arrives after a wide gap, and opens on the role itself instead of a title */
+.experience {
+  padding-top: clamp(10rem, 34vh, 21rem);
+}
+
 .xp-timeline {
   --spine: 5px;
   position: relative;
