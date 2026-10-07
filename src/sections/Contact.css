@@ -1,49 +1,108 @@
 .contact {
-  min-height: 92svh;
+  min-height: 100svh;
   display: flex;
-  align-items: center;
-  background: radial-gradient(50% 60% at 50% 100%, rgba(0, 229, 255, 0.06), transparent 70%), var(--bg);
+  align-items: flex-end;
+  padding-top: clamp(5.5rem, 12vh, 8rem);
+  padding-bottom: clamp(1.4rem, 3.4vh, 2.2rem);
 }
 
 .contact-inner {
   display: flex;
   flex-direction: column;
-  gap: 1.6rem;
+  gap: clamp(1.1rem, 2.8vh, 2rem);
+}
+
+.contact-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(9rem, 26vw, 24rem);
+  align-items: end;
+  gap: clamp(1rem, 3vw, 3rem);
 }
 
 .contact-heading {
+  font-size: clamp(3rem, 10.4vw, 11rem);
+  font-weight: 760;
+  line-height: 0.9;
+  letter-spacing: -0.03em;
   text-transform: uppercase;
 }
 
-.contact-sub {
-  max-width: 40ch;
+.contact-seat {
+  height: clamp(190px, 38svh, 400px);
+}
+
+.contact-open {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.8rem 1.2rem;
+}
+
+.contact-open ul {
+  list-style: none;
+}
+
+.contact-open .chip {
+  color: var(--ink);
+}
+
+/* the address is the call to action — big enough to be the thing you click */
+.contact-email {
+  align-self: flex-start;
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.4rem;
+  max-width: 100%;
+  padding: clamp(0.9rem, 2vh, 1.4rem) 0;
+  border-top: 1px solid var(--line-strong);
+  border-bottom: 1px solid var(--line-strong);
+  text-align: left;
+}
+
+.contact-email-text {
+  font-size: clamp(1.15rem, 3.3vw, 3rem);
+  font-weight: 620;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+  background: linear-gradient(currentColor, currentColor) left bottom / 0 2px no-repeat;
+  transition: background-size 0.5s var(--ease-out);
+}
+
+.contact-email:hover .contact-email-text {
+  background-size: 100% 2px;
+}
+
+.contact-email-hint {
+  font-size: 0.62rem;
+  color: var(--ink-faint);
+}
+
+.contact-email.is-copied .contact-email-hint {
+  color: var(--ink);
 }
 
 .contact-actions {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 1rem;
-  margin-top: 1rem;
+  gap: 0.8rem;
 }
 
-.contact-copy {
-  text-transform: none;
-  letter-spacing: 0.05em;
+.contact-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
+  flex-wrap: wrap;
+  margin-top: clamp(1rem, 3.4vh, 2.4rem);
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--line);
 }
 
-.contact-copy.is-copied {
-  background: #2ee6a8;
-  border-color: #2ee6a8;
-}
-
-.contact-mailto {
-  font-size: 0.62rem;
-  color: var(--ink-faint);
-}
-
-.contact-mailto:hover {
-  color: var(--accent);
+.contact-footer .mono-label {
+  font-size: 0.6rem;
 }
 
 .contact-footer kbd {
@@ -52,29 +111,17 @@
   border: 1px solid var(--line-strong);
   border-bottom-width: 2px;
   border-radius: 5px;
-  font-size: 0.58rem;
+  font-size: 0.56rem;
 }
 
-.contact-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.5rem;
-  flex-wrap: wrap;
-  margin-top: clamp(4rem, 10vh, 7rem);
-  padding-top: 1.6rem;
-  border-top: 1px solid var(--line);
-}
-
-.contact-footer .mono-label {
-  font-size: 0.62rem;
-}
-
-.contact-footer-links {
-  display: flex;
-  gap: 1.4rem;
-}
-
-.contact-footer-links a:hover {
-  color: var(--accent);
+@media (max-width: 760px) {
+  .contact-top {
+    grid-template-columns: 1fr;
+  }
+  .contact-seat {
+    order: -1;
+    justify-self: end;
+    width: min(46vw, 13rem);
+    height: clamp(170px, 26svh, 250px);
+  }
 }
