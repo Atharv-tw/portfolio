@@ -13,6 +13,12 @@ export const person = {
   tagline: 'I build AI systems that ship.',
   heroSub:
     'I build real systems and put them in front of real users. AI, backend and product, end to end.',
+  /** the three facts at the foot of the hero — keep it to three short ones */
+  heroProof: [
+    { value: '3K+', label: 'daily users' },
+    { value: '12+', label: 'projects built' },
+    { value: 'CTO', label: '@ Nexera' },
+  ],
   location: 'New Delhi, India',
   timezone: 'Asia/Kolkata',
   email: 'tiwariatharv01042005@gmail.com',
@@ -21,12 +27,12 @@ export const person = {
   resumePdf: '/resume.pdf',
   aboutLead: "I'm Atharv. I turn ideas into things people actually use.",
   about: [
-    'Right now that means being CTO at Nexera, where I own the technical and product calls for a platform 3K+ people use every day. Around it I have built for healthcare, civic governance and fintech.',
-    'Most of my work sits where AI meets backend and product: agents that need guardrails, systems that have to stay up, interfaces someone has to understand at a glance. I am a third-year CSE student in Delhi, and I would rather ship something real over a weekend than talk about it for a month.',
+    'Right now, I’m building @ Nexera as its Founding CTO, where I lead the technical direction and product decisions for a platform used by 3K+ people every day. Along the way, I’ve built products across cybersecurity, healthcare, civic technology and fintech.',
+    'Most of my work sits at the intersection of AI, ML, systems and product — training models, building agentic applications, and engineering the infrastructure that puts them into production. I’m a third-year CSE student in Delhi, and I’d rather spend a weekend building something real than a month explaining what I could build.',
   ],
   aboutFacts: [
     { label: 'Based in', value: 'New Delhi, India' },
-    { label: 'Currently', value: 'CTO @ Nexera' },
+    { label: 'Currently', value: 'Founding CTO @ Nexera' },
     { label: 'Studying', value: 'CSE, GGSIPU — class of 2028' },
   ],
   openTo: ['Internships', 'Freelance work', 'Ambitious ideas', 'Collaborations'],
@@ -297,7 +303,7 @@ export const now = {
 export interface Role {
   id: string
   company: string
-  /** shown next to the company when there is a public site worth naming */
+  /** small line under the company: its site, or what the organisation is */
   site?: string
   title: string
   period: string
@@ -327,6 +333,21 @@ export const experience: Role[] = [
       'Built a centralized admin panel with role-based access control for premium content management.',
     ],
     tech: ['Redis', 'Node.js', 'Docker', 'RBAC', 'Job Queues'],
+  },
+  {
+    id: 'aairo',
+    company: 'AAIRO',
+    site: 'AI & Robotics Society of ADGIPS',
+    title: 'Computational Intelligence Lead',
+    // TODO(Atharv): add the start date, e.g. 'Aug 2026 — Present'
+    period: '',
+    location: 'ADGIPS',
+    current: true,
+    bullets: [
+      'Cover the AI, ML and data science domains across the society.',
+      'Lead the AI/ML integration of the society’s robotics projects.',
+    ],
+    tech: ['AI', 'ML', 'Data Science', 'Robotics'],
   },
   {
     id: 'foundu',
