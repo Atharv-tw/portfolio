@@ -82,7 +82,6 @@ To change where the page gets dark, change the `data-env` values. To pin an elem
 ### TODO for Atharv
 
 - `src/content/resume.ts` → OKEANOS and NETWM: `overview`, `built`, `why`, `results`, `topics`, `links`.
-- `src/content/resume.ts` → AAIRO role: add the start date in `period`.
 - `src/content/site.ts` → set `url` to the custom domain once it is live.
 - `public/videos/` → demo footage for the featured projects.
 - `src/content/log.ts` → first build log entries.
