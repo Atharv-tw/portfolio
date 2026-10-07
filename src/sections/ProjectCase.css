@@ -161,6 +161,18 @@
   background: #000;
 }
 
+/* a screenshot keeps its own shape: the frame wraps it instead of cropping it */
+.case-media-frame.has-still {
+  aspect-ratio: auto;
+  max-height: none;
+}
+
+.case-still {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
 .case-media-note {
   font-size: 0.56rem;
   color: var(--ink-faint);
@@ -479,6 +491,9 @@
   /* footage keeps its own shape */
   .case-media-frame.has-footage {
     aspect-ratio: 16 / 9;
+  }
+  .case-media-frame.has-still {
+    aspect-ratio: auto;
   }
   .case-specs > div {
     grid-template-columns: 1fr;
