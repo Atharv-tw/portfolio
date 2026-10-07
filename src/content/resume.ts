@@ -109,7 +109,8 @@ export interface Project {
    *   youtube: the video id (the part after youtu.be/). Plays muted, on a loop.
    *   video:   or a file of your own: '/videos/onyx.mp4' in `public/videos/`
    *   shots:   screenshots: files in `public/shots/<id>/`, listed here
-   * With no video the modal shows the live visual in its place.
+   * With no video, the first screenshot takes the big stage in the modal. With
+   * neither, the modal shows the live visual in its place.
    */
   media: { youtube?: string; video?: string; poster?: string; shots?: { src: string; alt: string }[] }
 }
@@ -429,8 +430,8 @@ export const projects: Project[] = [
     kind: 'Swipe-based developer collaboration platform',
     year: '2025',
     tier: 'archive',
-    accent: '#ff4d9d',
-    stage: '#16060e',
+    accent: '#1fb4ff',
+    stage: '#04101a',
     motif: 'deck',
     statement: 'Swipe right on your next collaborator.',
     summary:
@@ -453,7 +454,14 @@ export const projects: Project[] = [
     ],
     topics: ['React', 'Framer Motion', 'Tailwind CSS', 'Zustand', 'Firebase', 'WebSockets', 'GSAP'],
     links: { repo: '', live: 'https://codeswipe.app', caseStudy: '' },
-    media: {},
+    media: {
+      shots: [
+        {
+          src: '/shots/codeswipe/landing.webp',
+          alt: 'The Codeswipe landing page: “Your next collab starts with a swipe”, beside a stack of developer profile cards',
+        },
+      ],
+    },
   },
   {
     id: 'healthvault',
