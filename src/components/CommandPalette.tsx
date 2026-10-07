@@ -24,6 +24,7 @@ export default function CommandPalette() {
   const [query, setQuery] = useState('')
   const [cursor, setCursor] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)
+  const listRef = useRef<HTMLUListElement>(null)
   const [flash, setFlash] = useState('')
 
   const actions = useMemo<Action[]>(
@@ -134,6 +135,11 @@ export default function CommandPalette() {
     setCursor(0)
   }, [query])
 
+  // arrow keys can walk past the fold — bring the active row with them
+  useEffect(() => {
+    listRef.current?.querySelector('.palette-item.is-active')?.scrollIntoView({ block: 'nearest' })
+  }, [cursor])
+
   const runAction = (a: Action) => {
     a.run()
     if (a.id !== 'copy-email') setOpen(false)
@@ -188,7 +194,8 @@ export default function CommandPalette() {
               />
               <span className="palette-esc mono-label">esc</span>
             </div>
-            <ul className="palette-list" role="listbox">
+            {/* data-lenis-prevent: the smooth scroller owns the wheel everywhere else */}
+            <ul className="palette-list" role="listbox" ref={listRef} data-lenis-prevent>
               {filtered.length === 0 && <li className="palette-empty mono-label">nothing found</li>}
               {filtered.map((a, i) => (
                 <li key={a.id}>
