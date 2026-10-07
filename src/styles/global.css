@@ -63,6 +63,11 @@ button {
   border-radius: 2px;
 }
 
+/* focus handed back to the control a mouse user just clicked: see ProjectCase.tsx */
+[data-quiet-focus]:focus-visible {
+  outline: none;
+}
+
 /* ---------- type scale ---------- */
 .display-xl {
   font-size: clamp(3.2rem, 12.5vw, 13rem);
