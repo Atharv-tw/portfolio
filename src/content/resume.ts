@@ -38,7 +38,7 @@ export const person = {
   openTo: ['Internships', 'Freelance work', 'Ambitious ideas', 'Collaborations'],
 } as const
 
-export type ProjectMotif = 'radar' | 'depth' | 'forecast' | 'orbit' | 'arcade' | 'deck' | 'vault'
+export type ProjectMotif = 'radar' | 'depth' | 'forecast' | 'orbit' | 'arcade' | 'deck' | 'vault' | 'sequence' | 'civic'
 
 export interface ProjectResult {
   /** the big part: "~70%", "8", "36 h" */
@@ -489,20 +489,103 @@ export const projects: Project[] = [
     links: { repo: 'https://github.com/namansaini2709/Health-Vault', live: '', caseStudy: '' },
     media: {},
   },
+  {
+    id: 'outreach',
+    index: '08',
+    name: 'Outreach',
+    kind: 'Personal cold email, with limits built in',
+    year: '2026',
+    tier: 'archive',
+    accent: '#8f8cff',
+    stage: '#0b0a1a',
+    motif: 'sequence',
+    statement: 'Cold email that gets read, and knows when to stop.',
+    summary:
+      'Writes a personal cold email from your résumé and what you know about the person, sends it through your own Gmail, and stops the moment they reply.',
+    overview: [
+      'Cold email works when it is personal and fails when it is a blast. Most tools are built for the blast.',
+      'Outreach is for personal outreach only: sign in with Google, upload a résumé, add the people you want to reach and why, review each draft, and send it through Gmail. Nothing sends until you press send. There are no mailing lists and no marketing mode. The limits are not a setting; they are the product.',
+    ],
+    built: [
+      'Draft generation that combines the sender’s profile, the target’s context and hook, a chosen template and the thread so far, and picks the most relevant project as proof.',
+      'Sending that behaves: business-day scheduling, randomised times inside the sender’s window, warm-up and daily caps, and correct Gmail threading.',
+      'Hard limits enforced on the server: at most three emails to one person, ever, at least three business days apart. A reply, bounce or opt-out ends the sequence for good.',
+      'Reply tracking through Gmail push, watch renewal and reconcile sweeps. An out-of-office defers a sequence instead of killing it.',
+      'CSV and Excel import with a verdict for every row before anything is saved: duplicates, suppressed contacts, invalid addresses, rows still missing a hook.',
+      'Privacy by construction: Postgres row-level security behind every query, Google refresh tokens encrypted at rest, and recipient addresses kept as keyed HMACs.',
+      'A Next.js PWA with a workflow dashboard, reply and bounce analytics, web push reminders and optional Google Calendar sync.',
+    ],
+    why: 'The tool that helps one person write ten good emails can just as easily help them send ten thousand bad ones. This one is built so that it cannot.',
+    results: [
+      { value: '384', label: 'automated tests across the API and the scheduling core' },
+      { value: '304', label: 'commits in under three weeks' },
+      { value: '3', label: 'emails to one person, at most, ever' },
+      { value: '65', label: 'API endpoints' },
+    ],
+    topics: ['FastAPI', 'Next.js', 'PostgreSQL', 'Redis', 'Gmail API', 'Gemini', 'PWA', 'Docker'],
+    links: {
+      repo: 'https://github.com/Atharv-tw/Cold_emailer',
+      live: 'https://outreach.upgradeyourselfonline.com',
+      caseStudy: '',
+    },
+    media: {},
+  },
+  {
+    id: 'civic-setu',
+    index: '09',
+    name: 'Civic Setu',
+    kind: 'Civic issue reporting for Jharkhand',
+    year: '2025',
+    tier: 'archive',
+    accent: '#c6e84f',
+    stage: '#0f1406',
+    motif: 'civic',
+    statement: 'Report the pothole. Watch it get fixed.',
+    summary:
+      'A citizen reports a civic issue with a photo and its GPS location, then follows it stage by stage until the municipality resolves it.',
+    overview: [
+      'A complaint to a municipality usually disappears: no acknowledgement, no owner, no way of knowing whether anyone saw it.',
+      'Civic Setu connects citizens and municipal staff. A citizen reports a pothole, a dead street light or uncollected garbage from their phone, with a photo and its location. Staff triage, assign and resolve it from a dashboard, and every stage is visible to the person who reported it.',
+    ],
+    built: [
+      'Mobile app in React Native (Expo): take a photo, tag the GPS location, pick one of ten categories, then track the report and upvote or comment on others.',
+      'A report workflow with a visible status at every stage: submitted, acknowledged, assigned, in progress, resolved.',
+      'Admin dashboard in React and Material UI: a map of complaints, filters, assignment to departments and staff, and analytics.',
+      'REST API on Node.js, Express and MongoDB with JWT authentication, role-based access for citizens, staff and admins, and Cloudinary for media.',
+    ],
+    why: 'Accountability starts with being able to see what happened to your complaint. Civic Setu shows the whole path to the person who raised it.',
+    results: [
+      { value: '3', label: 'apps in one system: citizen mobile app, staff dashboard, API' },
+      { value: '5', label: 'stages every report moves through, each visible to the citizen' },
+      { value: '10', label: 'issue categories, from roads to street lights' },
+    ],
+    topics: ['React Native', 'Expo', 'React', 'Material UI', 'Node.js', 'Express', 'MongoDB', 'Leaflet', 'Cloudinary'],
+    links: { repo: 'https://github.com/Atharv-tw/CIVIC_SETU', live: '', caseStudy: '' },
+    media: {},
+  },
 ]
 
 export const featured = projects.filter((p) => p.tier === 'featured')
 export const archive = projects.filter((p) => p.tier === 'archive')
 
-/** What I am working on right now. Keep it to three. */
-export const now = {
+export interface NowItem {
+  id: string
+  name: string
+  line: string
+  /** opens this project's modal when set */
+  projectId: string
+  /** or a link out, for work that is not one of the projects yet */
+  href?: string
+}
+
+/** What I am working on right now. Keep it short. */
+export const now: { updated: string; items: NowItem[] } = {
   updated: 'October 2026',
   items: [
     {
       id: 'okeanos',
       name: 'OKEANOS',
       line: 'Satellite ocean intelligence. Reconstructing subsurface temperature from the surface.',
-      /** opens this project's modal when set */
       projectId: 'okeanos',
     },
     {
@@ -512,13 +595,20 @@ export const now = {
       projectId: 'netwm',
     },
     {
+      id: 'asha-saathi',
+      name: 'Asha Saathi',
+      line: 'An offline, voice-first AI companion for ASHA health workers. It remembers every household and plans the day’s visits.',
+      projectId: '',
+      href: 'https://github.com/Atharv-tw/ASHA-WORKERS-HELP-AI',
+    },
+    {
       id: 'personal-ai',
       name: 'Personal AI',
       line: 'Agentic systems, and where personal AI goes next.',
       projectId: '',
     },
   ],
-} as const
+}
 
 export interface Role {
   id: string
