@@ -91,3 +91,9 @@
     grid-row: 1;
   }
 }
+
+@media (max-width: 760px) {
+  .now {
+    padding: 2.4rem 0 3.4rem;
+  }
+}
