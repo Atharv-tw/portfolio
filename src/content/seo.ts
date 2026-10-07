@@ -106,12 +106,27 @@ function projectHtml(p: Project) {
     p.links.live && `<a href="${esc(p.links.live)}">Live</a>`,
     p.links.caseStudy && `<a href="${esc(p.links.caseStudy)}">Case study</a>`,
   ].filter(Boolean)
+  if (p.media.youtube) links.push(`<a href="https://youtu.be/${esc(p.media.youtube)}">Demo video</a>`)
+  // the technical sections: specs and points as lists, a table as a real table
+  const deep = (p.deep ?? []).map((d) =>
+    [
+      `<h4>${esc(d.title)}</h4>`,
+      li((d.specs ?? []).map((x) => `${x.label}: ${x.value}`)),
+      d.table
+        ? `<table><thead><tr>${d.table.head.map((h) => `<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${d.table.rows
+            .map((r) => `<tr>${r.map((c) => `<td>${esc(c)}</td>`).join('')}</tr>`)
+            .join('')}</tbody></table>${d.table.note ? `<p>${esc(d.table.note)}</p>` : ''}`
+        : '',
+      li(d.points ?? []),
+    ].join(''),
+  )
   return [
     `<article><h3>${esc(p.name)} — ${esc(p.kind)}</h3>`,
     `<p><strong>${esc(p.statement)}</strong></p>`,
-    ...[p.summary, ...p.overview, p.why].filter(Boolean).map((t) => `<p>${esc(t)}</p>`),
+    ...[p.summary, p.context, ...p.overview, p.why].filter(Boolean).map((t) => `<p>${esc(t as string)}</p>`),
     li(p.built),
     li(p.results.map((r) => `${r.value} ${r.label}`)),
+    ...deep,
     p.topics.length ? `<p>Stack: ${esc(p.topics.join(', '))}</p>` : '',
     links.length ? `<p>${links.join(' · ')}</p>` : '',
     '</article>',
