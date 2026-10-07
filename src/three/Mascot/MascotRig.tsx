@@ -296,6 +296,10 @@ export default function MascotRig() {
 
     const cfg = s.cfg
     if (!cfg || !root.current.visible) {
+      // He can have left his seat (no cfg) while still a few pixels tall. Hide
+      // him now: otherwise that last small frame is what the wipe below misses,
+      // and it stays on screen as a speck until he next appears.
+      root.current.visible = false
       shadow.current.visible = false
       floaties.current.visible = false
       rings.current.visible = false
