@@ -1,6 +1,6 @@
 import { useEffect, useRef, type ReactNode } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { projects, type Project } from '../content/resume'
+import { projects, type Project, type ProjectDeep } from '../content/resume'
 import Awaiting from '../components/Awaiting'
 import ProjectMedia from '../components/ProjectMedia'
 import { lockScroll, unlockScroll } from '../lib/smoothScroll'
@@ -8,7 +8,7 @@ import { sfx } from '../audio/synth'
 import { useApp } from '../store'
 import './ProjectCase.css'
 
-const FOCUSABLE = 'a[href], button:not([disabled]), video[controls], [tabindex]:not([tabindex="-1"])'
+const FOCUSABLE = 'a[href], button:not([disabled]), video[controls], iframe, [tabindex]:not([tabindex="-1"])'
 
 /** a titled block that disappears when it has nothing to say */
 function Block({ title, show, awaiting, children }: { title: string; show: boolean; awaiting?: boolean; children: ReactNode }) {
@@ -17,6 +17,100 @@ function Block({ title, show, awaiting, children }: { title: string; show: boole
     <section className="case-block">
       <h4 className="mono-label case-sub">{title}</h4>
       {children}
+    </section>
+  )
+}
+
+/** One "under the hood" section: specs, points and a table, in whatever mix it has. */
+function Deep({ section }: { section: ProjectDeep }) {
+  const { title, specs, points, table } = section
+  return (
+    <section className={`case-deep-block${table ? ' is-wide' : ''}`}>
+      <h4 className="mono-label case-sub">{title}</h4>
+      {table && (
+        <div className="case-table-wrap">
+          <table className="case-table">
+            <thead>
+              <tr>
+                {table.head.map((h) => (
+                  <th key={h} scope="col">
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {table.rows.map((row, r) => (
+                <tr key={row[0]} className={table.ours?.includes(r) ? 'is-ours' : undefined}>
+                  {row.map((cell, c) =>
+                    c === 0 ? (
+                      <th key={c} scope="row">
+                        {cell}
+                      </th>
+                    ) : (
+                      <td key={c}>{cell}</td>
+                    ),
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {table.note && <p className="case-table-note">{table.note}</p>}
+        </div>
+      )}
+      {specs && (
+        <dl className="case-specs">
+          {specs.map((s) => (
+            <div key={s.label}>
+              <dt>{s.label}</dt>
+              <dd>{s.value}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
+      {points && (
+        <ul className="case-bullets">
+          {points.map((b) => (
+            <li key={b.slice(0, 24)}>{b}</li>
+          ))}
+        </ul>
+      )}
+    </section>
+  )
+}
+
+/**
+ * Screenshots. Listed in `media.shots`; until a featured project has some,
+ * `npm run dev` shows the empty frames so the gap is visible. A visitor never
+ * sees them.
+ */
+function Shots({ project }: { project: Project }) {
+  const shots = project.media.shots ?? []
+  if (shots.length === 0) {
+    if (!import.meta.env.DEV || project.tier !== 'featured') return null
+    return (
+      <section className="case-shots-block" data-awaiting>
+        <h4 className="mono-label case-sub">Screens</h4>
+        <div className="case-shots">
+          {['01', '02', '03'].map((n) => (
+            <div key={n} className="case-shot is-empty mono-label">
+              Screenshot {n} — add to public/shots/{project.id}/ and list it in media.shots
+            </div>
+          ))}
+        </div>
+      </section>
+    )
+  }
+  return (
+    <section className="case-shots-block">
+      <h4 className="mono-label case-sub">Screens</h4>
+      <div className="case-shots">
+        {shots.map((shot) => (
+          <figure key={shot.src} className="case-shot">
+            <img src={shot.src} alt={shot.alt} loading="lazy" decoding="async" />
+          </figure>
+        ))}
+      </div>
     </section>
   )
 }
@@ -42,6 +136,7 @@ function CaseBody({ project }: { project: Project }) {
           {project.name}
         </h3>
         <p className="case-statement">{project.statement}</p>
+        {project.context && <p className="mono-label case-context">{project.context}</p>}
       </div>
 
       <ProjectMedia project={project} />
@@ -103,6 +198,19 @@ function CaseBody({ project }: { project: Project }) {
           </Block>
         </aside>
       </div>
+
+      {project.deep && project.deep.length > 0 && (
+        <div className="case-deep">
+          <p className="mono-label case-deep-label">Under the hood</p>
+          <div className="case-deep-grid">
+            {project.deep.map((d) => (
+              <Deep key={d.title} section={d} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      <Shots project={project} />
     </>
   )
 }
