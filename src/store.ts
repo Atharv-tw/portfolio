@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { SectionId } from './content/resume'
+import type { SceneId, SectionId } from './content/resume'
 
 export type BotMood = 'idle' | 'happy' | 'dizzy' | 'sleep' | 'wave' | 'flip' | 'party'
 
@@ -11,15 +11,19 @@ interface AppState {
   toggleMuted: () => void
   section: SectionId
   setSection: (s: SectionId) => void
+  /** the section, or the featured project currently on stage — drives the bot */
+  scene: SceneId
+  setScene: (s: SceneId) => void
   botMood: BotMood
   setBotMood: (m: BotMood) => void
-  /** bot steps aside while an interactive 3D panel owns the screen */
-  botSuppressed: boolean
-  setBotSuppressed: (v: boolean) => void
   paletteOpen: boolean
   setPaletteOpen: (v: boolean) => void
   caseOpenId: string | null
   setCaseOpenId: (id: string | null) => void
+  logOpen: boolean
+  setLogOpen: (v: boolean) => void
+  menuOpen: boolean
+  setMenuOpen: (v: boolean) => void
 }
 
 const storedMute =
@@ -37,15 +41,19 @@ export const useApp = create<AppState>((set) => ({
     }),
   section: 'hero',
   setSection: (section) => set({ section }),
+  scene: 'hero',
+  setScene: (scene) => set({ scene }),
   botMood: 'idle',
   setBotMood: (botMood) => set({ botMood }),
-  botSuppressed: false,
-  setBotSuppressed: (botSuppressed) => set({ botSuppressed }),
 
   paletteOpen: false,
   setPaletteOpen: (paletteOpen) => set({ paletteOpen }),
   caseOpenId: null,
   setCaseOpenId: (caseOpenId) => set({ caseOpenId }),
+  logOpen: false,
+  setLogOpen: (logOpen) => set({ logOpen }),
+  menuOpen: false,
+  setMenuOpen: (menuOpen) => set({ menuOpen }),
 }))
 
 // dev-only handle for poking at state from the console; stripped from builds
