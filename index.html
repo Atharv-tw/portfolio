@@ -4,28 +4,25 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#f4f0e8" />
-    <title>Atharv Tiwari — AI / ML Engineer × Product Builder</title>
-    <meta name="description" content="Atharv Tiwari builds AI systems that ship. CTO @ Nexera, 3K+ daily users. Featured work: Onyx, OKEANOS, NETWM, AI Health Companion." />
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="Atharv Tiwari — AI / ML Engineer × Product Builder" />
-    <meta property="og:description" content="I build AI systems that ship. CTO @ Nexera, hackathon podiums, and a small robot who lives on this site." />
-    <meta property="og:image" content="/og.jpg" />
-    <meta name="twitter:card" content="summary_large_image" />
+    <!-- title, description, social cards and structured data are generated at
+         build time from src/content/site.ts and resume.ts (see vite.config.ts) -->
+    <title>Atharv Tiwari</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script>
+      document.documentElement.classList.add('js')
+    </script>
     <style>
       html { background: #f4f0e8; }
+      /* #root ships with a plain-HTML copy of the page for crawlers and for
+         visitors without JavaScript. With scripts on, the app replaces it, so
+         keep it out of sight until then rather than flashing unstyled text. */
+      .prerender { max-width: 44rem; margin: 0 auto; padding: 3rem 1.25rem; font-family: system-ui, sans-serif; line-height: 1.6; color: #0e0e11; }
+      .prerender a { color: inherit; text-decoration: underline; }
+      .js .prerender { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
     </style>
   </head>
   <body>
     <div id="root"></div>
-    <noscript>
-      <div style="color:#0e0e11;font-family:system-ui;padding:4rem;text-align:center">
-        <h1>Atharv Tiwari</h1>
-        <p>AI / ML Engineer × Product Builder — New Delhi.</p>
-        <p>This portfolio is an interactive 3D experience and needs JavaScript.
-           Meanwhile: <a style="color:#0e0e11;text-decoration:underline" href="https://github.com/Atharv-tw">github.com/Atharv-tw</a></p>
-      </div>
-    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
