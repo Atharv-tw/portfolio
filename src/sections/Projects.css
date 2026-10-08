@@ -41,6 +41,19 @@
   overflow: hidden;
 }
 
+/*
+ * A card the next one has fully covered keeps its shell, which is the edge
+ * that shows above the stack, and drops what is inside it. With no box, its
+ * canvas leaves the viewport as far as the motif is concerned, and the loop
+ * stops. Only where the cards stack: below 980px a panel takes its height
+ * from this content.
+ */
+@media (min-width: 981px) {
+  .project-card[data-covered] .project-grid {
+    display: none;
+  }
+}
+
 .project-grid {
   width: 100%;
   display: grid;
