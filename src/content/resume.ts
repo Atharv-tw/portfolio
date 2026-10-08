@@ -28,7 +28,7 @@ export const person = {
   aboutLead: "I'm Atharv. I turn ideas into things people actually use.",
   about: [
     'Right now, I’m building @ Nexera as its Founding CTO, where I lead the technical direction and product decisions for a platform used by 3K+ people every day. Along the way, I’ve built products across cybersecurity, healthcare, civic technology and fintech.',
-    'Most of my work sits at the intersection of AI, ML, systems and product — training models, building agentic applications, and engineering the infrastructure that puts them into production. I’m a third-year CSE student in Delhi, and I’d rather spend a weekend building something real than a month explaining what I could build.',
+    'Most of my work sits at the intersection of AI, ML, systems and product — training models, building agentic applications, and engineering the infrastructure that puts them into production.',
   ],
   aboutFacts: [
     { label: 'Based in', value: 'New Delhi, India' },
