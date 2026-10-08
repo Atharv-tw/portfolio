@@ -1,6 +1,7 @@
 /**
- * Builds public/og.jpg, the image link previews show: the real hero, rendered
- * in a headless browser and tidied for a share card (no nav, no buttons).
+ * Builds public/og.jpg, the image link previews show: the real head of the
+ * About section (the opening line and the photo), rendered in a headless
+ * browser and tidied for a share card (no nav, nothing else of the page).
  *
  *   npm run og                  the live site (url in src/content/site.ts)
  *   npm run og -- <url>         any other address, e.g. http://localhost:4173
@@ -19,15 +20,15 @@ const siteUrl = /url:\s*'([^']+)'/.exec(readFileSync(join(root, 'src/content/sit
 const url = process.argv[2] ?? siteUrl
 const out = join(root, 'public/og.jpg')
 
-// the card is 1200 × 630; the page is laid out a little wider and drawn at 2× so the type stays sharp
+// the card is 1200 × 630, drawn at 2× so the type stays sharp
 const CARD = { w: 1200, h: 630 }
-const VIEW = { w: 1400, h: 735, scale: 2 }
+const VIEW = { w: 1200, h: 630, scale: 2 }
 const PORT = 9333
 
-/** what a share card should not carry: live-page controls */
+/** what a share card should not carry: live-page controls, the bot's canvas, the rest of the section */
 const TIDY = `
-  .nav-links, .nav-right, .cursor-dot, .cursor-ring, .cursor-label { visibility: hidden !important; }
-  .hero-actions { display: none !important; }
+  .nav, .cursor-dot, .cursor-ring, .cursor-label, .scene-canvas, .mascot-layer { visibility: hidden !important; }
+  .hero, .about-grid, .about-interests { visibility: hidden !important; }
 `
 
 const browser = ['brave-browser', 'google-chrome', 'google-chrome-stable', 'chromium', 'chromium-browser'].find(
@@ -112,29 +113,24 @@ try {
   )
   if (!entered) throw new Error(`No entry button at ${url}: is the site up?`)
 
-  // The bot dozes off when nobody has moved for 30 seconds, and a slow machine can take that long.
-  // A pointer over the name keeps him awake, and looking that way.
-  let nudges = 0
-  const nudge = () =>
-    send('Input.dispatchMouseEvent', {
-      type: 'mouseMoved',
-      x: Math.round(VIEW.w * 0.4) + (nudges++ % 2),
-      y: Math.round(VIEW.h * 0.52),
-    })
-
-  // the name rises, the field sweeps in, the bot takes his seat
-  await nudge()
-  await sleep(6500)
-  await nudge()
-  // the kicker decodes frame by frame, and frames are slow without a GPU: wait for its last letter
-  await until(
-    `(() => { const k = document.querySelector('.hero-kicker'); return !!k && !/[!<>\\\\/\\[\\]{}=+*^?#_—-]{2,}/.test(k.textContent) })()`,
-    100,
-    300,
-  )
+  // the head of About, centred in the card, once its line has risen and the photo has loaded
+  await sleep(2500)
   await js(`(() => { const s = document.createElement('style'); s.textContent = ${JSON.stringify(TIDY)}; document.head.appendChild(s) })()`)
-  await nudge()
-  await sleep(2600)
+  const centre = `(() => {
+    const head = document.querySelector('.about-head'); if (!head) return false
+    const r = head.getBoundingClientRect()
+    window.scrollTo(0, Math.round(r.top + window.scrollY + r.height / 2 - window.innerHeight / 2)); return true
+  })()`
+  if (!(await js(centre))) throw new Error(`No About section at ${url}.`)
+  await sleep(3500)
+  await js(centre)
+  const loaded = await until(
+    `(() => { const i = document.querySelector('.about-photo'); return !!i && i.complete && i.naturalWidth > 0 })()`,
+    60,
+    250,
+  )
+  if (!loaded) throw new Error('The About photo did not load.')
+  await sleep(2000)
 
   const shot = await send('Page.captureScreenshot', { format: 'png' })
   if (!shot.result?.data) throw new Error('The browser returned no image.')
