@@ -68,6 +68,8 @@ The app renders in the browser, and most AI crawlers and link previews do not ru
 - Inside `#root`: a plain-HTML copy of the whole page. Crawlers and visitors without JavaScript read it; the app replaces it as soon as it mounts.
 - `robots.txt` (everyone allowed, AI crawlers named), `sitemap.xml`, and `llms.txt` (the page as short markdown).
 
+**The share image** (`public/og.jpg`, what link previews show) is the real hero, rendered in a headless browser with the nav and buttons hidden. Rebuild it whenever the hero changes: `npm run og` captures the live site, `npm run og -- http://localhost:4173` a local preview. It needs Brave, Chrome or Chromium installed.
+
 **When the custom domain is connected:** change `url` in `src/content/site.ts`. That one line drives the canonical URL, share cards, sitemap and robots. Then add the domain in Google Search Console and Bing Webmaster Tools and submit `/sitemap.xml` (ChatGPT search leans on Bing's index).
 
 ## How the background works
@@ -96,7 +98,6 @@ To change where the page gets dark, change the `data-env` values. To pin an elem
 - `public/shots/<project id>/` → screenshots for the four featured projects, listed in `media.shots`.
 - `src/content/site.ts` → set `url` to the custom domain once it is live.
 - `src/content/log.ts` → first build log entries.
-- `public/og.jpg` still shows the old design; replace it with a capture of the new hero.
 - Refresh `public/resume.pdf` whenever the résumé changes.
 - Optional: refresh `public/github-fallback.json` occasionally (`https://github-contributions-api.jogruber.de/v4/Atharv-tw?y=last`).
 
