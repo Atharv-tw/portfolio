@@ -8,9 +8,19 @@ export default function About() {
   return (
     <section id="about" data-section="about" data-env="0.06" className="section about">
       <div className="container">
-        <div className="section-head">
+        <div className="section-head about-head">
           <ScrambleText as="p" className="mono-label" text="About — 001" />
           <RiseText as="h2" className="display-lg about-lead" text={person.aboutLead} />
+          {/* stands on the rule, the way the bot sits on the one below */}
+          <img
+            className="about-photo"
+            src="/images/atharv.webp"
+            alt={`${person.name} at a laptop`}
+            width={800}
+            height={1000}
+            loading="lazy"
+            decoding="async"
+          />
           <div className="rule" />
         </div>
 
