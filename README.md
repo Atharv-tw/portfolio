@@ -74,9 +74,11 @@ The app renders in the browser, and most AI crawlers and link previews do not ru
 
 ## How the background works
 
-Sections and project stages carry `data-env="0…1"` (0 = paper, 1 = void). `environment.ts` interpolates between them with scroll and writes `--bg`. Text colour does not fade with it: `<html data-env>` flips once between a light and a dark ink set. The flip happens while the featured project stages fill the screen, and those bring their own surface and ink (`.env-dark`), so page text is never left on mid-grey.
+Sections and project stages carry `data-env="0…1"` (0 = paper, 1 = void). `environment.ts` interpolates between them with scroll, paints the colour on `<html>` and writes it as `--bg` on `<body>`. Text colour does not fade with it: `<body data-env>` flips once between a light and a dark ink set. The flip happens while the featured project stages fill the screen, and those bring their own surface and ink (`.env-dark`), so page text is never left on mid-grey.
 
 To change where the page gets dark, change the `data-env` values. To pin an element to one ink set regardless of scroll, give it `.env-light` or `.env-dark`.
+
+**Keep the live values off `<html>`, and keep the sections pinned.** Each section gets its own `--bg` and ink (`data-ink`) from its place on the ramp, set once by `environment.ts`, so the values that follow the scroll on `<body>` only reach the nav and the overlays. Both halves matter for scroll smoothness: an inherited change on `<html>` restyles the whole document (30–50 ms here), and so does one on `<body>` if the sections inherit it. A new top-level block that sits on the page ground needs `data-section` and a `data-env` to be pinned like the rest.
 
 ## The robot
 
