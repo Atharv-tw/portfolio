@@ -4,7 +4,7 @@ An interactive portfolio that starts on warm white and ends on black, with a sma
 
 **Live: [atharvportfolio-wheat.vercel.app](https://atharvportfolio-wheat.vercel.app)**
 
-[![The hero: the name in large type on warm white, the robot standing beside it](public/og.jpg)](https://atharvportfolio-wheat.vercel.app)
+[![The opening line of the About section in large type on warm white, beside a black-and-white photo of Atharv](public/og.jpg)](https://atharvportfolio-wheat.vercel.app)
 
 ## What is in it
 
@@ -87,7 +87,7 @@ The app renders in the browser, and most AI crawlers and link previews do not ru
 - Inside `#root`: a plain-HTML copy of the whole page. Crawlers and visitors without JavaScript read it; the app replaces it as soon as it mounts.
 - `robots.txt` (everyone allowed, AI crawlers named), `sitemap.xml`, and `llms.txt` (the page as short markdown).
 
-**The share image** (`public/og.jpg`, what link previews show) is the real hero, rendered in a headless browser with the nav and buttons hidden. Rebuild it whenever the hero changes: `npm run og` captures the live site, `npm run og -- http://localhost:4173` a local preview. It needs Brave, Chrome or Chromium installed.
+**The share image** (`public/og.jpg`, what link previews show) is the real head of the About section, the opening line and the photo, rendered in a headless browser with the nav and the rest of the page hidden. Rebuild it whenever that line or the photo changes: `npm run og` captures the live site, `npm run og -- http://localhost:4173` a local preview. It needs Brave, Chrome or Chromium installed.
 
 **When the custom domain is connected:** change `url` in `src/content/site.ts`. That one line drives the canonical URL, share cards, sitemap and robots. Then add the domain in Google Search Console and Bing Webmaster Tools and submit `/sitemap.xml` (ChatGPT search leans on Bing's index).
 
