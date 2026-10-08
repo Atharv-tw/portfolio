@@ -114,14 +114,6 @@ To change where the page gets dark, change the `data-env` values. To pin an elem
 - **Easter eggs**: `Ctrl/⌘ + K` command palette (jump, open a project, copy email, bot tricks) · Konami code (↑↑↓↓←→←→BA) · click the bot · spam-click the bot · leave it alone for 30s.
 - The GitHub heatmap fetches live data client-side and silently falls back to the bundled snapshot when offline.
 
-## Still to come
-
-- Screenshots for the four featured projects (`public/shots/<project id>/`, listed in `media.shots`).
-- The build log's first entries (`src/content/log.ts`).
-- A custom domain (`url` in `src/content/site.ts`).
-
-Housekeeping: refresh `public/resume.pdf` when the résumé changes, and `public/github-fallback.json` now and then (`https://github-contributions-api.jogruber.de/v4/Atharv-tw?y=last`).
-
 ## Deploy
 
 Static output — any host works. Easiest: [Vercel](https://vercel.com) → import the repo → framework preset **Vite** → done. Netlify / GitHub Pages / Cloudflare Pages work the same way (`npm run build`, publish `dist/`).
