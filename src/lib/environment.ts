@@ -50,10 +50,14 @@ export function rampColor(t: number): RGB {
 const toHex = ([r, g, b]: RGB) => '#' + ((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1)
 
 /**
- * `--bg` is inherited by everything, so writing it restyles the whole page
- * (~5 ms here). The page colour itself is therefore painted straight onto
- * <html> every frame, and the token only follows in steps this coarse —
- * the surfaces mixed from it cannot show a difference that small.
+ * `--bg` is inherited, so writing it restyles everything that inherits it. The
+ * page colour itself is therefore painted straight onto <html> every frame,
+ * and the token only follows in steps this coarse — the surfaces mixed from it
+ * cannot show a difference that small.
+ *
+ * The token and the ink flip go on <body>, not <html>: an inherited change on
+ * the root element restyles the whole document no matter what, and on <body>
+ * it stops at the sections (see pinSections).
  */
 const TOKEN_STEP = 6
 
@@ -81,7 +85,31 @@ function flowTop(el: HTMLElement) {
   return y
 }
 
+/**
+ * Each section holds the ground and ink of its own place on the ramp, set once
+ * here, so the live values on <body> reach only what floats over the page (the
+ * nav, overlays). Without this every step of `--bg` and every ink flip restyled
+ * the whole document, 30–50 ms a time, and the Work section, where the page
+ * goes from light to dark, does that some thirty times.
+ *
+ * Nothing is lost by it: page-level content is only on screen near its own
+ * section's place on the ramp, where the live colour is within a few levels of
+ * this one.
+ */
+function pinSections() {
+  for (const el of document.querySelectorAll<HTMLElement>('[data-section]')) {
+    // a section without its own place (Work) takes the one it opens on
+    const v = Number(el.dataset.env ?? el.querySelector<HTMLElement>('[data-env]')?.dataset.env)
+    if (!Number.isFinite(v)) continue
+    const hex = toHex(rampColor(v))
+    const ink = v > FLIP ? 'dark' : 'light'
+    if (el.style.getPropertyValue('--bg') !== hex) el.style.setProperty('--bg', hex)
+    if (el.dataset.ink !== ink) el.dataset.ink = ink
+  }
+}
+
 export function measureEnvironment() {
+  pinSections()
   anchors = Array.from(document.querySelectorAll<HTMLElement>('[data-env]'))
     .map((el) => ({ y: flowTop(el) + el.offsetHeight / 2, v: Number(el.dataset.env) }))
     .filter((a) => Number.isFinite(a.v))
@@ -107,19 +135,19 @@ export function updateEnvironment() {
   }
   env.t = t
 
-  const root = document.documentElement
+  const host = document.body
   const rgb = rampColor(t)
   const hex = toHex(rgb)
   if (hex !== lastHex) {
     lastHex = hex
-    root.style.backgroundColor = hex
+    document.documentElement.style.backgroundColor = hex
   }
 
   const dark = env.dark ? t > FLIP - FLIP_BAND : t > FLIP + FLIP_BAND
-  const flipped = dark !== env.dark || !root.dataset.env
+  const flipped = dark !== env.dark || !host.dataset.env
   if (flipped) {
     env.dark = dark
-    root.dataset.env = dark ? 'dark' : 'light'
+    host.dataset.env = dark ? 'dark' : 'light'
   }
 
   const drift = tokenRgb ? Math.max(...rgb.map((c, i) => Math.abs(c - tokenRgb![i]))) : Infinity
@@ -127,7 +155,7 @@ export function updateEnvironment() {
   const atEnd = (t <= 0 || t >= 1) && drift > 0
   if (drift >= TOKEN_STEP || flipped || atEnd) {
     tokenRgb = rgb
-    root.style.setProperty('--bg', hex)
+    host.style.setProperty('--bg', hex)
     themeMeta ??= document.querySelector('meta[name="theme-color"]')
     themeMeta?.setAttribute('content', hex)
   }
