@@ -11,12 +11,12 @@ export const site = {
    */
   url: 'https://atharvportfolio-wheat.vercel.app',
   /** browser tab and search result title — keep it near 60 characters */
-  title: 'Atharv Tiwari — AI Engineer, ML Engineer, Full-Stack Engineer',
+  title: 'Atharv Tiwari — AI/ML Engineer and Product Builder',
   /** search result snippet — keep it near 155 characters */
   description:
-    'Atharv Tiwari is an AI engineer, ML engineer and full-stack engineer in New Delhi. Founding CTO at Nexera, building agentic AI and ML systems that ship.',
+    'Atharv Tiwari is an AI/ML engineer and product builder in New Delhi. Founding CTO at Nexera, building agentic AI and ML systems that ship.',
   /** what he is, in the words people search for */
-  jobTitles: ['AI Engineer', 'Machine Learning Engineer', 'Full-Stack Engineer'],
+  jobTitles: ['AI/ML Engineer', 'Product Builder'],
   /** topics he should be associated with */
   knowsAbout: [
     'Artificial intelligence',
