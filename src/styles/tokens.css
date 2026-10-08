@@ -1,6 +1,6 @@
 /*
  * Ink tokens are registered so the light ↔ dark flip can transition as one
- * property on :root instead of every element needing its own colour transition.
+ * property on <body> instead of every element needing its own colour transition.
  */
 @property --ink { syntax: '<color>'; inherits: true; initial-value: #0e0e11; }
 @property --ink-dim { syntax: '<color>'; inherits: true; initial-value: #4b4b54; }
@@ -10,17 +10,11 @@
 @property --on-ink { syntax: '<color>'; inherits: true; initial-value: #f4f0e8; }
 
 :root {
-  /* environment — the page runs paper → void with scroll.
-     --bg is written every scroll frame by lib/environment.ts */
+  /* environment — the page runs paper → void with scroll. This --bg is only
+     the starting value: the live one is written on <body> by lib/environment.ts */
   --paper: #f4f0e8;
   --void: #050506;
   --bg: var(--paper);
-  --bg-2: color-mix(in srgb, var(--bg) 96%, var(--ink));
-  --surface: color-mix(in srgb, var(--bg) 92%, var(--ink));
-  --surface-2: color-mix(in srgb, var(--bg) 87%, var(--ink));
-  /* backing for things that float over the page (nav pills). It leans away from
-     the ink, so they keep their contrast even where the page passes mid-grey. */
-  --float: color-mix(in srgb, color-mix(in srgb, var(--bg) 55%, var(--on-ink)) 84%, transparent);
 
   /* the bot's orange. Logo slash, live dots, selection and focus only —
      project colour lives inside each project, never here. */
@@ -48,15 +42,47 @@
   /* layout */
   --container: min(1440px, 92vw);
   --gutter: clamp(1rem, 4vw, 3rem);
+}
 
+/*
+ * The live environment sits on <body>, never on :root. The browser restyles
+ * the whole document for any inherited change on the root element, whatever
+ * the elements below it declare for themselves (30–50 ms on this page); the
+ * same change on <body> stops at the first element that sets its own value.
+ */
+body {
   transition: --ink 0.35s linear, --ink-dim 0.35s linear, --ink-faint 0.35s linear,
     --line 0.35s linear, --line-strong 0.35s linear, --on-ink 0.35s linear;
 }
 
-/* ink for light ground. `.env-light` pins it on an element regardless of scroll. */
+/*
+ * Surfaces mixed from the ground. Declared wherever a ground is set, so they
+ * resolve against that element's --bg and ink, not its parent's.
+ */
 :root,
-:root[data-env='light'],
-.env-light {
+body,
+[data-ink] {
+  --bg-2: color-mix(in srgb, var(--bg) 96%, var(--ink));
+  --surface: color-mix(in srgb, var(--bg) 92%, var(--ink));
+  --surface-2: color-mix(in srgb, var(--bg) 87%, var(--ink));
+  /* backing for things that float over the page (nav pills). It leans away from
+     the ink, so they keep their contrast even where the page passes mid-grey. */
+  --float: color-mix(in srgb, color-mix(in srgb, var(--bg) 55%, var(--on-ink)) 84%, transparent);
+}
+
+/*
+ * Ink for light ground. `.env-light` pins it on an element regardless of scroll.
+ *
+ * `data-ink` is the same pin, set by lib/environment.ts on every section along
+ * with its own --bg: a section holds the ground and ink of its place on the
+ * ramp. Only what floats over the page (the nav, overlays) follows <body>.
+ * That is what keeps scrolling cheap: a step of the live tokens restyles a few
+ * dozen elements, and stops at the sections, which are nearly the whole document.
+ */
+:root,
+body[data-env='light'],
+.env-light,
+[data-ink='light'] {
   --ink: #0e0e11;
   --ink-dim: #4b4b54;
   --ink-faint: #84848c;
@@ -68,8 +94,9 @@
 
 /* ink for dark ground. `.env-dark` is what project stages and their modal use:
    they carry their own surface, so they never follow the page. */
-:root[data-env='dark'],
-.env-dark {
+body[data-env='dark'],
+.env-dark,
+[data-ink='dark'] {
   --ink: #f4f4f6;
   --ink-dim: #a9a9b6;
   --ink-faint: #6b6b78;
@@ -80,12 +107,13 @@
 }
 
 .env-light,
-.env-dark {
+.env-dark,
+[data-ink] {
   color: var(--ink);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :root {
+  body {
     transition: none;
   }
 }
