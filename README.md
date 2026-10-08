@@ -2,16 +2,35 @@
 
 An interactive portfolio that starts on warm white and ends on black, with a small orange robot who lives in it.
 
-**Stack:** Vite · React 19 · TypeScript · Three.js (react-three-fiber + drei, single shared WebGL context) · GSAP + ScrollTrigger · Lenis smooth scroll · Framer Motion · zustand. Every sound is synthesized at runtime with the Web Audio API — zero audio files.
+**Live: [atharvportfolio-wheat.vercel.app](https://atharvportfolio-wheat.vercel.app)**
+
+[![The hero: the name in large type on warm white, the robot standing beside it](public/og.jpg)](https://atharvportfolio-wheat.vercel.app)
+
+## What is in it
+
+- **One background, driven by scroll.** The page moves from paper to near-black as you go down. Colour belongs to the projects, not to the site.
+- **A robot with a part in every scene.** He is built from primitives in Three.js, his face is drawn on a canvas, and he changes mood, pose and prop from section to section.
+- **Four featured projects as pinned, stacking stages**, each with a self-running visual drawn on a 2D canvas, and a full write-up in a modal: demo video, what was built, results and, for the ML projects, the model details.
+- **No audio files.** Every sound is synthesized at runtime with the Web Audio API.
+- **Readable without JavaScript.** The build writes the whole page into static HTML for search engines, AI crawlers and link previews.
+- **Reduced motion is respected**, and there is a command palette on `Ctrl/⌘ + K`.
+
+**Stack:** Vite · React 19 · TypeScript · Three.js (react-three-fiber + drei, single shared WebGL context) · GSAP + ScrollTrigger · Lenis smooth scroll · Framer Motion · zustand.
 
 ## Run it
 
+Needs Node 20.19 or newer (Vite 7).
+
 ```bash
+git clone https://github.com/Atharv-tw/portfolio.git
+cd portfolio
 npm install
 npm run dev        # http://localhost:5173
 npm run build      # type-check + production build → dist/
 npm run preview    # serve the production build
 ```
+
+The rest of this file is the working guide to the codebase.
 
 ## Where things live
 
@@ -95,14 +114,24 @@ To change where the page gets dark, change the `data-env` values. To pin an elem
 - **Easter eggs**: `Ctrl/⌘ + K` command palette (jump, open a project, copy email, bot tricks) · Konami code (↑↑↓↓←→←→BA) · click the bot · spam-click the bot · leave it alone for 30s.
 - The GitHub heatmap fetches live data client-side and silently falls back to the bundled snapshot when offline.
 
-### TODO for Atharv
+## Still to come
 
-- `public/shots/<project id>/` → screenshots for the four featured projects, listed in `media.shots`.
-- `src/content/site.ts` → set `url` to the custom domain once it is live.
-- `src/content/log.ts` → first build log entries.
-- Refresh `public/resume.pdf` whenever the résumé changes.
-- Optional: refresh `public/github-fallback.json` occasionally (`https://github-contributions-api.jogruber.de/v4/Atharv-tw?y=last`).
+- Screenshots for the four featured projects (`public/shots/<project id>/`, listed in `media.shots`).
+- The build log's first entries (`src/content/log.ts`).
+- A custom domain (`url` in `src/content/site.ts`).
+
+Housekeeping: refresh `public/resume.pdf` when the résumé changes, and `public/github-fallback.json` now and then (`https://github-contributions-api.jogruber.de/v4/Atharv-tw?y=last`).
 
 ## Deploy
 
 Static output — any host works. Easiest: [Vercel](https://vercel.com) → import the repo → framework preset **Vite** → done. Netlify / GitHub Pages / Cloudflare Pages work the same way (`npm run build`, publish `dist/`).
+
+## Licence and reuse
+
+The code is under the [MIT licence](LICENSE): read it, fork it, build your own from it.
+
+The content is not part of that. The text in `src/content/`, the project write-ups, the photo, the résumé and the robot as a character are mine. If you fork this, replace them with your own.
+
+## Contact
+
+Atharv Tiwari · [GitHub](https://github.com/Atharv-tw) · [LinkedIn](https://www.linkedin.com/in/atharvtw) · tiwariatharv01042005@gmail.com
