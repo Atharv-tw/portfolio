@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react'
-import { useFrame } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { gsap } from '../../lib/gsap'
 import { sfx } from '../../audio/synth'
@@ -94,11 +94,28 @@ export default function MascotRig() {
     tmpVec: new THREE.Vector3(),
   })
 
+  // three.js compiles a material the first time it is drawn, then asks the GPU
+  // for the linked program and waits for the answer: ~100 ms of a frame when a
+  // prop first shows up mid-scroll (the bubbles, the ball). Do both now, hidden
+  // props included, while the preloader is still up.
+  const gl = useThree((s) => s.gl)
+  const scene = useThree((s) => s.scene)
+  const camera = useThree((s) => s.camera)
+  useEffect(() => {
+    let live = true
+    gl.compileAsync(scene, camera).then(() => {
+      if (live) gl.info.programs?.forEach((program) => program.getUniforms())
+    })
+    return () => {
+      live = false
+    }
+  }, [gl, scene, camera])
+
   // dev-only handle for inspecting him from the console; stripped from builds
   useEffect(() => {
     if (!import.meta.env.DEV) return
-    ;(window as unknown as { __bot?: unknown }).__bot = { state: st.current, root }
-  }, [])
+    ;(window as unknown as { __bot?: unknown }).__bot = { state: st.current, root, gl }
+  }, [gl])
 
   const findSeat = (scene: SceneId) => {
     const s = st.current
