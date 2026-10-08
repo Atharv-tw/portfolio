@@ -31,7 +31,7 @@
   grid-area: photo;
   width: clamp(170px, 20vw, 300px);
   height: auto;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 3 / 4;
   object-fit: cover;
   /* down onto the rule: square where it stands, soft above */
   margin-bottom: -1.2rem;
