@@ -16,8 +16,8 @@ export default function About() {
             className="about-photo"
             src="/images/atharv.webp"
             alt={`${person.name} at a laptop`}
-            width={800}
-            height={1000}
+            width={900}
+            height={1200}
             loading="lazy"
             decoding="async"
           />
