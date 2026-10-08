@@ -51,6 +51,12 @@ export default function Projects() {
         // recede under the next card
         const next = panels[i + 1]
         if (next) {
+          // Buried cards stay pinned under the stack to the end of the list.
+          // Marked here so they stop rendering (see Projects.css).
+          const bury = (self: ScrollTrigger) => {
+            const covered = self.progress === 1
+            if (covered !== card.hasAttribute('data-covered')) card.toggleAttribute('data-covered', covered)
+          }
           gsap.to(card, {
             scale: 0.94,
             yPercent: -3,
@@ -60,7 +66,10 @@ export default function Projects() {
               trigger: next,
               start: 'top bottom',
               end: 'top top',
-              scrub: 0.4,
+              // Lenis already eases the scroll; easing the scrub as well leaves this card trailing the next
+              scrub: true,
+              onUpdate: bury,
+              onRefresh: bury,
             },
           })
         }
@@ -68,7 +77,10 @@ export default function Projects() {
     }, list)
 
     ScrollTrigger.refresh()
-    return () => ctx.revert()
+    return () => {
+      ctx.revert()
+      list.querySelectorAll('[data-covered]').forEach((el) => el.removeAttribute('data-covered'))
+    }
   }, [reduced])
 
   return (
