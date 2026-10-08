@@ -9,12 +9,15 @@
   padding: 0;
 }
 
+/* Nothing here follows the scroll (see tokens.css on why not on the root).
+   The track is clear, so it shows the page colour painted behind it, and the
+   thumb is a grey that holds on paper and on void alike. */
 html {
-  scrollbar-color: var(--ink-faint) var(--bg);
+  scrollbar-color: #7a7a84 transparent;
 }
 
-/* the live page colour is painted on <html> by lib/environment.ts; var(--bg)
-   is the same colour as a token, and what shows before the script runs */
+/* the live page colour is painted on <html> by lib/environment.ts;
+   var(--bg) here is what shows before the script runs */
 html {
   background: var(--bg);
 }
