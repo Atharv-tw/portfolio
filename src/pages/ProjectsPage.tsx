@@ -9,18 +9,16 @@ import Cursor from '../components/Cursor'
 import Environment from '../components/Environment'
 import LogOverlay from '../components/LogOverlay'
 import Nav from '../components/Nav'
-import ProjectList from '../components/ProjectList'
+import ProjectTiles from '../components/ProjectTiles'
 import RiseText from '../components/RiseText'
 import ScrambleText from '../components/ScrambleText'
 import ProjectCase from '../sections/ProjectCase'
 import { useApp } from '../store'
 import './ProjectsPage.css'
 
-const pad = (n: number) => String(n).padStart(2, '0')
-
 const groups = [
-  { id: 'featured', label: 'Featured', projects: featured },
-  { id: 'more', label: 'More work', projects: archive },
+  { id: 'featured', label: 'Featured', projects: featured, large: true },
+  { id: 'more', label: 'More work', projects: archive, large: false },
 ].filter((g) => g.projects.length > 0)
 
 const projectFromHash = () => {
@@ -29,8 +27,8 @@ const projectFromHash = () => {
 }
 
 /**
- * /projects — every project, in the home page's archive rows. A row opens the
- * same modal as on the home page; the open project is kept in the hash, so
+ * /projects — every project as a tile. A tile opens the same modal as on the
+ * home page; the open project is kept in the hash, so
  * /projects#onyx is a link to Onyx.
  */
 export default function ProjectsPage() {
@@ -90,7 +88,7 @@ export default function ProjectsPage() {
         <section id="projects" data-section="projects" data-env="0.86" className="section allwork">
           <div className="container">
             <header className="allwork-head">
-              <ScrambleText as="p" className="mono-label" text={`Index — ${projects.length} projects`} />
+              <ScrambleText as="p" className="mono-label" text="Index — every project" />
               <RiseText as="h1" className="allwork-title" text="All work." />
             </header>
 
@@ -100,9 +98,8 @@ export default function ProjectsPage() {
                   <h2 id={`group-${g.id}`} className="mono-label">
                     {g.label}
                   </h2>
-                  <span className="mono-label allwork-group-count">{pad(g.projects.length)}</span>
                 </header>
-                <ProjectList projects={g.projects} />
+                <ProjectTiles projects={g.projects} large={g.large} />
               </section>
             ))}
 
