@@ -19,6 +19,8 @@ export const person = {
     { value: '12+', label: 'projects built' },
     { value: 'CTO', label: '@ Nexera' },
   ],
+  /** what the bot says in the hero, one line at a time */
+  heroSays: ["Hi! I'm Atharv's bot.", "Right now he's building personalised agents: context, memory, and making them yours."],
   location: 'New Delhi, India',
   timezone: 'Asia/Kolkata',
   email: 'tiwariatharv01042005@gmail.com',
@@ -38,7 +40,7 @@ export const person = {
   openTo: ['Internships', 'Freelance work', 'Ambitious ideas', 'Collaborations'],
 } as const
 
-export type ProjectMotif = 'radar' | 'depth' | 'forecast' | 'orbit' | 'arcade' | 'deck' | 'vault' | 'sequence' | 'civic'
+export type ProjectMotif = 'radar' | 'depth' | 'forecast' | 'orbit' | 'arcade' | 'deck' | 'vault' | 'sequence' | 'civic' | 'memory'
 
 export interface ProjectResult {
   /** the big part: "~70%", "8", "36 h" */
@@ -108,11 +110,11 @@ export interface Project {
    * Demo footage and screenshots.
    *   youtube: the video id (the part after youtu.be/). Plays muted, on a loop.
    *   video:   or a file of your own: '/videos/onyx.mp4' in `public/videos/`
-   *   shots:   screenshots: files in `public/shots/<id>/`, listed here
+   *   shots:   screenshots: files in `public/shots/<id>/`, listed here; `tall: true` for phone screens
    * With no video, the first screenshot takes the big stage in the modal. With
    * neither, the modal shows the live visual in its place.
    */
-  media: { youtube?: string; video?: string; poster?: string; shots?: { src: string; alt: string }[] }
+  media: { youtube?: string; video?: string; poster?: string; shots?: { src: string; alt: string; tall?: boolean }[] }
 }
 
 export const projects: Project[] = [
@@ -316,8 +318,74 @@ export const projects: Project[] = [
     media: { youtube: '9HpoNZa3afw' },
   },
   {
-    id: 'onyx',
+    id: 'vault',
     index: '03',
+    name: 'Vault',
+    kind: 'Shared memory for AI agents',
+    year: '2026',
+    tier: 'featured',
+    accent: '#6fd943',
+    stage: '#07130a',
+    motif: 'memory',
+    statement: 'A private second brain your agents share.',
+    summary:
+      'Say or write anything into a diary. Every night it becomes Markdown memory and a planned day, shared by Claude Code, Codex and any MCP agent.',
+    overview: [
+      'Every new agent session starts from zero. It does not know who you are, what you are working on or what you decided last week.',
+      'Vault is a private second brain your agents share. You write or say anything into a diary, from the phone, the laptop or the terminal. Every night your agent files it into a memory of plain Markdown notes (who you are, your goals, projects, people, what you learned and decided) and plans your next day around how you actually live. Claude Code, Codex and any MCP agent read the same memory and the same plan.',
+    ],
+    built: [
+      'Capture from anywhere: a command line, an Android app with home-screen widgets, a Linux desktop app and a GNOME top-bar widget. Everything works offline.',
+      'Speech written down on the device by an open-source Whisper model: no key, no account, nothing you say leaves the phone.',
+      'A nightly routine, a Claude Code session in the cloud that runs with the laptop off: it files the day’s diary into the vault, turns every commitment into a task with its deadline, plans tomorrow and writes a morning page.',
+      'Memory as plain Markdown notes in your own git repository, on the LLM Wiki pattern: your exact words that never change, filed notes the agents keep current, and a schema every agent follows. A correction becomes a line in Rules.md, so a mistake fixed once stays fixed.',
+      'Planning with hard rules checked by code, not trusted to the model: deadlines never move silently, protected routines stay on their day, and no day is planned past 75% of the time you really have.',
+      'One memory shared over MCP: a tool server with memory and day tools, plus three agent skills, connected to Claude Code or Codex in a five-question setup.',
+      'Sync through your own Supabase project, with row-level security keeping each user’s rows apart. No paid AI API: your agents run on your own Claude or Codex account.',
+    ],
+    why: 'An agent is only as useful as what it knows about the person it works for. Vault keeps that in notes you own and lets every agent read them, so none of them starts from zero and each one makes the next more personal.',
+    results: [
+      { value: '27', label: 'MCP tools: 10 for memory, 17 for the day' },
+      { value: '5', label: 'ways in: CLI, Android app, Linux desktop app, GNOME top-bar widget, MCP server' },
+      { value: '3', label: 'agent skills: vault context, daily briefing, diary filing' },
+      { value: '75%', label: 'of the time you really have, the most a day is planned to, checked in code' },
+      { value: '120', label: 'automated tests across the CLI, the core and the app' },
+      { value: '64', label: 'commits in under four weeks' },
+    ],
+    topics: ['Dart', 'Flutter', 'MCP', 'Claude Code', 'Supabase', 'On-device Whisper', 'Markdown + git'],
+    links: { repo: 'https://github.com/Atharv-tw/vault-app', live: 'https://atharv-tw.github.io/vault-app/', caseStudy: '' },
+    media: {
+      shots: [
+        {
+          src: '/shots/vault/desktop.webp',
+          alt: 'The Vault desktop app on the Brain tab: this morning’s page, goals and projects',
+        },
+        {
+          src: '/shots/vault/brain.webp',
+          tall: true,
+          alt: 'The Brain tab on the phone: this morning’s page, goals and projects',
+        },
+        {
+          src: '/shots/vault/today.webp',
+          tall: true,
+          alt: 'The To-do tab on the phone: an activity grid, the task on now with a progress ring, and the timeline',
+        },
+        {
+          src: '/shots/vault/diary.webp',
+          tall: true,
+          alt: 'The Diary tab on the phone: counts for today and the week, filters, and today’s entries on a timeline',
+        },
+        {
+          src: '/shots/vault/profile.webp',
+          tall: true,
+          alt: 'The Profile tab on the phone: what the notes say about you, habits, screen time, sync and voice',
+        },
+      ],
+    },
+  },
+  {
+    id: 'onyx',
+    index: '04',
     name: 'Onyx',
     kind: 'AI-powered cybersecurity',
     year: '2026',
@@ -352,11 +420,11 @@ export const projects: Project[] = [
   },
   {
     id: 'health-companion',
-    index: '04',
+    index: '05',
     name: 'AI Health Companion',
     kind: 'Multi-agent AI for health',
     year: '2026',
-    tier: 'featured',
+    tier: 'archive',
     accent: '#6cc392',
     stage: '#06130c',
     motif: 'orbit',
@@ -392,7 +460,7 @@ export const projects: Project[] = [
   },
   {
     id: 'finstar',
-    index: '05',
+    index: '06',
     name: 'Finstar',
     kind: 'Gamified finance education for teens',
     year: '2025',
@@ -425,7 +493,7 @@ export const projects: Project[] = [
   },
   {
     id: 'codeswipe',
-    index: '06',
+    index: '07',
     name: 'Codeswipe',
     kind: 'Swipe-based developer collaboration platform',
     year: '2025',
@@ -465,7 +533,7 @@ export const projects: Project[] = [
   },
   {
     id: 'healthvault',
-    index: '07',
+    index: '08',
     name: 'HealthVault',
     kind: 'Zero-knowledge encrypted health records',
     year: '2025',
@@ -499,7 +567,7 @@ export const projects: Project[] = [
   },
   {
     id: 'outreach',
-    index: '08',
+    index: '09',
     name: 'Outreach',
     kind: 'Personal cold email, with limits built in',
     year: '2026',
@@ -540,7 +608,7 @@ export const projects: Project[] = [
   },
   {
     id: 'civic-setu',
-    index: '09',
+    index: '10',
     name: 'Civic Setu',
     kind: 'Civic issue reporting for Jharkhand',
     year: '2025',
@@ -588,8 +656,20 @@ export interface NowItem {
 
 /** What I am working on right now. Keep it short. */
 export const now: { updated: string; items: NowItem[] } = {
-  updated: 'October 2026',
+  updated: 'November 2026',
   items: [
+    {
+      id: 'agentchat',
+      name: 'Agentchat',
+      line: 'A group chat workspace for teams and their agents.',
+      projectId: '',
+    },
+    {
+      id: 'personal-agents',
+      name: 'Personal agents',
+      line: 'Context, memory and personalisation for agents, so each one knows who it works for.',
+      projectId: 'vault',
+    },
     {
       id: 'okeanos',
       name: 'OKEANOS',
@@ -601,19 +681,6 @@ export const now: { updated: string; items: NowItem[] } = {
       name: 'NETWM',
       line: 'A world model for network attack forecasting.',
       projectId: 'netwm',
-    },
-    {
-      id: 'asha-saathi',
-      name: 'Asha Saathi',
-      line: 'An offline, voice-first AI companion for ASHA health workers. It remembers every household and plans the day’s visits.',
-      projectId: '',
-      href: 'https://github.com/Atharv-tw/ASHA-WORKERS-HELP-AI',
-    },
-    {
-      id: 'personal-ai',
-      name: 'Personal AI',
-      line: 'Agentic systems, and where personal AI goes next.',
-      projectId: '',
     },
   ],
 }
@@ -761,4 +828,4 @@ export const sections = [
 export type SectionId = (typeof sections)[number]['id']
 
 /** Where the bot can be: any section, or inside one of the featured projects. */
-export type SceneId = SectionId | 'onyx' | 'okeanos' | 'netwm' | 'health-companion'
+export type SceneId = SectionId | 'onyx' | 'okeanos' | 'netwm' | 'vault'
