@@ -192,6 +192,16 @@
   }
 }
 
+/* seven items: just above the burger they only fit closer together */
+@media (max-width: 960px) {
+  .nav-links {
+    gap: 0.2rem;
+  }
+  .nav-link {
+    padding: 0.45rem 0.7rem;
+  }
+}
+
 @media (max-width: 760px) {
   .nav-kbd,
   .nav-links {
