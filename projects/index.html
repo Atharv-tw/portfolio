@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en" style="background-color: #17171b">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- this page sits at the dark end of the paper → void ramp (data-env 0.86),
+         so it starts there instead of flashing paper first -->
+    <meta name="theme-color" content="#17171b" />
+    <!-- title, description, social cards and structured data are generated at
+         build time from src/content/site.ts and resume.ts (see vite.config.ts) -->
+    <title>Projects — Atharv Tiwari</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script>
+      document.documentElement.classList.add('js')
+    </script>
+    <style>
+      html { background: #17171b; }
+      /* #root ships with a plain-HTML list of every project for crawlers and for
+         visitors without JavaScript. With scripts on, the app replaces it, so
+         keep it out of sight until then rather than flashing unstyled text. */
+      .prerender { max-width: 44rem; margin: 0 auto; padding: 3rem 1.25rem; font-family: system-ui, sans-serif; line-height: 1.6; color: #f4f4f6; }
+      .prerender a { color: inherit; text-decoration: underline; }
+      .js .prerender { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+    </style>
+  </head>
+  <body data-env="dark">
+    <div id="root"></div>
+    <script type="module" src="/src/projects.tsx"></script>
+  </body>
+</html>
