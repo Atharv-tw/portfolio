@@ -11,137 +11,44 @@
   margin-bottom: clamp(1.4rem, 3.4vh, 2.2rem);
 }
 
-.archive-list {
-  list-style: none;
-  border-top: 1px solid var(--line-strong);
-}
-
-.archive-row {
-  width: 100%;
+/* one row, the archive's own (see components/ProjectList.css), only larger: it is a door */
+.archive-all {
   display: grid;
-  grid-template-columns: 2.4rem minmax(0, 1fr) auto;
-  grid-template-areas:
-    'index title go'
-    '.     kind  .';
-  align-items: baseline;
-  gap: 0.45rem clamp(0.8rem, 2vw, 1.6rem);
-  padding: clamp(1rem, 2.2vh, 1.45rem) 0;
-  border-bottom: 1px solid var(--line);
-  text-align: left;
-  transition: padding 0.4s var(--ease-out), opacity 0.3s var(--ease-out);
+  gap: 0.7rem;
+  padding: clamp(1.3rem, 3vh, 2rem) 0;
+  border-top: 1px solid var(--line-strong);
+  border-bottom: 1px solid var(--line-strong);
+  transition: padding 0.4s var(--ease-out);
 }
 
-.archive-index {
-  grid-area: index;
-  font-size: 0.62rem;
-  color: var(--ink-faint);
-  transition: color 0.25s var(--ease-out);
-}
-
-.archive-title {
-  grid-area: title;
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 0.3rem 1.1rem;
-}
-
-.archive-name {
-  font-size: clamp(1.3rem, 2.2vw, 1.9rem);
+.archive-all-label {
+  font-size: clamp(1.9rem, 4.4vw, 4rem);
   font-weight: 720;
   line-height: 1;
   text-transform: uppercase;
-  letter-spacing: -0.005em;
+  letter-spacing: -0.015em;
 }
 
-.archive-statement {
+.archive-all-label span {
+  display: inline-block;
   color: var(--ink-dim);
+  transition: transform 0.4s var(--ease-out), color 0.25s var(--ease-out);
 }
 
-.archive-kind {
-  grid-area: kind;
+.archive-all-names {
   font-size: 0.62rem;
+  line-height: 1.8;
   color: var(--ink-faint);
 }
 
-.archive-go {
-  grid-area: go;
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.5em;
-  font-size: 0.62rem;
-  color: var(--ink-dim);
-  transition: color 0.25s var(--ease-out);
-}
-
-.archive-go span {
-  display: inline-block;
-  font-size: 1.5em;
-  transition: transform 0.4s var(--ease-out);
-}
-
-.archive-row:hover,
-.archive-row:focus-visible {
+.archive-all:hover,
+.archive-all:focus-visible {
   padding-left: 0.7rem;
 }
 
-.archive-row:hover .archive-index,
-.archive-row:hover .archive-go,
-.archive-row.is-active .archive-index,
-.archive-row.is-active .archive-go {
-  color: var(--project-accent);
-}
-
-.archive-row:hover .archive-go span {
-  transform: translate(3px, -3px);
-}
-
-/* the row under the pointer is the only one speaking */
-@media (hover: hover) {
-  .archive-list:hover .archive-row:not(:hover) {
-    opacity: 0.45;
-  }
-}
-
-/*
- * The preview: small, and it belongs to the pointer, not to the layout. It is
- * positioned from Archive.tsx (transform on this box), so the pop lives on the
- * stage inside it.
- */
-.archive-float {
-  --project-accent: var(--ink);
-  --project-stage: #0c0c10;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: var(--z-scene);
-  width: clamp(320px, 26vw, 400px);
-  aspect-ratio: 4 / 3.4;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.22s var(--ease-out);
-  will-change: transform;
-}
-
-.archive-float.is-on {
-  opacity: 1;
-}
-
-.archive-float-stage {
-  width: 100%;
-  height: 100%;
-  border-radius: 16px;
-  border: 1px solid color-mix(in srgb, var(--project-accent) 30%, transparent);
-  background: color-mix(in srgb, #000 45%, var(--project-stage));
-  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.55);
-  overflow: hidden;
-  transform: scale(0.94) rotate(-1.2deg);
-  transform-origin: 0 40%;
-  transition: transform 0.4s var(--ease-out);
-}
-
-.archive-float.is-on .archive-float-stage {
-  transform: none;
+.archive-all:hover .archive-all-label span {
+  color: var(--ink);
+  transform: translate(6px, -6px);
 }
 
 @media (max-width: 760px) {
@@ -150,19 +57,5 @@
   }
   .archive-head {
     margin-bottom: 1.4rem;
-  }
-  /* the word is in the way on a phone: the arrow says it */
-  .archive-go {
-    font-size: 0;
-  }
-  .archive-go span {
-    font-size: 0.95rem;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .archive-float-stage {
-    transform: none;
-    transition: none;
   }
 }
