@@ -1,4 +1,4 @@
-/* /projects: the archive, given a page of its own. Same rows, same dark end of the ramp. */
+/* /projects: every project, given a page of its own, on the dark end of the ramp */
 .allwork {
   padding-top: clamp(7.5rem, 20vh, 12rem);
   padding-bottom: clamp(2rem, 5vh, 3.5rem);
@@ -46,11 +46,6 @@
   height: 8px;
   border-radius: 50%;
   background: var(--ink);
-}
-
-.allwork-group-count {
-  color: var(--ink-faint);
-  font-variant-numeric: tabular-nums;
 }
 
 .allwork-foot {
