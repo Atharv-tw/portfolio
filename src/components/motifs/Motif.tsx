@@ -10,6 +10,7 @@ import Radar from './Radar'
 import Sequence from './Sequence'
 import SwipeDeck from './SwipeDeck'
 import Vault from './Vault'
+import './Motif.css'
 
 /** The live visual that stands for a project, in its tile and in its modal. */
 export default function Motif({ project }: { project: Project }): ReactNode {
