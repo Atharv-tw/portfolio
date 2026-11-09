@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { person, projects, sections } from '../content/resume'
+import { onProjectsPage } from '../lib/page'
 import { lockScroll, scrollToSection, unlockScroll } from '../lib/smoothScroll'
 import { sfx } from '../audio/synth'
 import { useApp } from '../store'
+import { DAYS, OUTFITS, today } from '../lib/week'
 import { hasLog } from './Nav'
 import './CommandPalette.css'
 
@@ -33,8 +35,15 @@ export default function CommandPalette() {
         id: `jump-${s.id}`,
         label: `Jump to ${s.label}`,
         hint: 'navigate',
-        run: () => scrollToSection(s.id),
+        // from the projects page the sections are on the other page
+        run: () => (onProjectsPage ? window.location.assign(`/#${s.id}`) : scrollToSection(s.id)),
       })),
+      {
+        id: 'all-projects',
+        label: 'All projects',
+        hint: `${projects.length} projects`,
+        run: () => (onProjectsPage ? scrollToSection('projects') : window.location.assign('/projects')),
+      },
       ...projects.map((p) => ({
         id: `open-${p.id}`,
         label: `Open project: ${p.name}`,
@@ -79,18 +88,30 @@ export default function CommandPalette() {
         hint: 'mute / unmute',
         run: () => toggleMuted(),
       },
-      {
-        id: 'flip',
-        label: 'Bot: do a flip',
-        hint: '🤖',
-        run: () => setBotMood('flip'),
-      },
-      {
-        id: 'party',
-        label: 'Bot: party mode',
-        hint: '🪩',
-        run: () => setBotMood('party'),
-      },
+      // the bot only lives on the home page
+      ...(onProjectsPage
+        ? []
+        : [
+            {
+              id: 'flip',
+              label: 'Bot: do a flip',
+              hint: '🤖',
+              run: () => setBotMood('flip'),
+            },
+            {
+              id: 'party',
+              label: 'Bot: party mode',
+              hint: '🪩',
+              run: () => setBotMood('party'),
+            },
+            // his wardrobe: one outfit for every day of the week
+            ...[...DAYS.slice(1), DAYS[0]].map((d) => ({
+              id: `wear-${d}`,
+              label: `Bot: wear ${OUTFITS[d].day}'s outfit`,
+              hint: d === today() ? `${OUTFITS[d].name} · today` : OUTFITS[d].name,
+              run: () => useApp.getState().setOutfit(d),
+            })),
+          ]),
       {
         id: 'github',
         label: 'Open GitHub profile',
