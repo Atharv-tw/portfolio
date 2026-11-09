@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import type { SceneId, SectionId } from './content/resume'
+import { today, type Day } from './lib/week'
 
 export type BotMood = 'idle' | 'happy' | 'dizzy' | 'sleep' | 'wave' | 'flip' | 'party'
 
@@ -16,6 +17,12 @@ interface AppState {
   setScene: (s: SceneId) => void
   botMood: BotMood
   setBotMood: (m: BotMood) => void
+  /** what the bot is wearing: today's outfit unless the visitor picks another */
+  outfit: Day
+  setOutfit: (d: Day) => void
+  /** true while his speech bubble is typing: his mouth moves */
+  botTalking: boolean
+  setBotTalking: (v: boolean) => void
   paletteOpen: boolean
   setPaletteOpen: (v: boolean) => void
   caseOpenId: string | null
@@ -45,6 +52,10 @@ export const useApp = create<AppState>((set) => ({
   setScene: (scene) => set({ scene }),
   botMood: 'idle',
   setBotMood: (botMood) => set({ botMood }),
+  outfit: typeof window === 'undefined' ? 'mon' : today(),
+  setOutfit: (outfit) => set({ outfit }),
+  botTalking: false,
+  setBotTalking: (botTalking) => set({ botTalking }),
 
   paletteOpen: false,
   setPaletteOpen: (paletteOpen) => set({ paletteOpen }),
