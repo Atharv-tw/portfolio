@@ -4,6 +4,7 @@ import Arcade from './Arcade'
 import Civic from './Civic'
 import Depth from './Depth'
 import Forecast from './Forecast'
+import Memory from './Memory'
 import Orbit from './Orbit'
 import Radar from './Radar'
 import Sequence from './Sequence'
@@ -31,5 +32,7 @@ export default function Motif({ project }: { project: Project }): ReactNode {
       return <Sequence accent={project.accent} />
     case 'civic':
       return <Civic accent={project.accent} />
+    case 'memory':
+      return <Memory accent={project.accent} />
   }
 }
