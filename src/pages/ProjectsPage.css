@@ -1,0 +1,100 @@
+/* /projects: the archive, given a page of its own. Same rows, same dark end of the ramp. */
+.allwork {
+  padding-top: clamp(7.5rem, 20vh, 12rem);
+  padding-bottom: clamp(2rem, 5vh, 3.5rem);
+  min-height: 100svh;
+}
+
+.allwork-head {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.9rem, 2vh, 1.4rem);
+  margin-bottom: clamp(3.5rem, 10vh, 7rem);
+}
+
+.allwork-title {
+  font-size: clamp(3.2rem, 12.5vw, 13rem);
+  line-height: 0.92;
+  font-weight: 760;
+  font-optical-sizing: auto;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+.allwork-group + .allwork-group {
+  margin-top: clamp(4rem, 12vh, 8rem);
+}
+
+.allwork-group-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: clamp(1rem, 2.6vh, 1.6rem);
+}
+
+/* the dot of the home page's section labels (styles/ui.css) */
+.allwork-group-head h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.allwork-group-head h2::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+
+.allwork-group-count {
+  color: var(--ink-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.allwork-foot {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem 1.6rem;
+  margin-top: clamp(5rem, 14vh, 9rem);
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--line);
+}
+
+.allwork-foot .mono-label {
+  font-size: 0.6rem;
+}
+
+.allwork-foot a {
+  transition: color 0.25s var(--ease-out);
+}
+
+.allwork-foot a:hover {
+  color: var(--ink);
+}
+
+.allwork-foot-note {
+  margin-left: auto;
+  color: var(--ink-faint);
+}
+
+@media (max-width: 760px) {
+  .allwork {
+    padding-top: 7rem;
+  }
+  .allwork-head {
+    margin-bottom: 3rem;
+  }
+  .allwork-title {
+    font-size: max(3rem, 17vw);
+  }
+  .allwork-group + .allwork-group {
+    margin-top: 3.6rem;
+  }
+  .allwork-foot-note {
+    margin-left: 0;
+    width: 100%;
+  }
+}
