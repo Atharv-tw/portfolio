@@ -1,0 +1,10 @@
+/* every motif's canvas fills the box it is given, wherever that is (a tile, a modal, a stage) */
+.motif-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.motif-canvas.is-interactive {
+  touch-action: pan-y;
+}
