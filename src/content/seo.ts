@@ -5,7 +5,7 @@
  * Pure functions, no browser or build APIs — vite.config.ts calls them.
  * Nothing here is written by hand twice: it all comes from resume.ts.
  */
-import { archive, experience, featured, now, outside, person, trackRecord, type Project } from './resume'
+import { archive, experience, featured, now, outside, person, projects, trackRecord, type Project } from './resume'
 import { site } from './site'
 
 const esc = (s: string) =>
@@ -13,6 +13,20 @@ const esc = (s: string) =>
 
 const abs = (path: string) => site.url + path
 const roles = site.jobTitles.join(', ')
+
+/** the two pages of the site (see vite.config.ts): what differs between them in <head> */
+export type Page = 'home' | 'projects'
+
+const featuredNames = featured.map((p) => p.name).join(', ')
+
+export const pages: Record<Page, { path: string; title: string; description: string }> = {
+  home: { path: '/', title: site.title, description: site.description },
+  projects: {
+    path: '/projects',
+    title: `Projects — ${person.name}`,
+    description: `All ${projects.length} projects by ${person.name}: ${featuredNames}${archive.length ? ` and ${archive.length} more` : ''}. What each one does, what he built and the results.`,
+  },
+}
 
 export interface HeadTag {
   tag: 'meta' | 'link' | 'script'
@@ -71,30 +85,75 @@ function structuredData(today: string) {
   }
 }
 
+/** schema.org for /projects: a collection page about the same person, listing every project */
+function projectsData(today: string) {
+  const { path, title, description } = pages.projects
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    '@id': abs(`${path}#page`),
+    url: abs(path),
+    name: title,
+    description,
+    isPartOf: { '@id': abs('/#website') },
+    about: { '@id': abs('/#person') },
+    dateModified: today,
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: projects.length,
+      itemListElement: projects.map((p, i) => {
+        const link = p.links.live || p.links.repo
+        return {
+          '@type': 'ListItem',
+          position: i + 1,
+          item: {
+            '@type': 'CreativeWork',
+            name: p.name,
+            description: p.statement,
+            genre: p.kind,
+            ...(link ? { url: link } : {}),
+            creator: { '@id': abs('/#person') },
+          },
+        }
+      }),
+    },
+  }
+}
+
 /** everything that belongs in <head> besides the title */
-export function headTags(today: string): HeadTag[] {
+export function headTags(today: string, page: Page = 'home'): HeadTag[] {
   const meta = (name: string, content: string): HeadTag => ({ tag: 'meta', attrs: { name, content } })
   const og = (property: string, content: string): HeadTag => ({ tag: 'meta', attrs: { property, content } })
+  const { path, title, description } = pages[page]
+  const home = page === 'home'
   return [
-    meta('description', site.description),
+    meta('description', description),
     meta('author', person.name),
     meta('keywords', [person.name, ...site.jobTitles, 'ML Engineer', 'AI/ML Engineer', 'Nexera CTO', 'New Delhi'].join(', ')),
     meta('robots', 'index, follow, max-image-preview:large, max-snippet:-1'),
-    { tag: 'link', attrs: { rel: 'canonical', href: abs('/') } },
-    og('og:type', 'profile'),
+    { tag: 'link', attrs: { rel: 'canonical', href: abs(path) } },
+    og('og:type', home ? 'profile' : 'website'),
     og('og:site_name', person.name),
-    og('og:title', site.title),
-    og('og:description', site.description),
-    og('og:url', abs('/')),
+    og('og:title', title),
+    og('og:description', description),
+    og('og:url', abs(path)),
     og('og:image', abs(site.image)),
     og('og:locale', site.locale),
-    og('profile:first_name', person.firstName),
-    og('profile:last_name', person.name.replace(person.firstName, '').trim()),
+    ...(home
+      ? [
+          og('profile:first_name', person.firstName),
+          og('profile:last_name', person.name.replace(person.firstName, '').trim()),
+        ]
+      : []),
     meta('twitter:card', 'summary_large_image'),
-    meta('twitter:title', site.title),
-    meta('twitter:description', site.description),
+    meta('twitter:title', title),
+    meta('twitter:description', description),
     meta('twitter:image', abs(site.image)),
-    { tag: 'script', attrs: { type: 'application/ld+json' }, children: JSON.stringify(structuredData(today)) },
+    {
+      tag: 'script',
+      attrs: { type: 'application/ld+json' },
+      children: JSON.stringify(home ? structuredData(today) : projectsData(today)),
+    },
   ]
 }
 
@@ -177,6 +236,18 @@ export function staticHtml() {
   ].join('\n')
 }
 
+/** /projects as plain HTML, the same way: every project, in full, under its group */
+export function projectsStaticHtml() {
+  return [
+    '<main class="prerender">',
+    `<header><h1>All work</h1><p>${projects.length} projects by <a href="/">${esc(person.name)}</a>, ${esc(roles)} — ${esc(person.location)}.</p></header>`,
+    `<section><h2>Featured work</h2>${featured.map(projectHtml).join('')}</section>`,
+    `<section><h2>More work</h2>${archive.map(projectHtml).join('')}</section>`,
+    `<p><a href="/">Home</a> · <a href="mailto:${esc(person.email)}">${esc(person.email)}</a> · <a href="${esc(person.github.url)}">GitHub</a> · <a href="${esc(person.linkedin.url)}">LinkedIn</a></p>`,
+    '</main>',
+  ].join('\n')
+}
+
 /** everyone is welcome, AI crawlers by name so there is no doubt */
 export function robotsTxt() {
   const bots = ['GPTBot', 'OAI-SearchBot', 'ChatGPT-User', 'ClaudeBot', 'Claude-SearchBot', 'PerplexityBot', 'Google-Extended', 'Bingbot']
@@ -188,6 +259,7 @@ export function sitemapXml(today: string) {
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
     `  <url><loc>${abs('/')}</loc><lastmod>${today}</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>`,
+    `  <url><loc>${abs(pages.projects.path)}</loc><lastmod>${today}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>`,
     '</urlset>',
     '',
   ].join('\n')
@@ -223,6 +295,7 @@ export function llmsTxt() {
     '',
     '## Contact',
     `- Website: ${abs('/')}`,
+    `- All projects: ${abs(pages.projects.path)}`,
     `- Email: ${person.email}`,
     `- GitHub: ${person.github.url}`,
     `- LinkedIn: ${person.linkedin.url}`,
