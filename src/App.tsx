@@ -9,6 +9,7 @@ import Environment from './components/Environment'
 import LogOverlay from './components/LogOverlay'
 import Nav from './components/Nav'
 import SectionSpy from './components/SectionSpy'
+import Speech from './components/Speech'
 import Preloader from './sections/Preloader'
 import Hero from './sections/Hero'
 import About from './sections/About'
@@ -44,6 +45,7 @@ export default function App() {
       <EasterEggs />
       <Preloader />
       <Nav />
+      <Speech />
       <main>
         <Hero />
         <About />
