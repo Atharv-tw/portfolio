@@ -460,6 +460,14 @@
   overflow: hidden;
 }
 
+.case-shots.is-tall {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 8.5rem), 1fr));
+}
+
+.case-shot.is-tall {
+  aspect-ratio: 780 / 1688;
+}
+
 .case-shot img {
   width: 100%;
   height: 100%;
