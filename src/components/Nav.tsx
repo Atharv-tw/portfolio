@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { person, sections } from '../content/resume'
 import { log } from '../content/log'
+import { onProjectsPage } from '../lib/page'
 import { lockScroll, scrollToSection, unlockScroll } from '../lib/smoothScroll'
 import { sfx } from '../audio/synth'
 import { useApp } from '../store'
@@ -19,10 +20,16 @@ const clockFmt = new Intl.DateTimeFormat('en-GB', {
 /** LOG is a side door, not a section: it only shows once there is something in it (always, while developing). */
 export const hasLog = log.length > 0 || import.meta.env.DEV
 
-type NavItem = { id: string; label: string; log?: boolean }
+/** `href` items are links: to the projects page, or, from there, back to a home-page section */
+type NavItem = { id: string; label: string; log?: boolean; href?: string }
 
-const items: NavItem[] = sections.filter((s) => s.nav).map((s) => ({ id: s.id, label: s.label }))
+const items: NavItem[] = sections
+  .filter((s) => s.nav)
+  .map((s) => ({ id: s.id, label: s.label, href: onProjectsPage ? `/#${s.id}` : undefined }))
+items.splice(items.findIndex((i) => i.id === 'work') + 1, 0, { id: 'projects', label: 'Projects', href: '/projects' })
 if (hasLog) items.splice(items.length - 1, 0, { id: 'log', label: 'Log', log: true })
+
+const sectionIds: readonly string[] = sections.map((s) => s.id)
 
 export default function Nav() {
   const active = useApp((s) => s.section)
@@ -30,6 +37,7 @@ export default function Nav() {
   const setLogOpen = useApp((s) => s.setLogOpen)
   const menuOpen = useApp((s) => s.menuOpen)
   const setMenuOpen = useApp((s) => s.setMenuOpen)
+  const entered = useApp((s) => s.entered)
   const [time, setTime] = useState(() => clockFmt.format(new Date()))
 
   useEffect(() => {
@@ -50,6 +58,22 @@ export default function Nav() {
     }
   }, [menuOpen, setMenuOpen])
 
+  // arriving at /#experience (from the projects page): go there once the preloader is out of the way
+  useEffect(() => {
+    if (onProjectsPage || !entered) return
+    const id = decodeURIComponent(window.location.hash.slice(1))
+    if (sectionIds.includes(id)) scrollToSection(id)
+  }, [entered])
+
+  /** links leave the page by themselves; Projects on the projects page only goes back to the top */
+  const follow = (e: React.MouseEvent, item: NavItem) => {
+    setMenuOpen(false)
+    if (item.id === 'projects' && onProjectsPage) {
+      e.preventDefault()
+      go(item)
+    }
+  }
+
   const go = (item: NavItem) => {
     const wasMenu = menuOpen
     setMenuOpen(false)
@@ -63,31 +87,54 @@ export default function Nav() {
     )
   }
 
-  const isActive = (item: NavItem) => (item.log ? logOpen : !logOpen && active === item.id)
+  const isActive = (item: NavItem) => {
+    if (item.log) return logOpen
+    if (logOpen) return false
+    return onProjectsPage ? item.id === 'projects' : active === item.id
+  }
 
   return (
     <>
       <header className="nav">
-        <button
-          className="nav-logo"
-          onClick={() => scrollToSection('hero')}
-          aria-label="Back to top"
-          data-sfx="click"
-        >
-          AT<span>/</span>
-        </button>
+        {onProjectsPage ? (
+          <a className="nav-logo" href="/" aria-label="Home" data-sfx="click">
+            AT<span>/</span>
+          </a>
+        ) : (
+          <button
+            className="nav-logo"
+            onClick={() => scrollToSection('hero')}
+            aria-label="Back to top"
+            data-sfx="click"
+          >
+            AT<span>/</span>
+          </button>
+        )}
 
         <nav className="nav-links" aria-label="Sections">
-          {items.map((item) => (
-            <button
-              key={item.id}
-              className={`nav-link ${isActive(item) ? 'is-active' : ''}`}
-              onClick={() => go(item)}
-              data-sfx="click"
-            >
-              {item.label}
-            </button>
-          ))}
+          {items.map((item) =>
+            item.href ? (
+              <a
+                key={item.id}
+                className={`nav-link ${isActive(item) ? 'is-active' : ''}`}
+                href={item.href}
+                onClick={(e) => follow(e, item)}
+                aria-current={isActive(item) ? 'page' : undefined}
+                data-sfx="click"
+              >
+                {item.label}
+              </a>
+            ) : (
+              <button
+                key={item.id}
+                className={`nav-link ${isActive(item) ? 'is-active' : ''}`}
+                onClick={() => go(item)}
+                data-sfx="click"
+              >
+                {item.label}
+              </button>
+            ),
+          )}
         </nav>
 
         <div className="nav-right">
@@ -131,20 +178,30 @@ export default function Nav() {
             aria-label="Menu"
           >
             <nav className="mobile-menu-links" aria-label="Sections">
-              {items.map((item, i) => (
-                <motion.button
-                  key={item.id}
-                  className={`mobile-menu-link ${isActive(item) ? 'is-active' : ''}`}
-                  initial={{ y: 34, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.05 + i * 0.05, ease: [0.16, 1, 0.3, 1], duration: 0.5 }}
-                  onClick={() => go(item)}
-                  data-sfx="click"
-                >
-                  <span className="mono-label mobile-menu-index">0{i + 1}</span>
-                  {item.label}
-                </motion.button>
-              ))}
+              {items.map((item, i) => {
+                const props = {
+                  className: `mobile-menu-link ${isActive(item) ? 'is-active' : ''}`,
+                  initial: { y: 34, opacity: 0 },
+                  animate: { y: 0, opacity: 1 },
+                  transition: { delay: 0.05 + i * 0.05, ease: [0.16, 1, 0.3, 1] as const, duration: 0.5 },
+                  'data-sfx': 'click',
+                }
+                const body = (
+                  <>
+                    <span className="mono-label mobile-menu-index">0{i + 1}</span>
+                    {item.label}
+                  </>
+                )
+                return item.href ? (
+                  <motion.a key={item.id} {...props} href={item.href} onClick={(e) => follow(e, item)}>
+                    {body}
+                  </motion.a>
+                ) : (
+                  <motion.button key={item.id} {...props} onClick={() => go(item)}>
+                    {body}
+                  </motion.button>
+                )
+              })}
             </nav>
             <motion.div
               className="mobile-menu-foot"
