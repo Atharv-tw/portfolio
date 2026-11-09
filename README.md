@@ -9,7 +9,7 @@ An interactive portfolio that starts on warm white and ends on black, with a sma
 ## What is in it
 
 - **One background, driven by scroll.** The page moves from paper to near-black as you go down. Colour belongs to the projects, not to the site.
-- **A robot with a part in every scene.** He is built from primitives in Three.js, his face is drawn on a canvas, and he changes mood, pose and prop from section to section.
+- **A robot with a part in every scene.** He is modelled and textured in Blender, wears a different outfit every day of the week, stands in a small set of his own in each scene, does things on his own between your moves, and his face is drawn on a canvas with twenty expressions.
 - **Four featured projects as pinned, stacking stages**, each with a self-running visual drawn on a 2D canvas, and a full write-up in a modal: demo video, what was built, results and, for the ML projects, the model details.
 - **No audio files.** Every sound is synthesized at runtime with the Web Audio API.
 - **Readable without JavaScript.** The build writes the whole page into static HTML for search engines, AI crawlers and link previews.
@@ -104,7 +104,12 @@ To change where the page gets dark, change the `data-env` values. To pin an elem
 - **Where he is:** any element with `data-bot-seat="<scene>"` is a box he fits himself into. Move or resize the box in CSS and he follows, at every breakpoint. No seat for a scene means he is not there.
 - **Who he is in each scene:** `src/three/Mascot/states.ts` (mood, pose, prop, colours).
 - **Face:** `face.ts` draws it on a canvas texture.
-- **Body:** `MascotBody.tsx` is procedural. `MascotRig.tsx` only talks to it through the handles in `parts.ts`, so the body can be replaced by a GLB with the same node names without touching behaviour.
+- **Body:** `BotBody.tsx` loads `public/models/bot.glb`, modelled in Blender (`art/bot.blend`). `MascotRig.tsx` only talks to it through the handles in `parts.ts`; the old procedural `MascotBody.tsx` stands in if the file cannot load.
+- **What he does on his own:** `acts.ts` (look round, yawn, head-bob, think, shrug, hop, check his watch, a kick on Wednesdays…), picked every few seconds, leaning towards the day's outfit. He also reacts: a hand on his chin when he thinks, stars over a project, hearts when you copy something, cross if you keep poking him.
+- **Clothes:** one outfit per day of the week, the visitor's day (`src/lib/week.ts`), from `public/models/outfits/<day>.glb`. Each piece follows the body part it was built round. ⌘K → *Bot: wear …* tries the others.
+- **Sets:** `public/models/sets.glb` holds a small set for each scene (`Sets.tsx`); he and his set are fitted into the seat box together.
+- **His line in the hero:** `person.heroSays` in `resume.ts`, typed out in a speech bubble (`Speech.tsx`) while his mouth moves.
+- **Rebuilding the models:** `BLENDER=/path/to/blender npm run models` (see `scripts/blender/`). The bot is edited in `art/bot.blend`; the scripts there (`model_head.py`, `model_body.py`, `shading.py`, `decals.py`) are how it was made. Outfits and sets are built by `build_outfits.py` and `build_sets.py`. Everything gets its ambient occlusion baked and is compressed with meshopt and WebP.
 
 ## Nice to know
 
