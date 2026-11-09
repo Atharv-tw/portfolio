@@ -31,7 +31,7 @@ export const SCENES: Partial<Record<SceneId, SceneState>> = {
   onyx: { mood: 'focus', pose: 'stand', prop: 'scan', eye: '#ff4a5e', tip: '#ff4a5e' },
   okeanos: { mood: 'idle', pose: 'float', prop: 'bubbles', eye: '#7fd3ea', tip: '#3fa7c4' },
   netwm: { mood: 'alert', pose: 'stand', prop: 'pulse', eye: '#ffc04d', tip: '#f5a524' },
-  'health-companion': { mood: 'calm', pose: 'sit', prop: 'heartbeat', eye: '#9be0b4', tip: '#6cc392' },
+  vault: { mood: 'calm', pose: 'sit', prop: 'none', eye: '#9fe887', tip: '#6fd943' },
   outside: { mood: 'happy', pose: 'dribble', prop: 'ball', eye: WARM, tip: ORANGE },
   contact: { mood: 'happy', pose: 'wave', prop: 'none', eye: WARM, tip: ORANGE },
 }
