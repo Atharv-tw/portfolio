@@ -207,16 +207,6 @@
   height: 30%;
 }
 
-.motif-canvas {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-.motif-canvas.is-interactive {
-  touch-action: pan-y;
-}
-
 @media (max-width: 980px) {
   .project-panel {
     position: relative;
