@@ -24,7 +24,7 @@ export const pages: Record<Page, { path: string; title: string; description: str
   projects: {
     path: '/projects',
     title: `Projects — ${person.name}`,
-    description: `All ${projects.length} projects by ${person.name}: ${featuredNames}${archive.length ? ` and ${archive.length} more` : ''}. What each one does, what he built and the results.`,
+    description: `Every project by ${person.name}: ${featuredNames} and more. What each one does, what he built and the results.`,
   },
 }
 
@@ -240,7 +240,7 @@ export function staticHtml() {
 export function projectsStaticHtml() {
   return [
     '<main class="prerender">',
-    `<header><h1>All work</h1><p>${projects.length} projects by <a href="/">${esc(person.name)}</a>, ${esc(roles)} — ${esc(person.location)}.</p></header>`,
+    `<header><h1>All work</h1><p>Every project by <a href="/">${esc(person.name)}</a>, ${esc(roles)} — ${esc(person.location)}.</p></header>`,
     `<section><h2>Featured work</h2>${featured.map(projectHtml).join('')}</section>`,
     `<section><h2>More work</h2>${archive.map(projectHtml).join('')}</section>`,
     `<p><a href="/">Home</a> · <a href="mailto:${esc(person.email)}">${esc(person.email)}</a> · <a href="${esc(person.github.url)}">GitHub</a> · <a href="${esc(person.linkedin.url)}">LinkedIn</a></p>`,
