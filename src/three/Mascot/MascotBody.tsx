@@ -2,27 +2,9 @@ import { useImperativeHandle, useMemo, useRef } from 'react'
 import { useThree } from '@react-three/fiber'
 import { RoundedBox } from '@react-three/drei'
 import * as THREE from 'three'
-import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
+import { botMaterials } from './materials'
 import { BOT } from './states'
 import type { MascotBodyProps, MascotParts } from './parts'
-
-const ORANGE = '#ff6a17'
-const CREAM = '#f3eee4'
-const COAL = '#17171b'
-const VISOR = '#030304'
-
-/** studio reflections for the clearcoat, baked once per renderer — no network */
-const envCache = new WeakMap<THREE.WebGLRenderer, THREE.Texture>()
-function studioEnv(gl: THREE.WebGLRenderer) {
-  let tex = envCache.get(gl)
-  if (!tex) {
-    const pmrem = new THREE.PMREMGenerator(gl)
-    tex = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
-    pmrem.dispose()
-    envCache.set(gl, tex)
-  }
-  return tex
-}
 
 function pillShape(w: number, h: number, r: number) {
   const s = new THREE.Shape()
@@ -44,6 +26,8 @@ function pillShape(w: number, h: number, r: number) {
  * The procedural body: a two-heads-tall vinyl-toy bot built from primitives.
  * Big soft-cornered head, glossy visor, over-ear headphones, a slash for an
  * antenna, stubby limbs, chunky shoes. See parts.ts for the handles it exposes.
+ * The site wears the Blender-built body (BotBody.tsx); this one stands in if
+ * that file cannot load.
  */
 export default function MascotBody({ faceMap, ref }: MascotBodyProps) {
   const gl = useThree((s) => s.gl)
@@ -74,28 +58,7 @@ export default function MascotBody({ faceMap, ref }: MascotBodyProps) {
     [],
   )
 
-  const mat = useMemo(() => {
-    const envMap = studioEnv(gl)
-    const toy = (color: string, extra: THREE.MeshPhysicalMaterialParameters = {}) =>
-      new THREE.MeshPhysicalMaterial({
-        color,
-        roughness: 0.5,
-        clearcoat: 0.7,
-        clearcoatRoughness: 0.32,
-        envMap,
-        envMapIntensity: 0.5,
-        ...extra,
-      })
-    return {
-      shell: toy(ORANGE),
-      cream: toy(CREAM, { roughness: 0.6, clearcoat: 0.45 }),
-      coal: toy(COAL, { roughness: 0.55, clearcoat: 0.35 }),
-      pad: toy(COAL, { roughness: 0.95, clearcoat: 0 }),
-      visor: toy(VISOR, { roughness: 0.2, clearcoat: 1, clearcoatRoughness: 0.06, envMapIntensity: 0.32 }),
-      tip: toy(ORANGE, { emissive: ORANGE, emissiveIntensity: 1.6, roughness: 0.3 }),
-      emblem: toy(CREAM, { emissive: '#000000', emissiveIntensity: 0, roughness: 0.5, clearcoat: 0.6 }),
-    }
-  }, [gl])
+  const mat = useMemo(() => botMaterials(gl), [gl])
 
   const visorGeo = useMemo(() => {
     const g = new THREE.ExtrudeGeometry(pillShape(1.18, 0.74, 0.31), {
