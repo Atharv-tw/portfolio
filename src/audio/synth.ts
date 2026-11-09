@@ -157,6 +157,10 @@ export const sfx = {
   sleepy() {
     tone({ from: 620, to: 310, dur: 0.32, peak: 0.08 })
   },
+  /** one letter of the bot talking: a soft, slightly random blip */
+  blip() {
+    tone({ type: 'triangle', from: 560 + Math.random() * 140, to: 480, dur: 0.045, peak: 0.05 })
+  },
   /** bot spam-clicked */
   dizzy() {
     tone({ type: 'square', from: 500, to: 240, dur: 0.3, peak: 0.06 })
