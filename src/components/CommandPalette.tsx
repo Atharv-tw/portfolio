@@ -41,7 +41,7 @@ export default function CommandPalette() {
       {
         id: 'all-projects',
         label: 'All projects',
-        hint: `${projects.length} projects`,
+        hint: 'page',
         run: () => (onProjectsPage ? scrollToSection('projects') : window.location.assign('/projects')),
       },
       ...projects.map((p) => ({
