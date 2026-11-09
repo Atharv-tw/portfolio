@@ -3,13 +3,14 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Atharv Tiwari — interactive 3D portfolio",
+  "description": "Atharv Tiwari \u2014 interactive 3D portfolio",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "og": "node scripts/og.mjs"
+    "og": "node scripts/og.mjs",
+    "models": "sh scripts/blender/build.sh"
   },
   "dependencies": {
     "@fontsource-variable/bricolage-grotesque": "^5.2.5",
