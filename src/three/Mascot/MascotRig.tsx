@@ -1,14 +1,16 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { Suspense, useEffect, useMemo, useRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { gsap } from '../../lib/gsap'
 import { sfx } from '../../audio/synth'
-import { scrollState } from '../../lib/scrollState'
+import { botScreen, scrollState } from '../../lib/scrollState'
 import { env } from '../../lib/environment'
 import { usePrefersReducedMotion } from '../../lib/hooks'
 import { useApp } from '../../store'
 import type { SceneId } from '../../content/resume'
-import MascotBody from './MascotBody'
+import BotBody from './BotBody'
+import Sets, { type SetsHandle } from './Sets'
+import { ACT_LEN, applyAct, blankBody, pickAct, type Act } from './acts'
 import {
   createFace,
   makeBallTexture,
@@ -41,6 +43,9 @@ export default function MascotRig() {
   const rings = useRef<THREE.Group>(null!)
   const ball = useRef<THREE.Mesh>(null!)
   const burst = useRef<THREE.Points>(null!)
+  /** the set he stands in: beside him, so it scales with him but does not lean when he does */
+  const stage = useRef<THREE.Group>(null!)
+  const sets = useRef<SetsHandle>(null)
 
   const reduced = usePrefersReducedMotion()
 
@@ -50,6 +55,7 @@ export default function MascotRig() {
       shadow: makeShadowTexture(),
       z: makeGlyphTexture('z'),
       note: makeGlyphTexture('♪'),
+      q: makeGlyphTexture('?'),
       ring: makeRingTexture(),
       ball: makeBallTexture(),
     }),
@@ -89,6 +95,18 @@ export default function MascotRig() {
     burstT: 1e9,
     burstVel: Array.from({ length: BURST_COUNT }, () => new THREE.Vector3()),
     flipping: false,
+    /** what he is doing on his own right now, and when he next will */
+    act: null as Act | null,
+    actStart: 0,
+    nextAct: 6000,
+    /** short-lived reactions, as performance.now() deadlines */
+    angryUntil: 0,
+    loveUntil: 0,
+    wowUntil: 0,
+    starUntil: 0,
+    laughUntil: 0,
+    spinStart: -1,
+    setShown: undefined as SceneId | null | undefined,
     tip: new THREE.Color('#ff6a17'),
     tmpColor: new THREE.Color(),
     tmpVec: new THREE.Vector3(),
@@ -189,6 +207,62 @@ export default function MascotRig() {
     [],
   )
 
+  // a new outfit: he spins into it
+  useEffect(
+    () =>
+      useApp.subscribe((state, prev) => {
+        if (state.outfit === prev.outfit || reduced) return
+        const s = st.current
+        s.spinStart = performance.now()
+        s.happyUntil = s.spinStart + 1400
+        sfx.whoosh()
+        window.setTimeout(() => {
+          sfx.pop()
+          popBurst(root.current.position.clone().add(s.tmpVec.set(0, 0.4, 0.4)))
+        }, 380)
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [reduced],
+  )
+
+  // things he notices: you coming back to the tab, copying something, a project under the pointer
+  useEffect(() => {
+    let hiddenAt = 0
+    let lastStar = 0
+    const onVisible = () => {
+      const s = st.current
+      if (document.hidden) hiddenAt = performance.now()
+      else if (hiddenAt && performance.now() - hiddenAt > 4000) {
+        s.wowUntil = performance.now() + 700
+        s.act = 'wave'
+        s.actStart = performance.now() + 500
+      }
+    }
+    const onCopy = () => {
+      const s = st.current
+      s.loveUntil = performance.now() + 1800
+      sfx.chirp()
+      popBurst(root.current.position.clone().add(s.tmpVec.set(0, 0.5, 0.4)))
+    }
+    const onOver = (e: PointerEvent) => {
+      const now = performance.now()
+      if (now - lastStar < 5000 || !(e.target instanceof Element)) return
+      if (e.target.closest('.project-card, .archive-row, .project-row, .now-row.is-link')) {
+        lastStar = now
+        st.current.starUntil = now + 1100
+      }
+    }
+    document.addEventListener('visibilitychange', onVisible)
+    document.addEventListener('copy', onCopy)
+    window.addEventListener('pointerover', onOver, { passive: true })
+    return () => {
+      document.removeEventListener('visibilitychange', onVisible)
+      document.removeEventListener('copy', onCopy)
+      window.removeEventListener('pointerover', onOver)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const onBotDown = () => {
     const s = st.current
     const now = performance.now()
@@ -205,6 +279,14 @@ export default function MascotRig() {
     s.clicks = s.clicks.filter((t) => now - t < 1600)
     s.clicks.push(now)
 
+    // still poking him after he went dizzy: now he is cross
+    if (now > s.dizzyUntil && now < s.dizzyUntil + 3000) {
+      s.angryUntil = now + 1500
+      sfx.dizzy()
+      squashPop(0.6)
+      return
+    }
+
     if (s.clicks.length >= 4 && now > s.dizzyUntil) {
       s.dizzyUntil = now + 2300
       s.clicks = []
@@ -214,7 +296,8 @@ export default function MascotRig() {
     }
 
     if (now > s.dizzyUntil) {
-      s.happyUntil = now + 900
+      if (Math.random() < 0.3) s.laughUntil = now + 1000
+      else s.happyUntil = now + 900
       sfx.chirp()
       squashPop(1)
       popBurst(root.current.position.clone().add(new THREE.Vector3(0, 0.4, 0.4)))
@@ -273,12 +356,24 @@ export default function MascotRig() {
       if (el) {
         const r = el.getBoundingClientRect()
         if (r.width > 4 && r.height > 4 && r.bottom > -vh * 0.3 && r.top < vh * 1.3) {
-          const fit = Math.min((r.height * wpp) / BOT.height, (r.width * wpp) / BOT.width)
+          // what has to fit in the box: him, and the set he stands in when the scene has one
           const base = wanted.pose === 'sit' ? BOT.seat : BOT.foot
-          let y = (vh / 2 - r.bottom) * wpp + base * fit
-          // a floater hangs in the middle of his box instead of standing on its floor
-          if (wanted.pose === 'float') y += (r.height * wpp - BOT.height * fit) * 0.5 + 0.2 * fit
-          target = { x: (r.left + r.width / 2 - vw / 2) * wpp, y, s: fit }
+          let x0 = -BOT.width / 2
+          let x1 = BOT.width / 2
+          let y0 = -base
+          let y1 = BOT.height - base
+          const set = sets.current?.frame(scene)
+          if (set) {
+            x0 = Math.min(x0, set.x0)
+            x1 = Math.max(x1, set.x1)
+            y0 = Math.min(y0, set.y0)
+            y1 = Math.max(y1, set.y1)
+          }
+          const fit = Math.min((r.height * wpp) / (y1 - y0), (r.width * wpp) / (x1 - x0))
+          let y = (vh / 2 - r.bottom) * wpp - y0 * fit
+          // a floater with nothing under him hangs in the middle of his box
+          if (wanted.pose === 'float' && !set) y += (r.height * wpp - BOT.height * fit) * 0.5 + 0.2 * fit
+          target = { x: (r.left + r.width / 2 - vw / 2) * wpp - ((x0 + x1) / 2) * fit, y, s: fit }
         }
       }
     }
@@ -311,12 +406,23 @@ export default function MascotRig() {
     root.current.scale.setScalar(Math.max(s.scale, 0.0001))
     root.current.visible = s.scale > 0.02
 
+    // the set comes and goes with him, and is the one for the scene he is in
+    if (sets.current && s.setShown !== s.seatKey) {
+      sets.current.show(s.seatKey)
+      s.setShown = s.seatKey
+    }
+    stage.current.position.copy(root.current.position)
+    stage.current.scale.copy(root.current.scale)
+    stage.current.visible = root.current.visible
+
     const cfg = s.cfg
     if (!cfg || !root.current.visible) {
       // He can have left his seat (no cfg) while still a few pixels tall. Hide
       // him now: otherwise that last small frame is what the wipe below misses,
       // and it stays on screen as a speck until he next appears.
       root.current.visible = false
+      stage.current.visible = false
+      botScreen.visible = false
       shadow.current.visible = false
       floaties.current.visible = false
       rings.current.visible = false
@@ -345,6 +451,26 @@ export default function MascotRig() {
       sfx.boing()
       squashPop(0.8)
     }
+
+    // ---- something he does on his own ----
+    if (s.act && now - s.actStart > ACT_LEN[s.act] * 1000) {
+      s.act = null
+      s.nextAct = now + 4500 + Math.random() * 6500
+    }
+    if (s.sleeping || party) s.act = null
+    else if (!s.act && now > s.nextAct && !reduced && now > s.dizzyUntil && !s.flipping && s.scale > 0.2 && !app.botTalking) {
+      s.act = pickAct(pose, app.outfit, scrollState.pointerX >= 0)
+      s.actStart = now
+      if (!s.act) s.nextAct = now + 5000
+      else if (s.act === 'wink') sfx.chirp()
+      else if (s.act === 'hop' || s.act === 'kick') {
+        sfx.boing()
+        squashPop(0.7)
+      } else if (s.act === 'yawn') sfx.sleepy()
+    }
+    const actK = s.act ? clamp((now - s.actStart) / (ACT_LEN[s.act] * 1000), 0, 1) : 0
+    const act = s.act ? blankBody() : null
+    if (act && s.act) applyAct(s.act, actK, t, act, pose)
 
     // ---- what he is looking at ----
     // until the pointer has moved (touch, first paint) he looks straight out
@@ -375,6 +501,10 @@ export default function MascotRig() {
       gazeX = gazeX * 0.4 + Math.sin(t * 0.45) * 0.55
       gazeY = gazeY * 0.4 + Math.sin(t * 0.3 + 1) * 0.3
     }
+    if (act?.gazeX != null) {
+      gazeX = act.gazeX
+      gazeY = act.gazeY ?? gazeY
+    }
     s.rotY += (lookY - s.rotY) * ease(5)
     s.rotX += (lookX - s.rotX) * ease(5)
     s.gazeX += (gazeX - s.gazeX) * ease(cfg.mood === 'alert' ? 22 : 9)
@@ -382,18 +512,24 @@ export default function MascotRig() {
 
     const dizzy = now < s.dizzyUntil
     const listening = cfg.prop === 'notes' && !s.sleeping
+    const talking = app.botTalking && !s.sleeping
     p.head.rotation.set(
-      s.rotX + (listening ? Math.sin(t * 6.2) * 0.035 : 0),
-      s.rotY,
-      (listening ? 0.09 + Math.sin(t * 3.1) * 0.06 : 0) + (dizzy ? Math.sin(t * 15) * 0.12 : 0),
+      s.rotX + (listening ? Math.sin(t * 6.2) * 0.035 : 0) + (act?.headX ?? 0) + (talking ? Math.sin(t * 9) * 0.03 : 0),
+      s.rotY + (act?.headY ?? 0),
+      (listening ? 0.09 + Math.sin(t * 3.1) * 0.06 : 0) + (dizzy ? Math.sin(t * 15) * 0.12 : 0) + (act?.headZ ?? 0),
     )
     p.torso.rotation.y = s.rotY * 0.25
 
     // ---- face ----
-    let mood: FaceMood = cfg.mood
+    let mood: FaceMood = act?.mood ?? cfg.mood
     if (s.sleeping) mood = 'sleep'
     else if (dizzy) mood = 'dizzy'
     else if (s.flipping) mood = 'wow'
+    else if (now < s.angryUntil) mood = 'angry'
+    else if (now < s.loveUntil) mood = 'love'
+    else if (now < s.wowUntil) mood = 'wow'
+    else if (now < s.laughUntil) mood = 'laugh'
+    else if (now < s.starUntil) mood = 'star'
     else if (now < s.happyUntil || party) mood = 'happy'
 
     let blink = 0
@@ -417,13 +553,14 @@ export default function MascotRig() {
       gazeY: s.gazeY,
       blink,
       scan: cfg.prop === 'scan' && mood === 'focus' && !reduced ? (t * 0.55) % 1.25 : -1,
+      talk: talking ? clamp(0.45 + Math.sin(t * 19) * 0.35 + Math.sin(t * 31) * 0.25, 0, 1) : 0,
     })
     face.render()
 
     // ---- body language ----
     const bobAmp = { stand: 0.03, sit: 0.012, float: 0.12, wave: 0.04, dribble: 0.02 }[pose]
     const bob = Math.sin(t * (s.sleeping ? 0.9 : pose === 'float' ? 1.05 : 1.6)) * bobAmp
-    p.squash.position.y = -BOT.foot + bob
+    p.squash.position.y = -BOT.foot + bob + (act?.hop ?? 0)
 
     const calm = cfg.prop === 'heartbeat'
     p.torso.scale.y = 1 + Math.sin(t * (calm ? 1.1 : 1.9)) * (calm ? 0.03 : 0.012)
@@ -433,6 +570,7 @@ export default function MascotRig() {
     let aL = -0.22 + Math.sin(t * 1.7 + 1.2) * 0.04
     let aR = 0.22 + Math.sin(t * 1.7) * 0.04
     let aFwd = 0
+    let legX = 0
     if (waving) aR = 2.5 + Math.sin(t * 9) * 0.32
     else if (pose === 'sit') {
       aL = -0.36
@@ -445,14 +583,21 @@ export default function MascotRig() {
       // the hand follows the ball down and back up
       aL = -(0.62 + bounce * 0.5)
     }
-    p.armL.rotation.z += (aL - p.armL.rotation.z) * ease(8)
-    p.armR.rotation.z += (aR - p.armR.rotation.z) * ease(8)
-    p.armL.rotation.x += (aFwd - p.armL.rotation.x) * ease(8)
-    p.armR.rotation.x += (aFwd - p.armR.rotation.x) * ease(8)
-
-    let legX = 0
     if (pose === 'sit') legX = -1.32 + (listening ? Math.sin(t * 3.1) * 0.07 : 0)
     else if (pose === 'float') legX = Math.sin(t * 1.3) * 0.22
+
+    let fwdL = aFwd
+    let fwdR = aFwd
+    if (s.act) {
+      const b = { ...blankBody(), aL, aR, fwdL, fwdR, legX }
+      applyAct(s.act, actK, t, b, pose)
+      ;({ aL, aR, fwdL, fwdR, legX } = b)
+    }
+    p.armL.rotation.z += (aL - p.armL.rotation.z) * ease(8)
+    p.armR.rotation.z += (aR - p.armR.rotation.z) * ease(8)
+    p.armL.rotation.x += (fwdL - p.armL.rotation.x) * ease(8)
+    p.armR.rotation.x += (fwdR - p.armR.rotation.x) * ease(8)
+
     p.legs.rotation.x += (legX - p.legs.rotation.x) * ease(8)
 
     // lean into the scroll, wobble when dizzy, sway when adrift
@@ -460,9 +605,16 @@ export default function MascotRig() {
       const lean = clamp(scrollState.velocity * 0.01, -0.5, 0.5) * -0.3
       const sway = pose === 'float' ? Math.sin(t * 0.7) * 0.09 : 0
       const wobble = dizzy ? Math.sin(t * 15) * 0.1 : 0
-      root.current.rotation.z += ((reduced ? 0 : lean) + sway + wobble - root.current.rotation.z) * ease(4)
-      const spin = party ? Math.sin(t * 6) * 0.25 : 0
-      root.current.rotation.y += (spin - root.current.rotation.y) * ease(party ? 12 : 3)
+      root.current.rotation.z += ((reduced ? 0 : lean) + sway + wobble + (act?.shake ?? 0) - root.current.rotation.z) * ease(act?.shake ? 30 : 4)
+      if (s.spinStart >= 0) {
+        // into a new outfit: one full turn
+        const k = (now - s.spinStart) / 800
+        if (k >= 1) s.spinStart = -1
+        root.current.rotation.y = k >= 1 ? 0 : Math.PI * 2 * (k < 0.5 ? 2 * k * k : 1 - (-2 * k + 2) ** 2 / 2)
+      } else {
+        const spin = (party ? Math.sin(t * 6) * 0.25 : 0) + (act?.spin ?? 0)
+        root.current.rotation.y += (spin - root.current.rotation.y) * ease(party || act?.spin ? 12 : 3)
+      }
     }
 
     // ---- antenna tip + chest mark take the scene's colour ----
@@ -480,11 +632,14 @@ export default function MascotRig() {
       const beat = Math.exp(-(((ph - 0.08) / 0.05) ** 2)) + 0.7 * Math.exp(-(((ph - 0.3) / 0.06) ** 2))
       emblemMat.emissive.copy(s.tip)
       emblemMat.emissiveIntensity = 0.5 + beat * 2.6
-      p.emblem.scale.set(1 + beat * 0.2, 1 + beat * 0.2, 0.3)
+      const rest = (p.emblem.userData.rest ??= p.emblem.scale.clone()) as THREE.Vector3
+      p.emblem.scale.set(rest.x * (1 + beat * 0.2), rest.y * (1 + beat * 0.2), rest.z)
     } else {
       emblemMat.emissiveIntensity += (0 - emblemMat.emissiveIntensity) * ease(6)
-      p.emblem.scale.set(1, 1, 0.3)
+      p.emblem.scale.copy((p.emblem.userData.rest ??= p.emblem.scale.clone()) as THREE.Vector3)
     }
+
+    sets.current?.tick(t, s.tip)
 
     // ---- contact shadow: only where the ground is light enough to show one ----
     const ground = 1 - smoothstep(env.t, 0.22, 0.5)
@@ -496,7 +651,15 @@ export default function MascotRig() {
     shadow.current.scale.set(2.1 * spread, 0.4 * spread, 1)
 
     // ---- little things that float off him: z, ♪, bubbles ----
-    const floatKind = s.sleeping ? 'z' : cfg.prop === 'notes' ? 'note' : cfg.prop === 'bubbles' ? 'ring' : null
+    const floatKind = s.sleeping
+      ? 'z'
+      : act?.float === 'q'
+        ? 'q'
+        : cfg.prop === 'notes' || act?.float === 'note'
+          ? 'note'
+          : cfg.prop === 'bubbles'
+            ? 'ring'
+            : null
     floaties.current.visible = !!floatKind && !reduced
     if (floatKind && !reduced) {
       const ink = floatKind === 'ring' ? '#cdeff8' : env.dark ? '#f4f4f6' : '#0e0e11'
@@ -507,7 +670,10 @@ export default function MascotRig() {
         m.color.set(ink)
         const phase = (t * (floatKind === 'ring' ? 0.32 : 0.42) + i / FLOATIES) % 1
         const side = i % 2 ? 1 : -1
-        if (floatKind === 'z') {
+        if (floatKind === 'q') {
+          sp.position.set(0.7 + phase * 0.35 + i * 0.05, 1.15 + phase * 0.7, 0.3)
+          sp.scale.setScalar(0.18 + phase * 0.14)
+        } else if (floatKind === 'z') {
           sp.position.set(0.85 + phase * 0.4 + i * 0.06, 1.05 + phase * 0.9, 0.3)
           sp.scale.setScalar(0.16 + phase * 0.2)
         } else if (floatKind === 'note') {
@@ -536,6 +702,13 @@ export default function MascotRig() {
         m.opacity = (1 - phase) * 0.8
       })
     }
+
+    // ---- where his head is on screen, for the DOM beside him ----
+    botScreen.x = vw / 2 + root.current.position.x / wpp
+    botScreen.y = vh / 2 - (root.current.position.y + 0.28 * s.scale) / wpp
+    botScreen.r = (0.75 * s.scale) / wpp
+    botScreen.scene = s.seatKey
+    botScreen.visible = root.current.visible && s.scale > 0.2
 
     // ---- basketball, dribbled at his side ----
     ball.current.visible = cfg.prop === 'ball'
@@ -568,7 +741,7 @@ export default function MascotRig() {
   return (
     <group>
       <group ref={root} scale={0.0001} visible={false}>
-        <MascotBody ref={parts} faceMap={face.texture} />
+        <BotBody ref={parts} faceMap={face.texture} />
 
         <sprite ref={shadow} position={[0, -BOT.foot, -0.35]} renderOrder={-1}>
           <spriteMaterial map={tex.shadow} transparent opacity={0} depthWrite={false} depthTest={false} />
@@ -594,6 +767,12 @@ export default function MascotRig() {
           <sphereGeometry args={[0.27, 32, 24]} />
           <meshStandardMaterial map={tex.ball} roughness={0.85} />
         </mesh>
+      </group>
+
+      <group ref={stage} visible={false}>
+        <Suspense fallback={null}>
+          <Sets ref={sets} />
+        </Suspense>
       </group>
 
       {/* click burst lives in world space so it does not scale with him */}
