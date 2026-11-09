@@ -15,6 +15,19 @@ export const scrollState = {
 }
 
 /**
+ * Where the bot's head is on screen, in CSS px, written by the rig every frame
+ * for the DOM that sits beside him (his speech bubble).
+ */
+export const botScreen = {
+  x: 0,
+  y: 0,
+  /** half the head's width */
+  r: 0,
+  scene: null as string | null,
+  visible: false,
+}
+
+/**
  * The bot lives in a canvas above the page, so a press on him also reaches
  * whatever DOM is underneath. Click handlers under his seats ask this first.
  */
