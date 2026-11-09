@@ -106,13 +106,19 @@ function Shots({ project }: { project: Project }) {
   return (
     <section className="case-shots-block">
       <h4 className="mono-label case-sub">Screens</h4>
-      <div className="case-shots">
-        {shots.map((shot) => (
-          <figure key={shot.src} className="case-shot">
-            <img src={shot.src} alt={shot.alt} loading="lazy" decoding="async" />
-          </figure>
-        ))}
-      </div>
+      {/* wide screens and phone screens each in a grid of their own shape, never cropped to fit the other */}
+      {[shots.filter((s) => !s.tall), shots.filter((s) => s.tall)].map(
+        (group, i) =>
+          group.length > 0 && (
+            <div key={i} className={`case-shots ${i ? 'is-tall' : ''}`}>
+              {group.map((shot) => (
+                <figure key={shot.src} className={`case-shot ${shot.tall ? 'is-tall' : ''}`}>
+                  <img src={shot.src} alt={shot.alt} loading="lazy" decoding="async" />
+                </figure>
+              ))}
+            </div>
+          ),
+      )}
     </section>
   )
 }
