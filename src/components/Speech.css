@@ -1,9 +1,10 @@
-/* the bot's speech bubble: fixed to the viewport, moved beside his head by Speech.tsx */
+/* the bot's speech bubble: fixed to the viewport, moved beside his head by Speech.tsx.
+   It sits over the 3D layer, so he can never cover it. */
 .speech {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 6;
+  z-index: calc(var(--z-scene) + 1);
   max-width: min(17rem, calc(100vw - 2rem));
   padding: 0.85rem 1.05rem;
   border: 1.5px solid #0e0e11;
@@ -50,6 +51,14 @@
 
 .speech-text {
   margin: 0;
+}
+
+@media (max-width: 600px) {
+  .speech {
+    padding: 0.65rem 0.8rem;
+    font-size: 0.82rem;
+    line-height: 1.35;
+  }
 }
 
 /* the untyped rest keeps the bubble its final size, so it does not grow letter by letter */
