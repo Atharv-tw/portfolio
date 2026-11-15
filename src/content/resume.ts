@@ -16,8 +16,8 @@ export const person = {
   /** the three facts at the foot of the hero — keep it to three short ones */
   heroProof: [
     { value: '3K+', label: 'daily users' },
-    { value: '12+', label: 'projects built' },
-    { value: 'CTO', label: '@ Nexera' },
+    { value: '2×', label: 'hackathon wins' },
+    { value: 'Nexera', label: 'Founding engineer' },
   ],
   /** what the bot says in the hero, one line at a time */
   heroSays: ["Hi! I'm Atharv's bot.", "Right now he's building personalised agents: context, memory, and making them yours."],
@@ -29,12 +29,12 @@ export const person = {
   resumePdf: '/resume.pdf',
   aboutLead: "I'm Atharv. I turn ideas into things people actually use.",
   about: [
-    'Right now, I’m building @ Nexera as its Founding CTO, where I lead the technical direction and product decisions for a platform used by 3K+ people every day. Along the way, I’ve built products across cybersecurity, healthcare, civic technology and fintech.',
+    'Right now, I’m building @ Nexera as its Founding Engineer, where I lead the technical direction and product decisions for a platform used by 3K+ people every day. Along the way, I’ve built products across cybersecurity, healthcare, civic technology and fintech.',
     'Most of my work sits at the intersection of AI, ML, systems and product — training models, building agentic applications, and engineering the infrastructure that puts them into production. I’m a third-year CSE student in Delhi, and I’d rather spend a weekend building something real than a month explaining what I could build.',
   ],
   aboutFacts: [
     { label: 'Based in', value: 'New Delhi, India' },
-    { label: 'Currently', value: 'Founding CTO @ Nexera' },
+    { label: 'Currently', value: 'Founding Engineer @ Nexera' },
     { label: 'Studying', value: 'CSE, GGSIPU — class of 2028' },
   ],
   openTo: ['Internships', 'Freelance work', 'Ambitious ideas', 'Collaborations'],
@@ -706,7 +706,7 @@ export const experience: Role[] = [
     id: 'nexera',
     company: 'Nexera',
     site: 'nexeraofficial.in',
-    title: 'Founding Chief Technical Officer',
+    title: 'Founding Engineer',
     period: 'Nov 2025 — Present',
     location: 'Remote',
     current: true,
@@ -765,7 +765,7 @@ export const trackRecord = {
     { value: 3, suffix: 'K+', label: 'daily users on Nexera' },
     { value: 5, suffix: '×', label: 'hackathon podiums' },
   ],
-  role: { value: 'CTO', label: 'Nexera, since Nov 2025' },
+  role: { value: 'Nexera', label: 'Founding engineer since Nov 2025' },
   /** `lead: true` is the one card that gets the weight — keep it to one */
   highlights: [
     {
