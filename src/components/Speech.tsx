@@ -9,6 +9,11 @@ import './Speech.css'
 const TYPE_MS = 30
 const HOLD_MS = 1500
 const GAP = 14
+const EDGE = 16
+/** the narrowest the bubble gets to stay beside him; narrower than this and it goes above */
+const MIN_W = 140
+/** nothing goes under the nav */
+const TOP = 72
 
 /**
  * The bot's speech bubble in the hero. It types his lines one after the other
@@ -68,18 +73,24 @@ export default function Speech() {
         const on = botScreen.visible && botScreen.scene === 'hero'
         el.classList.toggle('is-on', on && entered)
         if (on) {
+          // on a phone he stands at the right (Hero.css) and the bubble narrows into the gap at his left
+          const room = Math.floor(botScreen.x - botScreen.r - GAP - EDGE)
+          const maxWidth = window.innerWidth <= 600 && room >= MIN_W ? `${room}px` : ''
+          if (el.style.maxWidth !== maxWidth) el.style.maxWidth = maxWidth
           const w = el.offsetWidth
           const h = el.offsetHeight
           let x = botScreen.x - botScreen.r - GAP - w
           let y = botScreen.y - botScreen.r * 1.05 - h * 0.35
           let side = 'left'
-          if (x < 16) {
-            x = Math.min(window.innerWidth - w - 16, Math.max(16, botScreen.x - w / 2))
+          if (x < EDGE) {
+            x = Math.min(window.innerWidth - w - EDGE, Math.max(EDGE, botScreen.x - w / 2))
             y = botScreen.y - botScreen.r * 1.25 - h - GAP
             side = 'top'
           }
+          // kept clear of the nav, but it leaves with him when he scrolls up past it
+          const floor = Math.min(TOP, botScreen.y - botScreen.r)
           el.dataset.side = side
-          el.style.transform = `translate3d(${Math.round(x)}px, ${Math.round(Math.max(72, y))}px, 0)`
+          el.style.transform = `translate3d(${Math.round(x)}px, ${Math.round(Math.max(floor, y))}px, 0)`
         }
       }
       raf = requestAnimationFrame(step)
