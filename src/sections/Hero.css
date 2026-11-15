@@ -237,10 +237,12 @@
     align-items: stretch;
     gap: 0.9rem;
   }
+  /* he stands at the right, so his speech bubble has room at his left (components/Speech.tsx) */
   .hero-stage {
     order: -1;
     flex: 1;
-    width: 100%;
+    align-self: flex-end;
+    width: 60%;
     height: auto;
     min-height: 200px;
     margin-bottom: 0.4rem;
