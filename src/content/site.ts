@@ -14,7 +14,7 @@ export const site = {
   title: 'Atharv Tiwari — AI/ML Engineer and Product Builder',
   /** search result snippet — keep it near 155 characters */
   description:
-    'Atharv Tiwari is an AI/ML engineer and product builder in New Delhi. Founding CTO at Nexera, building personalised AI agents with context and memory.',
+    'Atharv Tiwari is an AI/ML engineer and product builder in New Delhi. Founding Engineer at Nexera, building personalised AI agents with context and memory.',
   /** what he is, in the words people search for */
   jobTitles: ['AI/ML Engineer', 'Product Builder'],
   /** topics he should be associated with */
