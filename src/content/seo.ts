@@ -129,7 +129,7 @@ export function headTags(today: string, page: Page = 'home'): HeadTag[] {
   return [
     meta('description', description),
     meta('author', person.name),
-    meta('keywords', [person.name, ...site.jobTitles, 'ML Engineer', 'AI/ML Engineer', 'Nexera CTO', 'New Delhi'].join(', ')),
+    meta('keywords', [person.name, ...site.jobTitles, 'ML Engineer', 'AI/ML Engineer', 'Nexera founding engineer', 'New Delhi'].join(', ')),
     meta('robots', 'index, follow, max-image-preview:large, max-snippet:-1'),
     { tag: 'link', attrs: { rel: 'canonical', href: abs(path) } },
     og('og:type', home ? 'profile' : 'website'),
